@@ -4,7 +4,7 @@
  * - Modify the source or allow re-creation. However, you must state that you have the original creator.
  * - However, we can not grant patents or licenses for reproductives. (Modifications or reproductions must be shared with the public.)
  * Licence: LGPL(GNU Lesser General Public License version 3)
- * Copyright (C) 2017 duice.oopscraft.net
+ * Copyright (C) 2017 chomookun@gmail.com
  * ============================================================================= */
 
 /**
