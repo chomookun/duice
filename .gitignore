@@ -1,7 +1,5 @@
 /.settings
-/dist/
-/doc/
 *.log
 *.pid
 *.swp
-
+/node_modules/
