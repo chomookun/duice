@@ -1,19 +1,21 @@
 {
 	"compileOnSave": true,
 	"compilerOptions": {
-	    "target": "es3",
+		"target": "es6",
 	    "strict": true,
 	    "strictNullChecks": false,
 	    "noImplicitThis": false,
-	    "module":"none",
-	    "watch": false
+		"module":"none",
+		"removeComments": true,
+		"allowJs": true,
+		"watch": false,
 	},
 	"typedocOptions":{
 		"mode": "modules",
 		"out": "doc",
-		"theme": "node_modules/typedoc-clarity-theme"
+		"theme": "default"
 	},
-	"files":[
-		"./src/duice.ts"
+	"include": [
+		"./src/**/*.ts"
 	]
 }

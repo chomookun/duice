@@ -9,20 +9,19 @@ function update() {
 
 # compile
 function compile() {
-	tsc 
+	node node_modules/typescript/bin/tsc ${@:1}
 }
 
 # generates document
 function doc() {
 	rm -rf ./doc/*
-	npx typedoc
+	node node_modules/typedoc/bin/typedoc
 }
 
 # gulp dist 
 function dist() {
 	rm -rf ./dist/*
-	gulp min
-	gulp zip
+	node node_modules/gulp/bin/gulp zip
 }
 
 # main
@@ -31,7 +30,7 @@ case ${1} in
 		update
 		;;
 	compile)
-		compile
+		compile ${@:2}
 		;;
 	doc)
 		doc
