@@ -9,7 +9,7 @@ function update() {
 
 # compile
 function compile() {
-	node node_modules/typescript/bin/tsc ${@:1}
+	node_modules/typescript/bin/tsc ${@:1}
 }
 
 # generates document

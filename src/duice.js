@@ -2370,32 +2370,41 @@ var duice;
             this.optionList = list;
             this.optionValue = value;
             this.optionText = text;
-            var _this = this;
-            function updateOption(optionList) {
-                removeChildNodes(_this.select);
-                for (var i = 0, size = _this.defaultOptions.length; i < size; i++) {
-                    _this.select.appendChild(_this.defaultOptions[i]);
-                }
-                for (var i = 0, size = optionList.getRowCount(); i < size; i++) {
-                    var optionMap = optionList.getRow(i);
-                    var option = document.createElement('option');
-                    option.value = optionMap.get(_this.optionValue);
-                    option.appendChild(document.createTextNode(optionMap.get(_this.optionText)));
-                    _this.select.appendChild(option);
-                }
-            }
-            updateOption(this.optionList);
+            this.updateOption();
+            this.optionList.addObserver(this);
         }
-        update(map, obj) {
-            var value = map.get(this.getName());
-            this.select.value = defaultIfEmpty(value, '');
-            if (this.select.selectedIndex < 0) {
-                if (this.defaultOptions.length > 0) {
-                    this.defaultOptions[0].selected = true;
+        update(dataObject, obj) {
+            console.debug(this, dataObject, obj);
+            if (dataObject instanceof duice.Map) {
+                let map = dataObject;
+                var value = map.get(this.getName());
+                this.select.value = defaultIfEmpty(value, '');
+                if (this.select.selectedIndex < 0) {
+                    if (this.defaultOptions.length > 0) {
+                        this.defaultOptions[0].selected = true;
+                    }
                 }
+                this.setDisable(map.isDisable(this.getName()));
+                this.setReadonly(map.isReadonly(this.getName()));
             }
-            this.setDisable(map.isDisable(this.getName()));
-            this.setReadonly(map.isReadonly(this.getName()));
+            if (dataObject instanceof duice.List) {
+                this.updateOption();
+            }
+        }
+        updateOption() {
+            console.debug(this);
+            removeChildNodes(this.select);
+            for (var i = 0, size = this.defaultOptions.length; i < size; i++) {
+                this.select.appendChild(this.defaultOptions[i]);
+            }
+            for (var i = 0, size = this.optionList.getRowCount(); i < size; i++) {
+                var optionMap = this.optionList.getRow(i);
+                var option = document.createElement('option');
+                option.value = optionMap.get(this.optionValue);
+                option.appendChild(document.createTextNode(optionMap.get(this.optionText)));
+                this.select.appendChild(option);
+            }
+            this.update(this.map, null);
         }
         getValue() {
             var value = this.select.value;

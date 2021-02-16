@@ -4,7 +4,7 @@
  * - Modify the source or allow re-creation. However, you must state that you have the original creator.
  * - However, we can not grant patents or licenses for reproductives. (Modifications or reproductions must be shared with the public.)
  * Licence: LGPL(GNU Lesser General Public License version 3)
- * Copyright (C) 2017 duice.oopscraft.net
+ * Copyright (C) 2017 chomookun@gmail.com 
  * ============================================================================= */
 
 /**
@@ -3477,38 +3477,55 @@ namespace duice {
             this.optionList = list;
             this.optionValue = value;
             this.optionText = text;
-            var _this = this;
-            function updateOption(optionList:duice.List){
-                
-                // removes all options
-                removeChildNodes(_this.select);
-                
-                // adds default options
-                for(var i = 0, size = _this.defaultOptions.length; i < size; i ++){
-                    _this.select.appendChild(_this.defaultOptions[i]); 
-                }
-                
-                // update data options
-                for(var i = 0, size = optionList.getRowCount(); i < size; i ++){
-                    var optionMap = optionList.getRow(i);
-                    var option = document.createElement('option');
-                    option.value = optionMap.get(_this.optionValue);
-                    option.appendChild(document.createTextNode(optionMap.get(_this.optionText)));
-                    _this.select.appendChild(option);
-                }
-            }
-            updateOption(this.optionList);
+            this.updateOption();
+            this.optionList.addObserver(this);
         }
-        update(map:duice.Map, obj:object):void {
-            var value = map.get(this.getName());
-            this.select.value = defaultIfEmpty(value,'');
-            if(this.select.selectedIndex < 0){
-                if(this.defaultOptions.length > 0){
-                    this.defaultOptions[0].selected = true;
+        update(dataObject:duice.Map|duice.List, obj:object):void {
+
+            // debug
+            console.debug(this, dataObject, obj);
+
+            // in case of Map (bind data is changed)
+            if(dataObject instanceof duice.Map){
+                let map = dataObject;
+                var value = map.get(this.getName());
+                this.select.value = defaultIfEmpty(value,'');
+                if(this.select.selectedIndex < 0){
+                    if(this.defaultOptions.length > 0){
+                        this.defaultOptions[0].selected = true;
+                    }
                 }
+                this.setDisable(map.isDisable(this.getName()));
+                this.setReadonly(map.isReadonly(this.getName()));
             }
-            this.setDisable(map.isDisable(this.getName()));
-            this.setReadonly(map.isReadonly(this.getName()));
+
+            // in case of List (select option is changed)
+            if(dataObject instanceof duice.List){
+                this.updateOption();
+            }
+        }
+        updateOption():void {
+            console.debug(this); 
+
+            // removes all options
+            removeChildNodes(this.select);
+                
+            // adds default options
+            for(var i = 0, size = this.defaultOptions.length; i < size; i ++){
+                this.select.appendChild(this.defaultOptions[i]); 
+            }
+                
+            // update data options
+            for(var i = 0, size = this.optionList.getRowCount(); i < size; i ++){
+                var optionMap = this.optionList.getRow(i);
+                var option = document.createElement('option');
+                option.value = optionMap.get(this.optionValue);
+                option.appendChild(document.createTextNode(optionMap.get(this.optionText)));
+                this.select.appendChild(option);
+            }
+
+            // updates value
+            this.update(this.map, null);
         }
         getValue():any {
             var value = this.select.value;

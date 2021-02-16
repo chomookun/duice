@@ -3,3 +3,5 @@
 *.pid
 *.swp
 /node_modules/
+.project
+
