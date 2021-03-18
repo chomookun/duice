@@ -125,7 +125,7 @@ namespace duice {
         }
 
         // Adds components
-        ComponentDefinitionRegistry.add(new ComponentDefinition('ul[is="duice-widget-pagination"]', duice.widget.PaginationFactory));
+        componentDefinitionRegistry.add(new ComponentDefinition('ul[is="duice-widget-pagination"]', duice.widget.PaginationFactory));
     }
 
 }

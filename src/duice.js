@@ -10,17 +10,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var duice;
 (function (duice) {
-    duice.Configuration = {
-        version: '0.9',
-        cssEnable: true
-    };
+    duice.ALIAS = 'duice';
+    duice.ENABLE_CSS = false;
     function addClass(element, className) {
-        if (duice.Configuration.cssEnable) {
+        if (duice.ENABLE_CSS) {
             element.classList.add(className);
         }
     }
     duice.addClass = addClass;
-    duice.ComponentDefinitionRegistry = {
+    duice.componentDefinitionRegistry = {
         componentDefinitions: new Array(),
         add(componentDefinition) {
             this.componentDefinitions.push(componentDefinition);
@@ -45,7 +43,7 @@ var duice;
     function initializeComponent(container, $context) {
         [ListComponentFactory, MapComponentFactory]
             .forEach(function (factoryType) {
-            duice.ComponentDefinitionRegistry.getComponentDefinitions().forEach(function (componentDefinition) {
+            duice.componentDefinitionRegistry.getComponentDefinitions().forEach(function (componentDefinition) {
                 var elements = container.querySelectorAll(componentDefinition.getSelector() + '[data-duice-bind]:not([data-duice-id])');
                 for (var i = 0, size = elements.length; i < size; i++) {
                     var element = elements[i];
@@ -3148,15 +3146,15 @@ var duice;
         }
     }
     duice.Ul = Ul;
-    duice.ComponentDefinitionRegistry.add(new ComponentDefinition('table[is="duice-table"]', duice.TableFactory));
-    duice.ComponentDefinitionRegistry.add(new ComponentDefinition('ul[is="duice-ul"]', duice.UlFactory));
-    duice.ComponentDefinitionRegistry.add(new ComponentDefinition('input[is="duice-input"]', duice.InputFactory));
-    duice.ComponentDefinitionRegistry.add(new ComponentDefinition('select[is="duice-select"]', duice.SelectFactory));
-    duice.ComponentDefinitionRegistry.add(new ComponentDefinition('textarea[is="duice-textarea"]', duice.TextareaFactory));
-    duice.ComponentDefinitionRegistry.add(new ComponentDefinition('img[is="duice-img"]', duice.ImgFactory));
-    duice.ComponentDefinitionRegistry.add(new ComponentDefinition('span[is="duice-span"]', duice.SpanFactory));
-    duice.ComponentDefinitionRegistry.add(new ComponentDefinition('div[is="duice-div"]', duice.DivFactory));
-    duice.ComponentDefinitionRegistry.add(new ComponentDefinition('*[is="duice-scriptlet"]', duice.ScriptletFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition('table[is="duice-table"]', duice.TableFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition('ul[is="duice-ul"]', duice.UlFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition('input[is="duice-input"]', duice.InputFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition('select[is="duice-select"]', duice.SelectFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition('textarea[is="duice-textarea"]', duice.TextareaFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition('img[is="duice-img"]', duice.ImgFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition('span[is="duice-span"]', duice.SpanFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition('div[is="duice-div"]', duice.DivFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition('*[is="duice-scriptlet"]', duice.ScriptletFactory));
 })(duice || (duice = {}));
 document.addEventListener("DOMContentLoaded", function (event) {
     duice.initializeComponent(document, {});

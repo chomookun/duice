@@ -48,6 +48,6 @@ var duice;
             }
         }
         plugin.Ckeditor = Ckeditor;
-        duice.ComponentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-ckeditor"]', duice.plugin.CkeditorFactory));
+        duice.componentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-ckeditor"]', duice.plugin.CkeditorFactory));
     })(plugin = duice.plugin || (duice.plugin = {}));
 })(duice || (duice = {}));

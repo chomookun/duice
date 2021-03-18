@@ -43,7 +43,7 @@ namespace duice {
         }
 
         // Adds component definition
-        duice.ComponentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-marked"]', duice.plugin.MarkedFactory));
+        componentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-marked"]', duice.plugin.MarkedFactory));
 
     }
 

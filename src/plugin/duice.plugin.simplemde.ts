@@ -123,7 +123,7 @@ namespace duice {
         }
 
         // Adds component definition
-        duice.ComponentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-simplemde"]', duice.plugin.SimplemdeFactory));
+        componentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-simplemde"]', duice.plugin.SimplemdeFactory));
 
     }
 

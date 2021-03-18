@@ -102,6 +102,6 @@ var duice;
             }
         }
         widget.Pagination = Pagination;
-        duice.ComponentDefinitionRegistry.add(new duice.ComponentDefinition('ul[is="duice-widget-pagination"]', duice.widget.PaginationFactory));
+        duice.componentDefinitionRegistry.add(new duice.ComponentDefinition('ul[is="duice-widget-pagination"]', duice.widget.PaginationFactory));
     })(widget = duice.widget || (duice.widget = {}));
 })(duice || (duice = {}));

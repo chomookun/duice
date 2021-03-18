@@ -91,6 +91,6 @@ var duice;
             }
         }
         plugin.Simplemde = Simplemde;
-        duice.ComponentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-simplemde"]', duice.plugin.SimplemdeFactory));
+        duice.componentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-simplemde"]', duice.plugin.SimplemdeFactory));
     })(plugin = duice.plugin || (duice.plugin = {}));
 })(duice || (duice = {}));

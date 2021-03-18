@@ -30,6 +30,6 @@ var duice;
             }
         }
         plugin.Marked = Marked;
-        duice.ComponentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-marked"]', duice.plugin.MarkedFactory));
+        duice.componentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-marked"]', duice.plugin.MarkedFactory));
     })(plugin = duice.plugin || (duice.plugin = {}));
 })(duice || (duice = {}));

@@ -12,19 +12,15 @@
  */
 namespace duice {
 
-	/**
-	 * Configuration
-	 */
-    export var Configuration = {
-         version:'0.9'
-        ,cssEnable: true
-    }
+    export var ALIAS = 'duice';
+    
+    export var ENABLE_CSS = false;
 
     /**
      * Adds class
      */
     export function addClass(element:HTMLElement, className:string):void {
-		if(Configuration.cssEnable) {
+		if(ENABLE_CSS) {
             element.classList.add(className);
         }
 	}
@@ -32,7 +28,7 @@ namespace duice {
     /**
      * Component definition registry
      */
-    export var ComponentDefinitionRegistry = {
+    export var componentDefinitionRegistry = {
         componentDefinitions: new Array(),
         add(componentDefinition:ComponentDefinition) {
             this.componentDefinitions.push(componentDefinition);
@@ -68,7 +64,7 @@ namespace duice {
     export function initializeComponent(container:any, $context:any) {
         [ListComponentFactory, MapComponentFactory]
         .forEach(function(factoryType){
-            ComponentDefinitionRegistry.getComponentDefinitions().forEach(function(componentDefinition:ComponentDefinition){
+            componentDefinitionRegistry.getComponentDefinitions().forEach(function(componentDefinition:ComponentDefinition){
                 var elements = container.querySelectorAll(componentDefinition.getSelector()+'[data-duice-bind]:not([data-duice-id])');
                 for(var i = 0, size = elements.length; i < size; i ++ ){
                     var element = elements[i];
@@ -4558,15 +4554,15 @@ namespace duice {
     }
 
     // Adds components
-    ComponentDefinitionRegistry.add(new ComponentDefinition('table[is="duice-table"]', duice.TableFactory));
-    ComponentDefinitionRegistry.add(new ComponentDefinition('ul[is="duice-ul"]', duice.UlFactory));
-    ComponentDefinitionRegistry.add(new ComponentDefinition('input[is="duice-input"]', duice.InputFactory));
-    ComponentDefinitionRegistry.add(new ComponentDefinition('select[is="duice-select"]', duice.SelectFactory));
-    ComponentDefinitionRegistry.add(new ComponentDefinition('textarea[is="duice-textarea"]', duice.TextareaFactory));
-    ComponentDefinitionRegistry.add(new ComponentDefinition('img[is="duice-img"]', duice.ImgFactory));
-    ComponentDefinitionRegistry.add(new ComponentDefinition('span[is="duice-span"]', duice.SpanFactory));
-    ComponentDefinitionRegistry.add(new ComponentDefinition('div[is="duice-div"]', duice.DivFactory));
-    ComponentDefinitionRegistry.add(new ComponentDefinition('*[is="duice-scriptlet"]', duice.ScriptletFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition('table[is="duice-table"]', duice.TableFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition('ul[is="duice-ul"]', duice.UlFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition('input[is="duice-input"]', duice.InputFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition('select[is="duice-select"]', duice.SelectFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition('textarea[is="duice-textarea"]', duice.TextareaFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition('img[is="duice-img"]', duice.ImgFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition('span[is="duice-span"]', duice.SpanFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition('div[is="duice-div"]', duice.DivFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition('*[is="duice-scriptlet"]', duice.ScriptletFactory));
 
 }
 
