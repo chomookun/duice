@@ -1636,9 +1636,6 @@ var duice;
                         input.setMask(element.dataset.duiceMask);
                     }
                     break;
-                case 'cron':
-                    input = new InputCron(element);
-                    break;
                 default:
                     input = new InputGeneric(element);
             }
@@ -2169,170 +2166,6 @@ var duice;
         }
     }
     duice.InputDate = InputDate;
-    class InputCron extends Input {
-        constructor(input) {
-            super(input);
-            this.readonly = false;
-            addClass(this.input, 'duice-input-cron');
-            this.input.removeAttribute('type');
-            var _this = this;
-            this.input.addEventListener('click', function (event) {
-                if (_this.readonly !== true) {
-                    _this.openPicker();
-                }
-            }, true);
-        }
-        update(map, obj) {
-            var value = map.get(this.getName());
-            value = defaultIfEmpty(value, '');
-            this.input.value = value;
-            this.setDisable(map.isDisable(this.getName()));
-            this.setReadonly(map.isReadonly(this.getName()));
-        }
-        getValue() {
-            var value = this.input.value;
-            value = defaultIfEmpty(value, null);
-            return value;
-        }
-        setReadonly(readonly) {
-            this.readonly = readonly;
-            super.setReadonly(readonly);
-        }
-        openPicker() {
-            if (this.pickerDiv) {
-                return;
-            }
-            var _this = this;
-            this.pickerDiv = document.createElement('div');
-            this.pickerDiv.classList.add('duice-input-cron__pickerDiv');
-            var cronExpression = this.decodeCronExpression(this.input.value);
-            this.clickListener = function (event) {
-                if (!_this.input.contains(event.target) && !_this.pickerDiv.contains(event.target)) {
-                    _this.closePicker();
-                }
-            };
-            window.addEventListener('click', this.clickListener);
-            var headerDiv = document.createElement('div');
-            headerDiv.classList.add('duice-input-cron__pickerDiv-headerDiv');
-            this.pickerDiv.appendChild(headerDiv);
-            var titleSpan = document.createElement('span');
-            titleSpan.classList.add('duice-input-cron__pickerDiv-headerDiv-titleSpan');
-            headerDiv.appendChild(titleSpan);
-            var closeButton = document.createElement('button');
-            closeButton.classList.add('duice-input-cron__pickerDiv-headerDiv-closeButton');
-            headerDiv.appendChild(closeButton);
-            closeButton.addEventListener('click', function (event) {
-                _this.closePicker();
-            });
-            var bodyDiv = document.createElement('div');
-            bodyDiv.classList.add('duice-input-cron__pickerDiv-bodyDiv');
-            this.pickerDiv.appendChild(bodyDiv);
-            var minuteOptions = new Array();
-            minuteOptions.push({ value: '*', text: 'Every' });
-            for (var i = 0; i <= 59; i++) {
-                minuteOptions.push({ value: String(i), text: String(i) });
-            }
-            var minuteSelectorPart = this.createSelectorPart('Minute | ', minuteOptions, cronExpression.minute);
-            bodyDiv.appendChild(minuteSelectorPart);
-            var hourOptions = new Array();
-            hourOptions.push({ value: '*', text: 'Every' });
-            for (var i = 0; i <= 23; i++) {
-                hourOptions.push({ value: String(i), text: String(i) });
-            }
-            var hourSelectorPart = this.createSelectorPart('Hour | ', hourOptions, cronExpression.hour);
-            bodyDiv.appendChild(hourSelectorPart);
-            var dayOptions = new Array();
-            dayOptions.push({ value: '*', text: 'Every' });
-            dayOptions.push({ value: 'L', text: 'Last Day' });
-            for (var i = 1; i <= 31; i++) {
-                dayOptions.push({ value: String(i), text: String(i) });
-            }
-            var daySelectorPart = this.createSelectorPart('Day | ', dayOptions, cronExpression.day);
-            bodyDiv.appendChild(daySelectorPart);
-            var monthOptions = new Array();
-            monthOptions.push({ value: '*', text: 'Every' });
-            for (var i = 1; i <= 12; i++) {
-                monthOptions.push({ value: String(i), text: String(i) });
-            }
-            var monthSelectorPart = this.createSelectorPart('Month | ', monthOptions, cronExpression.month);
-            bodyDiv.appendChild(monthSelectorPart);
-            var weekOptions = new Array();
-            weekOptions.push({ value: '*', text: 'Every' });
-            weekOptions.push({ value: '1-5', text: 'Weekday' });
-            weekOptions.push({ value: '0', text: 'SUN' });
-            weekOptions.push({ value: '1', text: 'MON' });
-            weekOptions.push({ value: '2', text: 'TUE' });
-            weekOptions.push({ value: '3', text: 'WED' });
-            weekOptions.push({ value: '4', text: 'THU' });
-            weekOptions.push({ value: '5', text: 'FRI' });
-            weekOptions.push({ value: '6', text: 'SAT' });
-            var weekSelectorPart = this.createSelectorPart('Week', weekOptions, cronExpression.week);
-            bodyDiv.appendChild(weekSelectorPart);
-            var footerDiv = document.createElement('div');
-            footerDiv.classList.add('duice-input-cron__pickerDiv-footerDiv');
-            this.pickerDiv.appendChild(footerDiv);
-            var confirmButton = document.createElement('button');
-            confirmButton.classList.add('duice-input-cron__pickerDiv-footerDiv-confirmButton');
-            footerDiv.appendChild(confirmButton);
-            confirmButton.addEventListener('click', function (event) {
-                var cronExpression = {
-                    minute: minuteSelectorPart.querySelector('select').value,
-                    hour: hourSelectorPart.querySelector('select').value,
-                    day: daySelectorPart.querySelector('select').value,
-                    month: monthSelectorPart.querySelector('select').value,
-                    week: weekSelectorPart.querySelector('select').value
-                };
-                _this.input.value = _this.encodeCronExpression(cronExpression);
-                _this.setChanged();
-                _this.notifyObservers(this);
-                _this.closePicker();
-            });
-            this.input.parentNode.insertBefore(this.pickerDiv, this.input.nextSibling);
-            this.pickerDiv.style.position = 'absolute';
-            this.pickerDiv.style.zIndex = String(getCurrentMaxZIndex() + 1);
-            this.pickerDiv.style.left = getElementPosition(this.input).left + 'px';
-        }
-        decodeCronExpression(value) {
-            var values = value.split(/[\s]{1}/);
-            return {
-                minute: defaultIfEmpty(values[0], '0'),
-                hour: defaultIfEmpty(values[1], '0'),
-                day: defaultIfEmpty(values[2], '*'),
-                month: defaultIfEmpty(values[3], '*'),
-                week: defaultIfEmpty(values[4], '*')
-            };
-        }
-        encodeCronExpression(cronExpression) {
-            return defaultIfEmpty(cronExpression.minute, ' ')
-                + ' ' + defaultIfEmpty(cronExpression.hour, ' ')
-                + ' ' + defaultIfEmpty(cronExpression.day, ' ')
-                + ' ' + defaultIfEmpty(cronExpression.month, ' ')
-                + ' ' + defaultIfEmpty(cronExpression.week, ' ');
-        }
-        createSelectorPart(title, options, value) {
-            let selectorPart = document.createElement('span');
-            selectorPart.classList.add('duice-input-cron__pickerDiv-bodyDiv-selectorPart');
-            var select = document.createElement('select');
-            options.forEach(function (item) {
-                var option = document.createElement('option');
-                option.value = item.value;
-                option.text = item.text;
-                select.appendChild(option);
-            });
-            select.value = value;
-            selectorPart.appendChild(select);
-            var label = document.createElement('label');
-            label.appendChild(document.createTextNode(title));
-            selectorPart.appendChild(label);
-            return selectorPart;
-        }
-        closePicker() {
-            this.pickerDiv.parentNode.removeChild(this.pickerDiv);
-            this.pickerDiv = null;
-            window.removeEventListener('click', this.clickListener);
-        }
-    }
-    duice.InputCron = InputCron;
     class SelectFactory extends MapComponentFactory {
         getComponent(element) {
             var select = new Select(element);
@@ -3148,7 +2981,7 @@ var duice;
     duice.Ul = Ul;
     duice.componentDefinitionRegistry.add(new ComponentDefinition('table[is="duice-table"]', duice.TableFactory));
     duice.componentDefinitionRegistry.add(new ComponentDefinition('ul[is="duice-ul"]', duice.UlFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition('input[is="duice-input"]', duice.InputFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`input[is="${duice.ALIAS}-input"]`, duice.InputFactory));
     duice.componentDefinitionRegistry.add(new ComponentDefinition('select[is="duice-select"]', duice.SelectFactory));
     duice.componentDefinitionRegistry.add(new ComponentDefinition('textarea[is="duice-textarea"]', duice.TextareaFactory));
     duice.componentDefinitionRegistry.add(new ComponentDefinition('img[is="duice-img"]', duice.ImgFactory));
