@@ -14,7 +14,7 @@ namespace duice {
 
     export var ALIAS = 'duice';
     
-    export var ENABLE_CSS = false;
+    export var ENABLE_CSS = true;
 
     /**
      * Adds class
@@ -65,7 +65,9 @@ namespace duice {
         [ListComponentFactory, MapComponentFactory]
         .forEach(function(factoryType){
             componentDefinitionRegistry.getComponentDefinitions().forEach(function(componentDefinition:ComponentDefinition){
-                var elements = container.querySelectorAll(componentDefinition.getSelector()+'[data-duice-bind]:not([data-duice-id])');
+                console.log(componentDefinition.getSelector()+`[data-${ALIAS}-bind]`);
+                var elements = container.querySelectorAll(componentDefinition.getSelector()+`[data-${ALIAS}-bind]:not([data-${ALIAS}-id])`);
+                console.log(elements);
                 for(var i = 0, size = elements.length; i < size; i ++ ){
                     var element = elements[i];
                     if(componentDefinition.getFactoryClass().prototype instanceof factoryType){
@@ -2404,8 +2406,8 @@ namespace duice {
             }else{
                 context = {};
             }
-            if(element.dataset.duiceBind) {
-                var bind = element.dataset.duiceBind.split(',');
+            if(element.dataset[`${ALIAS}Bind`]) {
+                var bind = element.dataset[`${ALIAS}Bind`].split(',');
                 var _this = this;
                 bind.forEach(function(name){
                     context[name] = _this.getContextProperty(name); 
@@ -2478,7 +2480,7 @@ namespace duice {
             }
             
             // binds
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             span.bind(this.getContextProperty(bind[0]), bind[1]);
             return span;
         }
@@ -2525,7 +2527,7 @@ namespace duice {
             var div = new Div(element);
 
             // binds
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             div.bind(this.getContextProperty(bind[0]), bind[1]);
             return div;
         }
@@ -2591,7 +2593,7 @@ namespace duice {
             }
             
             // bind
-            let bind = element.dataset.duiceBind.split(',');
+            let bind = element.dataset[`${ALIAS}Bind`].split(',');
             input.bind(this.getContextProperty(bind[0]), bind[1]);
             return input;
         }
@@ -3228,7 +3230,7 @@ namespace duice {
                 var optionText = option[2];
                 select.setOption(optionList, optionValue, optionText);
             }
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             select.bind(this.getContextProperty(bind[0]), bind[1]);
             return select;
         }
@@ -3340,7 +3342,7 @@ namespace duice {
     export class TextareaFactory extends MapComponentFactory {
         getComponent(element:HTMLTextAreaElement):Textarea {
             var textarea = new Textarea(element);
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             textarea.bind(this.getContextProperty(bind[0]), bind[1]);
             return textarea;
         }
@@ -3392,7 +3394,7 @@ namespace duice {
     export class ImgFactory extends MapComponentFactory {
         getComponent(element:HTMLImageElement):Img {
             var img = new Img(element);
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             img.bind(this.getContextProperty(bind[0]), bind[1]);
             if(element.dataset.duiceSize){
                 var size = element.dataset.duiceSize.split(',');
@@ -3671,7 +3673,7 @@ namespace duice {
             var table = new Table(element);
             table.setSelectable(element.dataset.duiceSelectable === 'true');
             table.setEditable(element.dataset.duiceEditable === 'true');
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             table.bind(this.getContextProperty(bind[0]), bind[1]);
             return table;
         }
@@ -3911,7 +3913,7 @@ namespace duice {
                 ul.setHierarchy(hirearchy[0], hirearchy[1]);
             }
             ul.setFoldable(element.dataset.duiceFoldable === 'true');
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             ul.bind(this.getContextProperty(bind[0]), bind[1]);
             return ul;
         }
@@ -4343,16 +4345,16 @@ namespace duice {
     }
 
     // Adds components
-    componentDefinitionRegistry.add(new ComponentDefinition('table[is="duice-table"]', duice.TableFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition('ul[is="duice-ul"]', duice.UlFactory));
+    console.error(`alias is ${ALIAS}`);
+    componentDefinitionRegistry.add(new ComponentDefinition(`table[is="${ALIAS}-table"]`, duice.TableFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition(`ul[is="${ALIAS}-ul"]`, duice.UlFactory));
     componentDefinitionRegistry.add(new ComponentDefinition(`input[is="${ALIAS}-input"]`, duice.InputFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition('select[is="duice-select"]', duice.SelectFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition('textarea[is="duice-textarea"]', duice.TextareaFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition('img[is="duice-img"]', duice.ImgFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition('span[is="duice-span"]', duice.SpanFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition('div[is="duice-div"]', duice.DivFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition('*[is="duice-scriptlet"]', duice.ScriptletFactory));
-
+    componentDefinitionRegistry.add(new ComponentDefinition(`select[is="${ALIAS}-select"]`, duice.SelectFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition(`textarea[is="${ALIAS}-textarea"]`, duice.TextareaFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition(`img[is="${ALIAS}-img"]`, duice.ImgFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition(`span[is="${ALIAS}-span"]`, duice.SpanFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition(`div[is="${ALIAS}-div"]`, duice.DivFactory));
+    componentDefinitionRegistry.add(new ComponentDefinition(`*[is="${ALIAS}-scriptlet"]`, duice.ScriptletFactory));
 }
 
 /**

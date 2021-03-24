@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var duice;
 (function (duice) {
     duice.ALIAS = 'duice';
-    duice.ENABLE_CSS = false;
+    duice.ENABLE_CSS = true;
     function addClass(element, className) {
         if (duice.ENABLE_CSS) {
             element.classList.add(className);
@@ -44,7 +44,9 @@ var duice;
         [ListComponentFactory, MapComponentFactory]
             .forEach(function (factoryType) {
             duice.componentDefinitionRegistry.getComponentDefinitions().forEach(function (componentDefinition) {
-                var elements = container.querySelectorAll(componentDefinition.getSelector() + '[data-duice-bind]:not([data-duice-id])');
+                console.log(componentDefinition.getSelector() + `[data-${duice.ALIAS}-bind]`);
+                var elements = container.querySelectorAll(componentDefinition.getSelector() + `[data-${duice.ALIAS}-bind]:not([data-${duice.ALIAS}-id])`);
+                console.log(elements);
                 for (var i = 0, size = elements.length; i < size; i++) {
                     var element = elements[i];
                     if (componentDefinition.getFactoryClass().prototype instanceof factoryType) {
@@ -1483,8 +1485,8 @@ var duice;
             else {
                 context = {};
             }
-            if (element.dataset.duiceBind) {
-                var bind = element.dataset.duiceBind.split(',');
+            if (element.dataset[`${duice.ALIAS}Bind`]) {
+                var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
                 var _this = this;
                 bind.forEach(function (name) {
                     context[name] = _this.getContextProperty(name);
@@ -1545,7 +1547,7 @@ var duice;
                 }
                 span.setMask(mask);
             }
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
             span.bind(this.getContextProperty(bind[0]), bind[1]);
             return span;
         }
@@ -1582,7 +1584,7 @@ var duice;
     class DivFactory extends MapComponentFactory {
         getComponent(element) {
             var div = new Div(element);
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
             div.bind(this.getContextProperty(bind[0]), bind[1]);
             return div;
         }
@@ -1639,7 +1641,7 @@ var duice;
                 default:
                     input = new InputGeneric(element);
             }
-            let bind = element.dataset.duiceBind.split(',');
+            let bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
             input.bind(this.getContextProperty(bind[0]), bind[1]);
             return input;
         }
@@ -2176,7 +2178,7 @@ var duice;
                 var optionText = option[2];
                 select.setOption(optionList, optionValue, optionText);
             }
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
             select.bind(this.getContextProperty(bind[0]), bind[1]);
             return select;
         }
@@ -2264,7 +2266,7 @@ var duice;
     class TextareaFactory extends MapComponentFactory {
         getComponent(element) {
             var textarea = new Textarea(element);
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
             textarea.bind(this.getContextProperty(bind[0]), bind[1]);
             return textarea;
         }
@@ -2311,7 +2313,7 @@ var duice;
     class ImgFactory extends MapComponentFactory {
         getComponent(element) {
             var img = new Img(element);
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
             img.bind(this.getContextProperty(bind[0]), bind[1]);
             if (element.dataset.duiceSize) {
                 var size = element.dataset.duiceSize.split(',');
@@ -2502,7 +2504,7 @@ var duice;
             var table = new Table(element);
             table.setSelectable(element.dataset.duiceSelectable === 'true');
             table.setEditable(element.dataset.duiceEditable === 'true');
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
             table.bind(this.getContextProperty(bind[0]), bind[1]);
             return table;
         }
@@ -2676,7 +2678,7 @@ var duice;
                 ul.setHierarchy(hirearchy[0], hirearchy[1]);
             }
             ul.setFoldable(element.dataset.duiceFoldable === 'true');
-            var bind = element.dataset.duiceBind.split(',');
+            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
             ul.bind(this.getContextProperty(bind[0]), bind[1]);
             return ul;
         }
@@ -2979,15 +2981,16 @@ var duice;
         }
     }
     duice.Ul = Ul;
-    duice.componentDefinitionRegistry.add(new ComponentDefinition('table[is="duice-table"]', duice.TableFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition('ul[is="duice-ul"]', duice.UlFactory));
+    console.error(`alias is ${duice.ALIAS}`);
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`table[is="${duice.ALIAS}-table"]`, duice.TableFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`ul[is="${duice.ALIAS}-ul"]`, duice.UlFactory));
     duice.componentDefinitionRegistry.add(new ComponentDefinition(`input[is="${duice.ALIAS}-input"]`, duice.InputFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition('select[is="duice-select"]', duice.SelectFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition('textarea[is="duice-textarea"]', duice.TextareaFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition('img[is="duice-img"]', duice.ImgFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition('span[is="duice-span"]', duice.SpanFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition('div[is="duice-div"]', duice.DivFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition('*[is="duice-scriptlet"]', duice.ScriptletFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`select[is="${duice.ALIAS}-select"]`, duice.SelectFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`textarea[is="${duice.ALIAS}-textarea"]`, duice.TextareaFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`img[is="${duice.ALIAS}-img"]`, duice.ImgFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`span[is="${duice.ALIAS}-span"]`, duice.SpanFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`div[is="${duice.ALIAS}-div"]`, duice.DivFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`*[is="${duice.ALIAS}-scriptlet"]`, duice.ScriptletFactory));
 })(duice || (duice = {}));
 document.addEventListener("DOMContentLoaded", function (event) {
     duice.initializeComponent(document, {});

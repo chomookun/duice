@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=2048,initial-scale=1">
-<title>duice</title>
+<title>kis</title>
 <link rel="stylesheet" type="text/css" href="polyfill/normalize.css">
 <script src="polyfill/dataset.js"></script>
 <script src="polyfill/classList.js"></script>
@@ -12,10 +12,13 @@
 <script src="duice.js"></script>
 <link rel="stylesheet" type="text/css" href="duice.css">
 <script>
+duice.ALIAS = 'kis';
+var kis = duice;
+
 /**
- * user(duice.Map)
+ * user(kis.Map)
  */
-const user = new duice.Map();
+const user = new kis.Map();
 user.fromJson({
 	id: 'rabbit',
 	parentId: null,
@@ -48,7 +51,7 @@ user.fromJson({
 user.onBeforeChange(function(name, value){
 	console.log('Map.onBeforeChange', name, value);
 	return new Promise(function(resolve, reject){
-		new duice.Confirm('Do you want to change ['+name+'] is ['+ value +']')
+		new kis.Confirm('Do you want to change ['+name+'] is ['+ value +']')
 		.onAfterConfirm(function(e){
 			resolve(true);
 		})
@@ -60,9 +63,9 @@ user.onBeforeChange(function(name, value){
 });
 
 /**
- * groups(duice.List) for select options
+ * groups(kis.List) for select options
  */
-const groups = new duice.List();
+const groups = new kis.List();
 groups.fromJson([
 	{id:"fruit", name:"Fruit"},
 	{id:"animal", name:"Animal"},
@@ -70,9 +73,9 @@ groups.fromJson([
 ]);
 
 /**
- * users(duice.List)
+ * users(kis.List)
  */
-const users = new duice.List();
+const users = new kis.List();
 users.fromJson([
     {
         id: 'rabbit',
@@ -323,7 +326,7 @@ users.onAfterSelectRow(function(selectedRow){
 users.onBeforeMoveRow(function(sourceRow, targetRow){
 	console.log('onBeforeMoveRow', sourceRow.toJson(), (targetRow?targetRow.toJson():targetRow));
 	return new Promise(function(resolve, reject){
-		new duice.Confirm('Do you want to move?')
+		new kis.Confirm('Do you want to move?')
 		.onAfterConfirm(function(){
 			resolve(true);
 		})
@@ -343,7 +346,7 @@ users.onAfterMoveRow(function(sourceRow, targetRow){
 users.onBeforeChangeRow(function(name, value){
 	console.log('name', name, 'value', value);
 	return new Promise(function(resolve, reject){
-		new duice.Confirm('Do you want to change ['+name+'] is ['+ value +']')
+		new kis.Confirm('Do you want to change ['+name+'] is ['+ value +']')
 		.onAfterConfirm(function(e){
 			resolve(true);
 		})
@@ -474,19 +477,19 @@ button {
 	</div>
 	<hr/>
 	<!-- ================================================================ -->
-	<!-- duice.ui.MapUIElement   										  -->
+	<!-- kis.ui.MapUIElement   										  -->
 	<!-- ================================================================ -->
 	<section class="chapter">
 		<div class="chapter__headerDiv">
-			<h2>Binding between duice.Map and MapUIElement</h2>
+			<h2>Binding between kis.Map and MapUIElement</h2>
 		</div>
 		<div class="chapter__bodyDiv">
 			<div class="chapter__bodyDiv-dataDiv">
-				<h3>duice.Map <small>(var user)</small></h3>
+				<h3>kis.Map <small>(var user)</small></h3>
 				<textarea id="userTextarea" class="code" style="height:600px;"></textarea>
 			</div>
 			<div class="chapter__bodyDiv-uiDiv">
-				<h3>duice.ui.MapUIElement <small>(binding to user)</small></h3>
+				<h3>kis.ui.MapUIElement <small>(binding to user)</small></h3>
 				<div>
 					<button class="code" onclick="user.setFocus('name','message');">setFocus('name','message')</button>
 					|
@@ -521,189 +524,189 @@ button {
 					</thead>
 					<tbody>
 						<!-- ================================================================ -->
-						<!-- duice-span				   										  -->
+						<!-- kis-span				   										  -->
 						<!-- ================================================================ -->
 						<tr>
-							<th rowspan="4">duice-span</th>
+							<th rowspan="4">kis-span</th>
 							<td>id</td>
-							<td><span is="duice-span" data-duice-bind="user,id" data-duice-if="return false;"></span></td>
-							<td class="code">&lt;span is="duice-span" data-duice-bind="user,id" ...</td>
+							<td><span is="kis-span" data-kis-bind="user,id" data-kis-if="return false;"></span></td>
+							<td class="code">&lt;span is="kis-span" data-kis-bind="user,id" ...</td>
 						</tr>
 						<tr>
 							<td>socialNo</td>
-							<td><span is="duice-span" data-duice-bind="user,socialNo" data-duice-mask="string,######-#######"></span></td>
-							<td class="code">&lt;span is="duice-span" data-duice-bind="user,socialNo" data-duice-mask="string,######-#######" ...</td>
+							<td><span is="kis-span" data-kis-bind="user,socialNo" data-kis-mask="string,######-#######"></span></td>
+							<td class="code">&lt;span is="kis-span" data-kis-bind="user,socialNo" data-kis-mask="string,######-#######" ...</td>
 						</tr>
 						<tr>
 							<td>balance</td>
-							<td><span is="duice-span" data-duice-bind="user,balance" data-duice-mask="number,2"></span></td>
-							<td class="code">&lt;span is="duice-span" data-duice-bind="user,balance" date-duice-format="number,2" ...</td>
+							<td><span is="kis-span" data-kis-bind="user,balance" data-kis-mask="number,2"></span></td>
+							<td class="code">&lt;span is="kis-span" data-kis-bind="user,balance" date-kis-format="number,2" ...</td>
 						</tr>
 						<tr>
 							<td>hireDate</td>
-							<td align="center"><span is="duice-span" data-duice-bind="user,hireDate" data-duice-mask="date,yyyy.MM.dd HH:mm:ss"></span></td>
-							<td class="code">&lt;span is="duice-span" data-duice-bind="user,hireDate" data-duice-mask="date,yyyy.MM.dd HH:mm:ss" ...</td>
+							<td align="center"><span is="kis-span" data-kis-bind="user,hireDate" data-kis-mask="date,yyyy.MM.dd HH:mm:ss"></span></td>
+							<td class="code">&lt;span is="kis-span" data-kis-bind="user,hireDate" data-kis-mask="date,yyyy.MM.dd HH:mm:ss" ...</td>
 						</tr>
 						<!-- ================================================================ -->
-						<!-- duice-input[type=text]		   									  -->
+						<!-- kis-input[type=text]		   									  -->
 						<!-- ================================================================ -->
 						<tr>
-							<th rowspan="2">duice-input[type=text]</th>
+							<th rowspan="2">kis-input[type=text]</th>
 							<td>name</td>
-							<td><input is="duice-input" type="text" data-duice-bind="user,name" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="text" ...</td>
+							<td><input is="kis-input" type="text" data-kis-bind="user,name" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="text" ...</td>
 						</tr>
 						<tr>
 							<td>socialNo</td>
-							<td><input is="duice-input" type="text" data-duice-bind="user,socialNo" data-duice-mask="######-#######" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="text" data-duice-bind="user,socialNo" data-duice-mask="######-#######" ...</td>
+							<td><input is="kis-input" type="text" data-kis-bind="user,socialNo" data-kis-mask="######-#######" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="text" data-kis-bind="user,socialNo" data-kis-mask="######-#######" ...</td>
 						</tr>
 						<!-- ================================================================ -->
-						<!-- duice-input[type=number]  										  -->
+						<!-- kis-input[type=number]  										  -->
 						<!-- ================================================================ -->
 						<tr>
-							<th rowspan="2">duice-input[type=number]</th>
+							<th rowspan="2">kis-input[type=number]</th>
 							<td>balance</td>
-							<td><input is="duice-input" type="number" data-duice-bind="user,balance" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="number" data-duice-bind="user,balance"</td>
+							<td><input is="kis-input" type="number" data-kis-bind="user,balance" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="number" data-kis-bind="user,balance"</td>
 						</tr>
 						<tr>
 							<td>balance</td>
-							<td><input is="duice-input" type="number" data-duice-bind="user,balance" data-duice-mask="2" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="number" data-duice-bind="user,balance" data-duice-mask="2"</td>
+							<td><input is="kis-input" type="number" data-kis-bind="user,balance" data-kis-mask="2" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="number" data-kis-bind="user,balance" data-kis-mask="2"</td>
 						</tr>
 						<!-- ================================================================ -->
-						<!-- duice-input[type=checkbox]		   								  -->
+						<!-- kis-input[type=checkbox]		   								  -->
 						<!-- ================================================================ -->
 						<tr>
-							<th>duice-input[type=checkbox]</th>
+							<th>kis-input[type=checkbox]</th>
 							<td>active</td>
-							<td><input is="duice-input" type="checkbox" data-duice-bind="user,active" class="form-check-input"/></td>
-							<td class="code">&lt;input is="duice-input" type="checkbox" data-duice-bind="user,active" ...</td>
+							<td><input is="kis-input" type="checkbox" data-kis-bind="user,active" class="form-check-input"/></td>
+							<td class="code">&lt;input is="kis-input" type="checkbox" data-kis-bind="user,active" ...</td>
 						</tr>
 						<!-- ================================================================ -->
-						<!-- duice-input[type=radio]		   								  -->
+						<!-- kis-input[type=radio]		   								  -->
 						<!-- ================================================================ -->
 						<tr>
-							<th>duice-input[type=radio]</th>
+							<th>kis-input[type=radio]</th>
 							<td>gender</td>
 							<td>
-								<div><input is="duice-input" type="radio" data-duice-bind="user,gender" value="M" class="form-check-input position-static"/></div>
-								<div><input is="duice-input" type="radio" data-duice-bind="user,gender" value="F" class="form-check-input position-static"/></div>
+								<div><input is="kis-input" type="radio" data-kis-bind="user,gender" value="M" class="form-check-input position-static"/></div>
+								<div><input is="kis-input" type="radio" data-kis-bind="user,gender" value="F" class="form-check-input position-static"/></div>
 							</td>
-							<td class="code">&lt;input is="duice-input" type="radio" data-duice-bind="user,gender" value="M" ...</td>
+							<td class="code">&lt;input is="kis-input" type="radio" data-kis-bind="user,gender" value="M" ...</td>
 						</tr>
 						<!-- ================================================================ -->
-						<!-- duice-input[type=date*]	   									  -->
+						<!-- kis-input[type=date*]	   									  -->
 						<!-- ================================================================ -->
 						<tr>
-							<th rowspan="4">duice-input[type=date]</th>
+							<th rowspan="4">kis-input[type=date]</th>
 							<td>hireDate</td>
-							<td><input is="duice-input" type="datetime-local" data-duice-bind="user,hireDate" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="datetime-local" data-duice-bind="user,hireDate" ...</td>
+							<td><input is="kis-input" type="datetime-local" data-kis-bind="user,hireDate" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="datetime-local" data-kis-bind="user,hireDate" ...</td>
 						</tr>
 						<tr>
 							<td>hireDate</td>
-							<td><input is="duice-input" type="datetime-local" data-duice-bind="user,hireDate" data-duice-mask="yyyy.MM.dd HH:mm:ss" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="datetime" data-duice-bind="user,hireDate" data-duice-mask="yyyy.MM.dd HH:mm:ss" ...</td>
+							<td><input is="kis-input" type="datetime-local" data-kis-bind="user,hireDate" data-kis-mask="yyyy.MM.dd HH:mm:ss" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="datetime" data-kis-bind="user,hireDate" data-kis-mask="yyyy.MM.dd HH:mm:ss" ...</td>
 						</tr>
 						<tr>
 							<td>birthday</td>
-							<td><input is="duice-input" type="date" data-duice-bind="user,birthday" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="date" data-duice-bind="user,birthday" ...</td>
+							<td><input is="kis-input" type="date" data-kis-bind="user,birthday" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="date" data-kis-bind="user,birthday" ...</td>
 						</tr>
 						<tr>
 							<td>birthday</td>
-							<td><input is="duice-input" type="date" data-duice-bind="user,birthday" data-duice-mask="yyyy.MM.dd" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="date" data-duice-bind="user,birthday" data-duice-mask="yyyy.MM.dd" ...</td>
+							<td><input is="kis-input" type="date" data-kis-bind="user,birthday" data-kis-mask="yyyy.MM.dd" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="date" data-kis-bind="user,birthday" data-kis-mask="yyyy.MM.dd" ...</td>
 						</tr>
 						<!-- ================================================================ -->
-						<!-- duice-input[type=*]			   								  -->
+						<!-- kis-input[type=*]			   								  -->
 						<!-- ================================================================ -->
 						<tr>
-							<th>duice-input[type=password]</th>
+							<th>kis-input[type=password]</th>
 							<td>password</td>
-							<td><input is="duice-input" type="password" data-duice-bind="user,password" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="password" data-duice-bind="user,password" ...</td>
+							<td><input is="kis-input" type="password" data-kis-bind="user,password" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="password" data-kis-bind="user,password" ...</td>
 						</tr>
 						<tr>
-							<th>duice-input[type=url]</th>
+							<th>kis-input[type=url]</th>
 							<td>url</td>
-							<td><input is="duice-input" type="url" data-duice-bind="user,url" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="url" data-duice-bind="user,url" ...</td>
+							<td><input is="kis-input" type="url" data-kis-bind="user,url" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="url" data-kis-bind="user,url" ...</td>
 						</tr>
 						<tr>
-							<th>duice-input[type=email]</th>
+							<th>kis-input[type=email]</th>
 							<td>email</td>
-							<td><input is="duice-input" type="email" data-duice-bind="user,email" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="email" data-duice-bind="user,email" ...</td>
+							<td><input is="kis-input" type="email" data-kis-bind="user,email" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="email" data-kis-bind="user,email" ...</td>
 						</tr>
 						<tr>
-							<th>duice-input[type=tel]</th>
+							<th>kis-input[type=tel]</th>
 							<td>tel</td>
-							<td><input is="duice-input" type="tel" data-duice-bind="user,tel" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="tel" data-duice-bind="user,tel" ...</td>
+							<td><input is="kis-input" type="tel" data-kis-bind="user,tel" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="tel" data-kis-bind="user,tel" ...</td>
 						</tr>
 						<tr>
-							<th>duice-input[type=time]</th>
+							<th>kis-input[type=time]</th>
 							<td>time</td>
-							<td><input is="duice-input" type="time" data-duice-bind="user,time" class="form-control"/></td>
-							<td class="code">&lt;input is="duice-input" type="time" data-duice-bind="user,time" ...</td>
+							<td><input is="kis-input" type="time" data-kis-bind="user,time" class="form-control"/></td>
+							<td class="code">&lt;input is="kis-input" type="time" data-kis-bind="user,time" ...</td>
 						</tr>
 						<tr>
-							<th>duice-input[type=range]</th>
+							<th>kis-input[type=range]</th>
 							<td>range</td>
-							<td><input is="duice-input" type="range" data-duice-bind="user,range" min="0" max="100" step="10" class="custom-range"/></td>
-							<td class="code">&lt;input is="duice-input" type="range" data-duice-bind="user,range" min="0" max="100" step="10" ...</td>
+							<td><input is="kis-input" type="range" data-kis-bind="user,range" min="0" max="100" step="10" class="custom-range"/></td>
+							<td class="code">&lt;input is="kis-input" type="range" data-kis-bind="user,range" min="0" max="100" step="10" ...</td>
 						</tr>
 						<tr>
-							<th>duice-input[type=color]</th>
+							<th>kis-input[type=color]</th>
 							<td>color</td>
-							<td><input is="duice-input" type="color" data-duice-bind="user,color"/></td>
-							<td class="code">&lt;input is="duice-input" type="color" data-duice-bind="user,color" ...</td>
+							<td><input is="kis-input" type="color" data-kis-bind="user,color"/></td>
+							<td class="code">&lt;input is="kis-input" type="color" data-kis-bind="user,color" ...</td>
 						</tr>
 						<!-- ================================================================ -->
-						<!-- duice-select					   								  -->
+						<!-- kis-select					   								  -->
 						<!-- ================================================================ -->
 						<tr>
-							<th>duice-select</th>
+							<th>kis-select</th>
 							<td>groupId</td>
 							<td>
-								<select is="duice-select" data-duice-bind="user,groupId" class="form-control">
+								<select is="kis-select" data-kis-bind="user,groupId" class="form-control">
 									<option value> - select - </option>
 									<option value="animal">Animal</option>
 									<option value="fruit">Fruit</option>
 									<option value="human">Human</option>
 								</select>
 							</td>
-							<td class="code">&lt;select is="duice-select" ...</td>
+							<td class="code">&lt;select is="kis-select" ...</td>
 						</tr>
 						<!-- ================================================================ -->
-						<!-- duice-textarea				   								  -->
+						<!-- kis-textarea				   								  -->
 						<!-- ================================================================ -->
 						<tr>
-							<th>duice-textarea</th>
+							<th>kis-textarea</th>
 							<td>profile</td>
-							<td><textarea is="duice-textarea" data-duice-bind="user,profile" class="form-control" id="abc"></textarea></td>
-							<td class="code">&lt;textarea is="duice-textarea" ...</td>
+							<td><textarea is="kis-textarea" data-kis-bind="user,profile" class="form-control" id="abc"></textarea></td>
+							<td class="code">&lt;textarea is="kis-textarea" ...</td>
 						</tr>
 						<!-- ================================================================ -->
-						<!-- duice-div				   										  -->
+						<!-- kis-div				   										  -->
 						<!-- ================================================================ -->
 						<tr>
-							<th>duice-div</th>
+							<th>kis-div</th>
 							<td>profile</td>
-							<td><div is="duice-div" data-duice-bind="user,profile"></div></td>
-							<td class="code">&lt;div is="duice-div" data-duice-bind="user,profile" ...</td>
+							<td><div is="kis-div" data-kis-bind="user,profile"></div></td>
+							<td class="code">&lt;div is="kis-div" data-kis-bind="user,profile" ...</td>
 						</tr>
 						<!-- ================================================================ -->
-						<!-- duice-img						   								  -->
+						<!-- kis-img						   								  -->
 						<!-- ================================================================ -->
 						<tr>
-							<th>duice-img</th>
+							<th>kis-img</th>
 							<td>image</td>
-							<td><img is="duice-img" data-duice-bind="user,image" data-duice-size="85,113"/></td>
-							<td class="code">&lt;img is="duice-img" data-duice-bind="user,image" data-duice-size="100,100" ...</td>
+							<td><img is="kis-img" data-kis-bind="user,image" data-kis-size="85,113"/></td>
+							<td class="code">&lt;img is="kis-img" data-kis-bind="user,image" data-kis-size="100,100" ...</td>
 						</tr>
 					</tbody>
 				</table>
@@ -712,26 +715,26 @@ button {
 	</section>
 	
 	<!-- ================================================================ -->
-	<!-- duice.ListUIElement	   										  -->
+	<!-- kis.ListUIElement	   										  -->
 	<!-- ================================================================ -->
 	<section class="chapter">
 		<div class="chapter__headerDiv">
-			<h2>Binding between duice.List and ListUIElement</h2>
+			<h2>Binding between kis.List and ListUIElement</h2>
 		</div>
 		<div class="chapter__bodyDiv">
 			<div class="chapter__bodyDiv-dataDiv">
-				<h3>duice.List <small>(var users)</small></h3>
+				<h3>kis.List <small>(var users)</small></h3>
 				<textarea id="usersTextarea" class="code" style="height:2400px;"></textarea>
 			</div>
 			<div class="chapter__bodyDiv-uiDiv">
 				<!-- ================================================================ -->
-				<!-- START: duice-table												  -->
+				<!-- START: kis-table												  -->
 				<!-- ================================================================ -->
-				<h3>duice-table
+				<h3>kis-table
 					<small>
 						(binding to users)
 						-
-						<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+						<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 							return $context.users.getRowCount();
 						">
 						</span>
@@ -739,7 +742,7 @@ button {
 					</small>
 				</h3>
 				<div class="code">
-					&lt;table is="duice-table" data-duice-bind="users,user" data-duice-selectable="true" data-duice-editable="true"...
+					&lt;table is="kis-table" data-kis-bind="users,user" data-kis-selectable="true" data-kis-editable="true"...
 				</div>
 				<div>
 					<button class="code" onclick="users.setReadonlyAll(true);">setReadonlyAll(true)</button>
@@ -750,17 +753,17 @@ button {
 					<button class="code" onclick="users.setDisableAll(false);">setDisableAll(false)</button>
 					<button class="code" onclick="users.setDisable('name', true);">setDisable('name',true)</button>
 					<button class="code" onclick="users.setDisable('name', false);">setDisable('name',false)</button>
-					<button class="code" onclick="users.addRow(new duice.Map({}));">addRow(map)</button>
-					<button class="code" onclick="users.insertRow(users.getIndex(), new duice.Map({}));">insertRow(map)</button>
+					<button class="code" onclick="users.addRow(new kis.Map({}));">addRow(map)</button>
+					<button class="code" onclick="users.insertRow(users.getIndex(), new kis.Map({}));">insertRow(map)</button>
 					<button class="code" onclick="users.removeRow(users.getIndex());">removeRow(index)</button>
 					<button class="code" onclick="alert(JSON.stringify(users.toJson()));">toJson()</button>
 					<button class="code" onclick="alert(users.isDirty());">isDirty()</button>
 					<button class="code" onclick="users.reset();">reset()</button>
 				</div>
-				<table is="duice-table" 
-					data-duice-bind="users,user" 
-					data-duice-selectable="true"
-					data-duice-editable="true"
+				<table is="kis-table" 
+					data-kis-bind="users,user" 
+					data-kis-selectable="true"
+					data-kis-editable="true"
 					class="table"
 					style="width:100%;">
 					<thead class="thead-light">
@@ -784,31 +787,31 @@ button {
 					</thead>
 					<tbody>
 						<tr>
-							<td><span is="duice-scriptlet" data-duice-bind="user" data-duice-value="return $context.index + 1;"></span></td>
-							<td><span is="duice-span" data-duice-bind="user,id" class="form-control"></span></td>
-							<td><span is="duice-span" data-duice-bind="user,parentId"></span></td>
-							<td><img is="duice-img" data-duice-bind="user,image" src="//:0" style="height:16px;"/></td>
-							<td><input is="duice-input" type="text" data-duice-bind="user,name" class="form-control"/></td>
-							<td><span is="duice-span" data-duice-bind="user,socialNo"></span></td>
-							<td><input is="duice-input" type="text" data-duice-bind="user,socialNo" class="form-control"/></td>
-							<td><span is="duice-span" data-duice-bind="user,balance" data-duice-mask="number,2"></span></td>
-							<td><input is="duice-input" type="number" data-duice-bind="user,balance" data-duice-mask="2" class="form-control"/></td>
-							<td><span is="duice-span" data-duice-bind="user,hireDate" data-duice-mask="date,yyyy.MM.dd HH:mm:ss"></span></td>
-							<td><input is="duice-input" type="datetime-local" data-duice-bind="user,hireDate" class="form-control"/></td>
-							<td><input is="duice-input" type="date" data-duice-bind="user,birthday" class="form-control"/></td>
-							<td><input is="duice-input" type="checkbox" data-duice-bind="user,active"/></td>
+							<td><span is="kis-scriptlet" data-kis-bind="user" data-kis-value="return $context.index + 1;"></span></td>
+							<td><span is="kis-span" data-kis-bind="user,id" class="form-control"></span></td>
+							<td><span is="kis-span" data-kis-bind="user,parentId"></span></td>
+							<td><img is="kis-img" data-kis-bind="user,image" src="//:0" style="height:16px;"/></td>
+							<td><input is="kis-input" type="text" data-kis-bind="user,name" class="form-control"/></td>
+							<td><span is="kis-span" data-kis-bind="user,socialNo"></span></td>
+							<td><input is="kis-input" type="text" data-kis-bind="user,socialNo" class="form-control"/></td>
+							<td><span is="kis-span" data-kis-bind="user,balance" data-kis-mask="number,2"></span></td>
+							<td><input is="kis-input" type="number" data-kis-bind="user,balance" data-kis-mask="2" class="form-control"/></td>
+							<td><span is="kis-span" data-kis-bind="user,hireDate" data-kis-mask="date,yyyy.MM.dd HH:mm:ss"></span></td>
+							<td><input is="kis-input" type="datetime-local" data-kis-bind="user,hireDate" class="form-control"/></td>
+							<td><input is="kis-input" type="date" data-kis-bind="user,birthday" class="form-control"/></td>
+							<td><input is="kis-input" type="checkbox" data-kis-bind="user,active"/></td>
 							<td>
-								<input is="duice-input" type="radio" data-duice-bind="user,gender" value="M"/>M
-								<input is="duice-input" type="radio" data-duice-bind="user,gender" value="F"/>F
+								<input is="kis-input" type="radio" data-kis-bind="user,gender" value="M"/>M
+								<input is="kis-input" type="radio" data-kis-bind="user,gender" value="F"/>F
 							</td>
-							<td><select is="duice-select" data-duice-bind="user,groupId" data-duice-option="groups,id,name" class="form-control"></select></td>
+							<td><select is="kis-select" data-kis-bind="user,groupId" data-kis-option="groups,id,name" class="form-control"></select></td>
 						</tr>
 					</tbody>
 					<tfoot>
 						<tr>
 							<td colspan="15" style="text-align:right;">
 								11Average Balance :
-								<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+								<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 									var totalBalance = 0;
 									$context.users.forEach(function(item){
 										totalBalance += isNaN(item.get('balance')) ? 0 : Number(item.get('balance'));
@@ -818,7 +821,7 @@ button {
 								</span>
 								|
 								Total Balance :
-								<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+								<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 									var totalBalance = 0;
 									$context.users.forEach(function(item){
 										totalBalance += isNaN(item.get('balance')) ? 0 : Number(item.get('balance'));
@@ -831,17 +834,17 @@ button {
 					</tfoot>
 				</table>
 				<!-- ================================================================ -->
-				<!-- END: duice-table												  -->
+				<!-- END: kis-table												  -->
 				<!-- ================================================================ -->
 
 				<!-- ================================================================ -->
-				<!-- START: duice-ul(no hierarchy)									  -->
+				<!-- START: kis-ul(no hierarchy)									  -->
 				<!-- ================================================================ -->
-				<h3>duice-ul
+				<h3>kis-ul
 					<small>
 						(binding to users)
 						-
-						<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+						<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 							return $context.users.getRowCount();
 						">
 						</span>
@@ -849,7 +852,7 @@ button {
 					</small>
 				</h3>
 				<div class="code">
-					&lt;ul is="duice-ul" data-duice-bind="users,user" data-duice-selectable="true" data-duice-editable="true" ...
+					&lt;ul is="kis-ul" data-kis-bind="users,user" data-kis-selectable="true" data-kis-editable="true" ...
 				</div>
 				<div>
 					<button class="code" onclick="users.setReadonlyAll(true);">setReadonlyAll(true)</button>
@@ -860,64 +863,64 @@ button {
 					<button class="code" onclick="users.setDisableAll(false);">setDisableAll(false)</button>
 					<button class="code" onclick="users.setDisable('name', true);">setDisable('name',true)</button>
 					<button class="code" onclick="users.setDisable('name', false);">setDisable('name',false)</button>
-					<button class="code" onclick="users.addRow(new duice.Map({}));">addRow(map)</button>
-					<button class="code" onclick="users.insertRow(users.getIndex(), new duice.Map({}));">insertRow(map)</button>
+					<button class="code" onclick="users.addRow(new kis.Map({}));">addRow(map)</button>
+					<button class="code" onclick="users.insertRow(users.getIndex(), new kis.Map({}));">insertRow(map)</button>
 					<button class="code" onclick="users.removeRow(users.getIndex());">removeRow(index)</button>
 					<button class="code" onclick="alert(JSON.stringify(users.toJson()));">toJson()</button>
 					<button class="code" onclick="alert(users.isDirty());">isDirty()</button>
 					<button class="code" onclick="users.reset();">reset()</button>
 				</div>
-				<ul is="duice-ul" 
-					data-duice-bind="users,user" 
-					data-duice-selectable="true"
-					data-duice-editable="true">
+				<ul is="kis-ul" 
+					data-kis-bind="users,user" 
+					data-kis-selectable="true"
+					data-kis-editable="true">
 					<li style="display: inline-block;">
 						<div style="width:250px; border:solid 1px #ccc; border-radius:2px; margin:1px; padding:10px;">
 							<div style="font-weight:bold; border-bottom: dotted 1px #ccc; margin-bottom: 5px;">
-								[@duice[$context.index + 1]]
+								[@kis[$context.index + 1]]
 								.
-								<span is="duice-span" data-duice-bind="user,id"></span>
+								<span is="kis-span" data-kis-bind="user,id"></span>
 							</div>
 							<div style="text-align:center;">
-								<img is="duice-img" data-duice-bind="user,image" style="height:64px;"/>
+								<img is="kis-img" data-kis-bind="user,image" style="height:64px;"/>
 							</div>
 							<div>
 								<table style="width:100%; line-height:2.4;">
 									<tr>
 										<th>name</th>
 										<td>
-											<input is="duice-input" type="text" data-duice-bind="user,name" class="form-control"/>
+											<input is="kis-input" type="text" data-kis-bind="user,name" class="form-control"/>
 										</td>
 									</tr>
 									<tr>
 										<th>balance</th>
 										<td>
-											<input is="duice-input" type="number" data-duice-bind="user,balance" class="form-control"/>
+											<input is="kis-input" type="number" data-kis-bind="user,balance" class="form-control"/>
 										</td>
 									</tr>
 									<tr>
 										<th>hireDate</th>
 										<td>
-											<input is="duice-input" type="datetime-local" data-duice-bind="user,hireDate" data-duice-mask="yyyy-MM-dd HH:mm:ss" class="form-control"/>
+											<input is="kis-input" type="datetime-local" data-kis-bind="user,hireDate" data-kis-mask="yyyy-MM-dd HH:mm:ss" class="form-control"/>
 										</td>
 									</tr>
 									<tr>
 										<th>active</th>
 										<td>
-											<input is="duice-input" type="checkbox" data-duice-bind="user,active"/>
+											<input is="kis-input" type="checkbox" data-kis-bind="user,active"/>
 										</td>
 									</tr>
 									<tr>
 										<th>gender</th>
 										<td>
-											Male<input is="duice-input" type="radio" data-duice-bind="user,gender" value="M"/>
-											Female<input is="duice-input" type="radio" data-duice-bind="user,gender" value="F"/>
+											Male<input is="kis-input" type="radio" data-kis-bind="user,gender" value="M"/>
+											Female<input is="kis-input" type="radio" data-kis-bind="user,gender" value="F"/>
 										</td>
 									</tr>
 									<tr>
 										<th>groupId</th>
 										<td>
-											<select is="duice-select" data-duice-bind="user,groupId" data-duice-option="groups,id,name" class="form-control">
+											<select is="kis-select" data-kis-bind="user,groupId" data-kis-option="groups,id,name" class="form-control">
 												<option>- select -</option>
 											</select>
 										</td>
@@ -925,7 +928,7 @@ button {
 									<tr>
 										<th>profile</th>
 										<td>
-											<textarea is="duice-textarea" data-duice-bind="user,profile" class="form-control"></textarea>
+											<textarea is="kis-textarea" data-kis-bind="user,profile" class="form-control"></textarea>
 										<td>
 									</tr>
 								</table>
@@ -934,19 +937,19 @@ button {
 					<li>
 				</ul>
 				<!-- ================================================================ -->
-				<!-- END: duice-ul(no hierarchy)									  -->
+				<!-- END: kis-ul(no hierarchy)									  -->
 				<!-- ================================================================ -->
 
 				<!-- ================================================================ -->
-				<!-- START: duice-ul(hierarchy)									 	  -->
+				<!-- START: kis-ul(hierarchy)									 	  -->
 				<!-- ================================================================ -->
 				<div>
 					<div>
-						<h3>duice-ul with Hierarchy
+						<h3>kis-ul with Hierarchy
 							<small>
 								(binding to users)
 								-
-								<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+								<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 									return $context.users.getRowCount();
 								">
 								</span>
@@ -954,7 +957,7 @@ button {
 							</small>
 						</h3>
 						<div class="code">
-							&lt;ul is="duice-ul" data-duice-bind="users,user" data-duice-selectable="true" data-duice-editable="true" ...
+							&lt;ul is="kis-ul" data-kis-bind="users,user" data-kis-selectable="true" data-kis-editable="true" ...
 						</div>
 						<div>
 							<button class="code" onclick="users.setReadonlyAll(true);">setReadonlyAll(true)</button>
@@ -965,8 +968,8 @@ button {
 							<button class="code" onclick="users.setDisableAll(false);">setDisableAll(false)</button>
 							<button class="code" onclick="users.setDisable('name', true);">setDisable('name',true)</button>
 							<button class="code" onclick="users.setDisable('name', false);">setDisable('name',false)</button>
-							<button class="code" onclick="users.addRow(new duice.Map({}));">addRow(map)</button>
-							<button class="code" onclick="users.insertRow(users.getIndex(), new duice.Map({}));">insertRow(map)</button>
+							<button class="code" onclick="users.addRow(new kis.Map({}));">addRow(map)</button>
+							<button class="code" onclick="users.insertRow(users.getIndex(), new kis.Map({}));">insertRow(map)</button>
 							<button class="code" onclick="users.removeRow(users.getIndex());">removeRow(index)</button>
 							<button class="code" onclick="alert(JSON.stringify(users.toJson()));">toJson()</button>
 							<button class="code" onclick="alert(users.isDirty());">isDirty()</button>
@@ -975,32 +978,32 @@ button {
 					</div>
 					<div style="display:flex; justify-content:space-between;">
 						<!-- ================================================================ -->
-						<!-- duice-ui(hierarchy)											  -->
+						<!-- kis-ui(hierarchy)											  -->
 						<!-- ================================================================ -->
 						<div style="width:49%; border:solid 1px #ccc; border-radius:5px; margin:1px; padding:10px;">
 							<div style="border-bottom:solid 1px #eee; font-weight:bold;">
 								Plain
 							</div>
-							<ul is="duice-ul" 
-							data-duice-bind="users,user" 
-							data-duice-hierarchy="id,parentId"
-							data-duice-selectable="true">
+							<ul is="kis-ul" 
+							data-kis-bind="users,user" 
+							data-kis-hierarchy="id,parentId"
+							data-kis-selectable="true">
 								<li style="line-height:2.4;">
 									<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:dotted 1px #ccc;padding:2px;">
 										<div>
-											<img is="duice-img" data-duice-bind="user,image" style="height:32px;"/>
-											<span is="duice-span" data-duice-bind="user,name" style="font-weight:bold;"></span>
-											<span is="duice-span" data-duice-bind="user,parentId" style="font-size:10px;color:#aaa;"></span>
-											<small>(depth:[@duice[$context.depth]], hasChild:[@duice[$context.hasChild]])</small>
+											<img is="kis-img" data-kis-bind="user,image" style="height:32px;"/>
+											<span is="kis-span" data-kis-bind="user,name" style="font-weight:bold;"></span>
+											<span is="kis-span" data-kis-bind="user,parentId" style="font-size:10px;color:#aaa;"></span>
+											<small>(depth:[@kis[$context.depth]], hasChild:[@kis[$context.hasChild]])</small>
 										</div>
 										<div>
 											<table>
 												<col width="100px"/>
 												<col width="80px"/>
 												<tr>
-													<td><input is="duice-input" type="date" data-duice-bind="user,birthday" class="form-control"/></td>
+													<td><input is="kis-input" type="date" data-kis-bind="user,birthday" class="form-control"/></td>
 													<td>
-														<select is="duice-select" data-duice-bind="user,groupId" data-duice-option="groups,id,name" class="form-control">
+														<select is="kis-select" data-kis-bind="user,groupId" data-kis-option="groups,id,name" class="form-control">
 															<option>- select -</option>
 														</select>
 													</td>
@@ -1012,7 +1015,7 @@ button {
 							</ul>
 							<div style="text-align:right;padding:10px;">
 								Average Balance :
-								<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+								<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 									var totalBalance = 0;
 									$context.users.forEach(function(item){
 										totalBalance += isNaN(item.get('balance')) ? 0 : Number(item.get('balance'));
@@ -1022,7 +1025,7 @@ button {
 								</span>
 								|
 								Total Balance :
-								<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+								<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 									var totalBalance = 0;
 									$context.users.forEach(function(item){
 										totalBalance += isNaN(item.get('balance')) ? 0 : Number(item.get('balance'));
@@ -1033,33 +1036,33 @@ button {
 							</div>
 						</div>
 						<!-- ================================================================ -->
-						<!-- duice-ul(hierarchy,foldable)									  -->
+						<!-- kis-ul(hierarchy,foldable)									  -->
 						<!-- ================================================================ -->
 						<div style="width:49%; border:solid 1px #ccc; border-radius:5px; margin:1px; padding:10px;">
 							<div style="border-bottom:solid 1px #eee; font-weight:bold;">
 								Foldable
 							</div>
-							<ul is="duice-ul" 
-							data-duice-bind="users,user"
-							data-duice-hierarchy="id,parentId"
-							data-duice-selectable="true" 
-							data-duice-foldable="true">
+							<ul is="kis-ul" 
+							data-kis-bind="users,user"
+							data-kis-hierarchy="id,parentId"
+							data-kis-selectable="true" 
+							data-kis-foldable="true">
 								<li style="line-height:2.4;">
 									<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:dotted 1px #ccc;padding:2px;">
 										<div>
-											<img is="duice-img" data-duice-bind="user,image" style="height:32px;"/>
-											<span is="duice-span" data-duice-bind="user,name" style="font-weight:bold;"></span>
-											<span is="duice-span" data-duice-bind="user,parentId" style="font-size:10px;color:#aaa;"></span>
-											<small>(depth:[@duice[$context.depth]], hasChild:[@duice[$context.hasChild]])</small>
+											<img is="kis-img" data-kis-bind="user,image" style="height:32px;"/>
+											<span is="kis-span" data-kis-bind="user,name" style="font-weight:bold;"></span>
+											<span is="kis-span" data-kis-bind="user,parentId" style="font-size:10px;color:#aaa;"></span>
+											<small>(depth:[@kis[$context.depth]], hasChild:[@kis[$context.hasChild]])</small>
 										</div>
 										<div>
 											<table>
 												<col width="100px"/>
 												<col width="80px"/>
 												<tr>
-													<td><input is="duice-input" type="date" data-duice-bind="user,birthday" class="form-control"/></td>
+													<td><input is="kis-input" type="date" data-kis-bind="user,birthday" class="form-control"/></td>
 													<td>
-														<select is="duice-select" data-duice-bind="user,groupId" data-duice-option="groups,id,name" class="form-control">
+														<select is="kis-select" data-kis-bind="user,groupId" data-kis-option="groups,id,name" class="form-control">
 															<option>- select -</option>
 														</select>
 													</td>
@@ -1071,7 +1074,7 @@ button {
 							</ul>
 							<div style="text-align:right;padding:10px;">
 								Average Balance :
-								<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+								<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 									var totalBalance = 0;
 									$context.users.forEach(function(item){
 										totalBalance += isNaN(item.get('balance')) ? 0 : Number(item.get('balance'));
@@ -1081,7 +1084,7 @@ button {
 								</span>
 								|
 								Total Balance :
-								<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+								<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 									var totalBalance = 0;
 									$context.users.forEach(function(item){
 										totalBalance += isNaN(item.get('balance')) ? 0 : Number(item.get('balance'));
@@ -1094,33 +1097,33 @@ button {
 					</div>
 					<div style="display:flex; justify-content:space-between;">
 						<!-- ================================================================ -->
-						<!-- duice-ul(hierarchy,editable)							  	  -->
+						<!-- kis-ul(hierarchy,editable)							  	  -->
 						<!-- ================================================================ -->
 						<div style="width:49%; border:solid 1px #ccc; border-radius:5px; margin:1px; padding:10px;">
 							<div style="border-bottom:solid 1px #eee; font-weight:bold;">
 								Editable
 							</div>
-							<ul is="duice-ul" 
-							data-duice-bind="users,user" 
-							data-duice-hierarchy="id,parentId"
-							data-duice-selectable="true"
-							data-duice-editable="true">
+							<ul is="kis-ul" 
+							data-kis-bind="users,user" 
+							data-kis-hierarchy="id,parentId"
+							data-kis-selectable="true"
+							data-kis-editable="true">
 								<li style="line-height:2.4;">
 									<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:dotted 1px #ccc;padding:2px;">
 										<div>
-											<img is="duice-img" data-duice-bind="user,image" style="height:32px;"/>
-											<span is="duice-span" data-duice-bind="user,name" style="font-weight:bold;"></span>
-											<span is="duice-span" data-duice-bind="user,parentId" style="font-size:10px;color:#aaa;"></span>
-											<small>(depth:[@duice[$context.depth]], hasChild:[@duice[$context.hasChild]])</small>
+											<img is="kis-img" data-kis-bind="user,image" style="height:32px;"/>
+											<span is="kis-span" data-kis-bind="user,name" style="font-weight:bold;"></span>
+											<span is="kis-span" data-kis-bind="user,parentId" style="font-size:10px;color:#aaa;"></span>
+											<small>(depth:[@kis[$context.depth]], hasChild:[@kis[$context.hasChild]])</small>
 										</div>
 										<div>
 											<table>
 												<col width="100px"/>
 												<col width="80px"/>
 												<tr>
-													<td><input is="duice-input" type="date" data-duice-bind="user,birthday" class="form-control"/></td>
+													<td><input is="kis-input" type="date" data-kis-bind="user,birthday" class="form-control"/></td>
 													<td>
-														<select is="duice-select" data-duice-bind="user,groupId" data-duice-option="groups,id,name" class="form-control">
+														<select is="kis-select" data-kis-bind="user,groupId" data-kis-option="groups,id,name" class="form-control">
 															<option>- select -</option>
 														</select>
 													</td>
@@ -1132,7 +1135,7 @@ button {
 							</ul>
 							<div style="text-align:right;padding:10px;">
 								Average Balance :
-								<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+								<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 									var totalBalance = 0;
 									$context.users.forEach(function(item){
 										totalBalance += isNaN(item.get('balance')) ? 0 : Number(item.get('balance'));
@@ -1142,7 +1145,7 @@ button {
 								</span>
 								|
 								Total Balance :
-								<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+								<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 									var totalBalance = 0;
 									$context.users.forEach(function(item){
 										totalBalance += isNaN(item.get('balance')) ? 0 : Number(item.get('balance'));
@@ -1153,35 +1156,35 @@ button {
 							</div>
 						</div>
 						<!-- ================================================================ -->
-						<!-- duice-ul(hierarchy,foldable,editable)					  -->
+						<!-- kis-ul(hierarchy,foldable,editable)					  -->
 						<!-- ================================================================ -->
 						<div style="width:49%; border:solid 1px #ccc; border-radius:5px; margin:1px; padding:10px;">
 							<div style="border-bottom:solid 1px #eee; font-weight:bold;">
 								Foldable + Enabled
 							</div>
-							<ul is="duice-ul" 
-							data-duice-bind="users,user"
-							data-duice-hierarchy="id,parentId"
-							data-duice-selectable="true" 
-							data-duice-editable="true"
-							data-duice-foldable="true">
+							<ul is="kis-ul" 
+							data-kis-bind="users,user"
+							data-kis-hierarchy="id,parentId"
+							data-kis-selectable="true" 
+							data-kis-editable="true"
+							data-kis-foldable="true">
 								<li style="line-height:2.4;">
 									<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:dotted 1px #ccc;padding:2px;">
 										<div>
 											{{$context.depth}}
-											<img is="duice-img" data-duice-bind="user,image" style="height:32px;"/>
-											<span is="duice-span" data-duice-bind="user,name" style="font-weight:bold;"></span>
-											<span is="duice-span" data-duice-bind="user,parentId" style="font-size:10px;color:#aaa;"></span>
-											<small>(depth:[@duice[$context.depth]], hasChild:[@duice[$context.hasChild]])</small>
+											<img is="kis-img" data-kis-bind="user,image" style="height:32px;"/>
+											<span is="kis-span" data-kis-bind="user,name" style="font-weight:bold;"></span>
+											<span is="kis-span" data-kis-bind="user,parentId" style="font-size:10px;color:#aaa;"></span>
+											<small>(depth:[@kis[$context.depth]], hasChild:[@kis[$context.hasChild]])</small>
 										</div>
 										<div>
 											<table>
 												<col width="100px"/>
 												<col width="80px"/>
 												<tr>
-													<td><input is="duice-input" type="date" data-duice-bind="user,birthday" class="form-control"/></td>
+													<td><input is="kis-input" type="date" data-kis-bind="user,birthday" class="form-control"/></td>
 													<td>
-														<select is="duice-select" data-duice-bind="user,groupId" data-duice-option="groups,id,name" class="form-control">
+														<select is="kis-select" data-kis-bind="user,groupId" data-kis-option="groups,id,name" class="form-control">
 															<option>- select -</option>
 														</select>
 													</td>
@@ -1193,7 +1196,7 @@ button {
 							</ul>
 							<div style="text-align:right;padding:10px;">
 								Average Balance :
-								<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+								<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 									var totalBalance = 0;
 									$context.users.forEach(function(item){
 										totalBalance += isNaN(item.get('balance')) ? 0 : Number(item.get('balance'));
@@ -1203,7 +1206,7 @@ button {
 								</span>
 								|
 								Total Balance :
-								<span is="duice-scriptlet" data-duice-bind="users" data-duice-value="
+								<span is="kis-scriptlet" data-kis-bind="users" data-kis-value="
 									var totalBalance = 0;
 									$context.users.forEach(function(item){
 										totalBalance += isNaN(item.get('balance')) ? 0 : Number(item.get('balance'));
@@ -1220,7 +1223,7 @@ button {
 	</section>
 
 	<!-- ================================================================ -->
-	<!-- duice.ui.Modal													  -->
+	<!-- kis.ui.Modal													  -->
 	<!-- ================================================================ -->
 	<section class="chapter">
 		<div class="chapter__headerDiv">
@@ -1229,10 +1232,10 @@ button {
 		<div class="chapter__bodyDiv">
 			<div>
 				<!-- ============================================================== -->
-				<!-- duice.Progress									  				-->
+				<!-- kis.Progress									  				-->
 				<!-- ============================================================== -->
 				<button onclick="
-					var progress = new duice.Progress(document.body);
+					var progress = new kis.Progress(document.body);
 					progress.start();
 					var handler = setTimeout(function(){
 						progress.stop();
@@ -1243,23 +1246,23 @@ button {
 				</button>
 				<br/>
 				<!-- ============================================================== -->
-				<!-- duice.Alert									  				-->
+				<!-- kis.Alert									  				-->
 				<!-- ============================================================== -->
 				<button onclick="
 					(async function(){
-						await duice.alert('alert message.');
+						await kis.alert('alert message.');
 						alert('complete');
 					}).call();
-				">await duice.alert([message])</button>
+				">await kis.alert([message])</button>
 				<button onclick="
-					duice.alert('message')
+					kis.alert('message')
 					.then(function(){
 						console.log('complete');
 						alert('complete');
 					});
-				">duice.alert([message]).then(...)</button>
+				">kis.alert([message]).then(...)</button>
 				<button onclick="
-					new duice.Alert('alert message...')
+					new kis.Alert('alert message...')
 					.onBeforeOpen(function(result){
 						console.log('onBeforeOpen', result);
 						return confirm('onBeforeOpen');
@@ -1277,26 +1280,26 @@ button {
 						alert('onAfterClose');
 					})
 					.open();
-				">duice.Alert with event</button>
+				">kis.Alert with event</button>
 				<br/>
 				<!-- ============================================================== -->
-				<!-- duice.Confirm									  				-->
+				<!-- kis.Confirm									  				-->
 				<!-- ============================================================== -->
 				<button onclick="
 					(async function(){
-						var result = await duice.confirm('confirm message.');
+						var result = await kis.confirm('confirm message.');
 						alert(result);
 					}).call();
-				">await duice.confirm([message])</button>
+				">await kis.confirm([message])</button>
 				<button onclick="
-					duice.confirm('confirm message')
+					kis.confirm('confirm message')
 					.then(function(result){
 						console.log(result);
 						alert(result);
 					});
-				">duice.confirm([message]).then(...)</button>
+				">kis.confirm([message]).then(...)</button>
 				<button onclick="
-					new duice.Confirm('confirm message...')
+					new kis.Confirm('confirm message...')
 					.onBeforeOpen(function(result){
 						console.log('onBeforeOpen', result);
 						return confirm('onBeforeOpen');
@@ -1322,26 +1325,26 @@ button {
 						alert('onAfterClose');
 					})
 					.open();
-				">duice.Confirm with event</button>
+				">kis.Confirm with event</button>
 				<br/>
 				<!-- ============================================================== -->
-				<!-- duice.Prompt									  				-->
+				<!-- kis.Prompt									  				-->
 				<!-- ============================================================== -->
 				<button onclick="
 					(async function(){
-						var value = await duice.prompt('prompt message.', 'default');
+						var value = await kis.prompt('prompt message.', 'default');
 						alert(value);
 					}).call();
-				">duice.prompt([message], [default])</button>
+				">kis.prompt([message], [default])</button>
 				<button onclick="
-					duice.prompt('message', 'default')
+					kis.prompt('message', 'default')
 					.then(function(result){
 						console.log(result);
 						alert(result);
 					});
-				">duice.prompt([message],[default]).then(...)</button>
+				">kis.prompt([message],[default]).then(...)</button>
 				<button onclick="
-					new duice.Prompt('prompt message.', 'default')
+					new kis.Prompt('prompt message.', 'default')
 					.onBeforeOpen(function(){
 						return confirm('onBeforeOpen');
 					})
@@ -1361,17 +1364,17 @@ button {
 						alert('onAfterConfirm:' + this.getValue());
 					})
 					.open();
-				">duice.Prompt with event</button>
+				">kis.Prompt with event</button>
 				<br/>
 				<!-- ============================================================== -->
-				<!-- duice.Dialog									  				-->
+				<!-- kis.Dialog									  				-->
 				<!-- ============================================================== -->
 				<script>
 					var dialog = {
 						dialog: null,
-						map: new duice.Map(),
+						map: new kis.Map(),
 						open: function(){
-							this.dialog = new duice.Dialog(document.getElementById('dialog'));
+							this.dialog = new kis.Dialog(document.getElementById('dialog'));
 							return this.dialog.open();
 						},
 						confirm: function(){
@@ -1388,59 +1391,59 @@ button {
 					}).catch(function(e){
 						console.err(e);
 					});
-				">duice.dialog</button>
+				">kis.dialog</button>
 				<div id="dialog" style="display:none; width:600px;">
 					<div style="text-align:center;">
-						<img is="duice-img" data-duice-bind="user,image" style="height:64px;"/>
+						<img is="kis-img" data-kis-bind="user,image" style="height:64px;"/>
 					</div>
 					<table style="width:100%; line-height:2.4;">
 						<tr>
 							<th>name</th>
 							<td>
-								<input is="duice-input" type="text" data-duice-bind="dialog.map,name" class="form-control"/>
+								<input is="kis-input" type="text" data-kis-bind="dialog.map,name" class="form-control"/>
 							</td>
 						</tr>
 						<tr>
 							<th>balance</th>
 							<td>
-								<input is="duice-input" type="number" data-duice-bind="dialog.map,balance" class="form-control"/>
+								<input is="kis-input" type="number" data-kis-bind="dialog.map,balance" class="form-control"/>
 							</td>
 						</tr>
 						<tr>
 							<th>hireDate</th>
 							<td>
-								<input is="duice-input" type="datetime-local" data-duice-bind="dialog.map,hireDate" class="form-control"/>
+								<input is="kis-input" type="datetime-local" data-kis-bind="dialog.map,hireDate" class="form-control"/>
 							</td>
 						</tr>
 						<tr>
 							<th>active</th>
 							<td>
-								<input is="duice-input" type="checkbox" data-duice-bind="dialog.map,active"/>
+								<input is="kis-input" type="checkbox" data-kis-bind="dialog.map,active"/>
 							</td>
 						</tr>
 						<tr>
 							<th>gender</th>
 							<td>
-								<input is="duice-input-radio" type="radio" data-duice-bind="dialog.map,gender" value="M"/>Male
-								<input is="duice-input-radio" type="radio" data-duice-bind="dialog.map,gender" value="F"/>Female
+								<input is="kis-input-radio" type="radio" data-kis-bind="dialog.map,gender" value="M"/>Male
+								<input is="kis-input-radio" type="radio" data-kis-bind="dialog.map,gender" value="F"/>Female
 							</td>
 						</tr>
 						<tr>
 							<th>groupId</th>
 							<td>
-								<select is="duice-select" data-duice-bind="dialog.map,groupId" data-duice-option="groups,id,name" class="form-control"></select>
+								<select is="kis-select" data-kis-bind="dialog.map,groupId" data-kis-option="groups,id,name" class="form-control"></select>
 							</td>
 						</tr>
 						<tr>
 							<th>schedule</th>
 							<td>
-								<input is="duice-input" type="cron" data-duice-bind="user,schedule" class="form-control"/>
+								<input is="kis-input" type="cron" data-kis-bind="user,schedule" class="form-control"/>
 							</td>
 						</tr>
 						<tr>
 							<th>profile</th>
 							<td>
-								<textarea is="duice-textarea" data-duice-bind="dialog.map,profile" class="form-control"></textarea>
+								<textarea is="kis-textarea" data-kis-bind="dialog.map,profile" class="form-control"></textarea>
 							<td>
 						</tr>
 					</table>
@@ -1451,7 +1454,7 @@ button {
 		</div>
 	</section>
 	<!-- ================================================================ -->
-	<!-- duice.ui.Modal													  -->
+	<!-- kis.ui.Modal													  -->
 	<!-- ================================================================ -->
 	<section class="chapter">
 		<div class="chapter__headerDiv">
@@ -1506,11 +1509,11 @@ button {
 				</div>
 			</div>
 			<script>
-				const tabFolder = new duice.TabFolder();
-				tabFolder.addTab(new duice.Tab(document.getElementById('tabButton1'), document.getElementById('tabContent1')));
-				tabFolder.addTab(new duice.Tab(document.getElementById('tabButton2'), document.getElementById('tabContent2')));
-				tabFolder.addTab(new duice.Tab(document.getElementById('tabButton3'), document.getElementById('tabContent3')));
-				tabFolder.addTab(new duice.Tab(document.getElementById('tabButton4'), document.getElementById('tabContent4')));
+				const tabFolder = new kis.TabFolder();
+				tabFolder.addTab(new kis.Tab(document.getElementById('tabButton1'), document.getElementById('tabContent1')));
+				tabFolder.addTab(new kis.Tab(document.getElementById('tabButton2'), document.getElementById('tabContent2')));
+				tabFolder.addTab(new kis.Tab(document.getElementById('tabButton3'), document.getElementById('tabContent3')));
+				tabFolder.addTab(new kis.Tab(document.getElementById('tabButton4'), document.getElementById('tabContent4')));
 				tabFolder.onBeforeSelectTab(function(selectedTab){
 					console.log('onBeforeSelectTab', selectedTab);
 				});
