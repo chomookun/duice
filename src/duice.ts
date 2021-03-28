@@ -12,7 +12,14 @@
  */
 namespace duice {
 
+    /**
+     * attribute alias
+     */
     export var ALIAS = 'duice';
+
+    /**
+     * component factory registry
+     */
     export var COMPONENT_FACTORIES = new Array();
 
     /**
