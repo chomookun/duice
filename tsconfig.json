@@ -5,7 +5,7 @@
 	    "strict": true,
 	    "strictNullChecks": false,
 	    "noImplicitThis": false,
-		//"module":"amd",
+		"module":"none",
 		"removeComments": true,
 		"allowJs": true,
 		"watch": false,
