@@ -11,6 +11,9 @@ namespace duice {
          * duice.integrate.SimplemdeFactory
          */
         export class SimplemdeFactory extends duice.MapComponentFactory {
+            getSelector(): string {
+                return `div[is="${ALIAS}-plugin-simplemde"]`;
+            }
             getComponent(element:HTMLDivElement):Simplemde {
                 var config = null;
                 if(element.dataset.duiceConfig){
@@ -123,7 +126,7 @@ namespace duice {
         }
 
         // Adds component definition
-        componentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-simplemde"]', duice.plugin.SimplemdeFactory));
+        COMPONENT_FACTORIES.push(new SimplemdeFactory());
 
     }
 

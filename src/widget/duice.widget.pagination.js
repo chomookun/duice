@@ -4,6 +4,9 @@ var duice;
     let widget;
     (function (widget) {
         class PaginationFactory extends duice.MapComponentFactory {
+            getSelector() {
+                return `ul[is="${duice.ALIAS}-widget-pagination"]`;
+            }
             getComponent(element) {
                 var pagination = new Pagination(element);
                 if (element.dataset.duiceSize) {
@@ -102,6 +105,6 @@ var duice;
             }
         }
         widget.Pagination = Pagination;
-        duice.componentDefinitionRegistry.add(new duice.ComponentDefinition('ul[is="duice-widget-pagination"]', duice.widget.PaginationFactory));
+        duice.COMPONENT_FACTORIES.push(new PaginationFactory());
     })(widget = duice.widget || (duice.widget = {}));
 })(duice || (duice = {}));

@@ -4,6 +4,9 @@ var duice;
     let plugin;
     (function (plugin) {
         class SimplemdeFactory extends duice.MapComponentFactory {
+            getSelector() {
+                return `div[is="${duice.ALIAS}-plugin-simplemde"]`;
+            }
             getComponent(element) {
                 var config = null;
                 if (element.dataset.duiceConfig) {
@@ -91,6 +94,6 @@ var duice;
             }
         }
         plugin.Simplemde = Simplemde;
-        duice.componentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-simplemde"]', duice.plugin.SimplemdeFactory));
+        duice.COMPONENT_FACTORIES.push(new SimplemdeFactory());
     })(plugin = duice.plugin || (duice.plugin = {}));
 })(duice || (duice = {}));

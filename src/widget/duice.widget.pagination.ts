@@ -8,6 +8,9 @@ namespace duice {
          * duice.PaginationFactory
          */
         export class PaginationFactory extends MapComponentFactory {
+            getSelector(): string {
+                return `ul[is="${ALIAS}-widget-pagination"]`;
+            }
             getComponent(element:HTMLUListElement):Pagination {
                 var pagination = new Pagination(element);
                 if(element.dataset.duiceSize){
@@ -125,7 +128,7 @@ namespace duice {
         }
 
         // Adds components
-        componentDefinitionRegistry.add(new ComponentDefinition('ul[is="duice-widget-pagination"]', duice.widget.PaginationFactory));
+        COMPONENT_FACTORIES.push(new PaginationFactory());
     }
 
 }

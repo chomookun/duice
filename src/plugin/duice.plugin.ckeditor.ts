@@ -9,6 +9,9 @@ namespace duice {
          * duice.plugin.CkeditorFactory
          */
         export class CkeditorFactory extends duice.MapComponentFactory {
+            getSelector(): string {
+                return `div[is="${ALIAS}-plugin-ckeditor"]`;
+            }
             getComponent(element:HTMLDivElement):Ckeditor {
                 var config = null;
                 if(element.dataset.duiceConfig){
@@ -65,8 +68,7 @@ namespace duice {
         }
 
         // Adds component definition
-        componentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-ckeditor"]', duice.plugin.CkeditorFactory));
-
+        COMPONENT_FACTORIES.push(new CkeditorFactory());
     }
 
 }

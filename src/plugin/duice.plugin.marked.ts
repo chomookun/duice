@@ -10,6 +10,9 @@ namespace duice {
          * duice.integrate.MarkedFactory
          */
         export class MarkedFactory extends duice.MapComponentFactory {
+            getSelector(): string {
+                return `div[is="${ALIAS}-plugin-marked"]`;
+            }
             getComponent(element:HTMLDivElement):Marked {
                 var marked = new Marked(element);
                 var bind = element.dataset.duiceBind.split(',');
@@ -43,8 +46,7 @@ namespace duice {
         }
 
         // Adds component definition
-        componentDefinitionRegistry.add(new duice.ComponentDefinition('div[is="duice-plugin-marked"]', duice.plugin.MarkedFactory));
-
+        COMPONENT_FACTORIES.push(new MarkedFactory());
     }
 
 }

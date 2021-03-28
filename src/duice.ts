@@ -12,59 +12,25 @@
  */
 namespace duice {
 
-    var ALIAS = 'duice';
-    var ENABLE_CSS = true;
+    export var ALIAS = 'duice';
+    export var COMPONENT_FACTORIES = new Array();
 
-    /**
-     * Component definition registry
-     */
-    export var componentDefinitionRegistry = {
-        componentDefinitions: new Array(),
-        add(componentDefinition:ComponentDefinition) {
-            this.componentDefinitions.push(componentDefinition);
-        },
-        getComponentDefinitions() {
-            return this.componentDefinitions;
-        }
-    }
-    
-    /**
-     * Component definition
-     */
-    export class ComponentDefinition {
-        selector:string;
-        factoryClass:Function;
-        constructor(selector:string, factoryClass:Function){
-            this.selector = selector;
-            this.factoryClass = factoryClass;
-        }
-        getSelector(){
-            return this.selector;
-        }
-        getFactoryClass(){
-            return this.factoryClass;
-        }
-    }
-    
     /**
      * Initializes component
      * @param container
      * @param $context
      */
     export function initializeComponent(container:any, $context:any) {
-        [ListComponentFactory, MapComponentFactory]
-        .forEach(function(factoryType){
-            componentDefinitionRegistry.getComponentDefinitions().forEach(function(componentDefinition:ComponentDefinition){
-                console.log(componentDefinition.getSelector()+`[data-${ALIAS}-bind]`);
-                var elements = container.querySelectorAll(componentDefinition.getSelector()+`[data-${ALIAS}-bind]:not([data-${ALIAS}-id])`);
+        [ListComponentFactory, MapComponentFactory].forEach(function(factoryType){
+            COMPONENT_FACTORIES.forEach(function(componentFactory:ComponentFactory){
+                console.log(componentFactory.getSelector()+`[data-${ALIAS}-bind]`);
+                var elements = container.querySelectorAll(componentFactory.getSelector()+`[data-${ALIAS}-bind]:not([data-${ALIAS}-id])`);
                 console.log(elements);
                 for(var i = 0, size = elements.length; i < size; i ++ ){
                     var element = elements[i];
-                    if(componentDefinition.getFactoryClass().prototype instanceof factoryType){
-                        // creates component
-                        var factoryInstance = Object.create(componentDefinition.getFactoryClass().prototype);
-                        factoryInstance.setContext($context);
-                        factoryInstance.getComponent(element);
+                    if(componentFactory instanceof factoryType){
+                        componentFactory.setContext($context);
+                        componentFactory.getComponent(element);
                     }
                 }
             });
@@ -91,8 +57,6 @@ namespace duice {
 		script.src = src;
 		document.head.appendChild(script);
     }
-
-
 
     /**
      * Checks mobile browser
@@ -2070,12 +2034,6 @@ namespace duice {
      */
     abstract class ComponentFactory {
         context:any;
-        constructor(context:any){
-            if(context){
-                this.setContext(context);
-            }
-        }
-        abstract getSelector():string;
         setContext(context:any){
             this.context = context;
         }
@@ -2096,6 +2054,8 @@ namespace duice {
                 throw e;
             }
         }
+        abstract getSelector():string;
+        abstract getComponent(element:HTMLElement):Component;
     }
 
     /**
@@ -2471,6 +2431,9 @@ namespace duice {
      * duice.DivFactory
      */
     export class DivFactory extends MapComponentFactory {
+        getSelector(): string {
+            return `div[is="${ALIAS}-div"]`;
+        }
         getComponent(element:HTMLDivElement):Div {
             var div = new Div(element);
 
@@ -2507,6 +2470,9 @@ namespace duice {
      * duice.InputFactory
      */
     export class InputFactory extends MapComponentFactory {
+        getSelector(): string {
+            return `input[is="${ALIAS}-input"]`;         
+        }
         getComponent(element:HTMLInputElement):Input {
             let input = null;
             let type = element.getAttribute('type');
@@ -3169,6 +3135,9 @@ namespace duice {
      * duice.SelectFactory
      */
     export class SelectFactory extends MapComponentFactory {
+        getSelector(): string {
+            return `select[is="${ALIAS}-select"]`;
+        }
         getComponent(element:HTMLSelectElement):Select {
             var select = new Select(element);
             if(element.dataset.duiceOption){
@@ -3288,6 +3257,9 @@ namespace duice {
      * duice.TextareaFactory
      */
     export class TextareaFactory extends MapComponentFactory {
+        getSelector(): string {
+            return `textarea[is="${ALIAS}-textarea"]`;
+        }
         getComponent(element:HTMLTextAreaElement):Textarea {
             var textarea = new Textarea(element);
             var bind = element.dataset[`${ALIAS}Bind`].split(',');
@@ -3340,6 +3312,9 @@ namespace duice {
      * duice.ImageFactory
      */
     export class ImgFactory extends MapComponentFactory {
+        getSelector(): string {
+            return `img[is="${ALIAS}-img"]`;
+        }
         getComponent(element:HTMLImageElement):Img {
             var img = new Img(element);
             var bind = element.dataset[`${ALIAS}Bind`].split(',');
@@ -3617,6 +3592,9 @@ namespace duice {
      * duice.TableFactory
      */
     export class TableFactory extends ListComponentFactory {
+        getSelector(): string {
+            return `table[is="${ALIAS}-table"]`;
+        }
         getComponent(element:HTMLTableElement):Table {
             var table = new Table(element);
             table.setSelectable(element.dataset.duiceSelectable === 'true');
@@ -3626,7 +3604,7 @@ namespace duice {
             return table;
         }
     }
-            
+
     /**
      * duice.Table
      */
@@ -3852,6 +3830,9 @@ namespace duice {
      * duice.UListFactory
      */
     export class UlFactory extends ListComponentFactory {
+        getSelector(): string {
+            return `ul[is="${ALIAS}-ul"]`;
+        }
         getComponent(element:HTMLUListElement):Ul {
             var ul = new Ul(element);
             ul.setSelectable(element.dataset.duiceSelectable === 'true');
@@ -4293,16 +4274,16 @@ namespace duice {
     }
 
     // Adds components
-    console.error(`alias is ${ALIAS}`);
-    componentDefinitionRegistry.add(new ComponentDefinition(`table[is="${ALIAS}-table"]`, duice.TableFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition(`ul[is="${ALIAS}-ul"]`, duice.UlFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition(`input[is="${ALIAS}-input"]`, duice.InputFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition(`select[is="${ALIAS}-select"]`, duice.SelectFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition(`textarea[is="${ALIAS}-textarea"]`, duice.TextareaFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition(`img[is="${ALIAS}-img"]`, duice.ImgFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition(`span[is="${ALIAS}-span"]`, duice.SpanFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition(`div[is="${ALIAS}-div"]`, duice.DivFactory));
-    componentDefinitionRegistry.add(new ComponentDefinition(`*[is="${ALIAS}-scriptlet"]`, duice.ScriptletFactory));
+    COMPONENT_FACTORIES.push(new duice.TableFactory());
+    COMPONENT_FACTORIES.push(new duice.UlFactory());
+    COMPONENT_FACTORIES.push(new duice.InputFactory());
+    COMPONENT_FACTORIES.push(new duice.SelectFactory());
+    COMPONENT_FACTORIES.push(new duice.TextareaFactory());
+    COMPONENT_FACTORIES.push(new duice.ImgFactory());
+    COMPONENT_FACTORIES.push(new duice.SpanFactory());
+    COMPONENT_FACTORIES.push(new duice.DivFactory());
+    COMPONENT_FACTORIES.push(new duice.ScriptletFactory());
+
 }
 
 /**
