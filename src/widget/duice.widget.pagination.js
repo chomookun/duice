@@ -22,7 +22,7 @@ var duice;
                 this.size = 1;
                 this.page = 1;
                 this.ul = ul;
-                duice.addClass(this.ul, 'duice-widget-pagination');
+                this.addClass(this.ul, 'duice-widget-pagination');
                 var li = this.ul.querySelector('li');
                 this.li = li.cloneNode(true);
                 li.parentNode.removeChild(li);
@@ -96,7 +96,7 @@ var duice;
                 var $context = {};
                 $context['page'] = Number(page);
                 $context['text'] = String(text);
-                li = duice.executeExpression(li, $context);
+                li = this.executeExpression(li, $context);
                 li.appendChild(document.createTextNode(text));
                 return li;
             }

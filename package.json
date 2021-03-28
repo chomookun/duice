@@ -5,6 +5,7 @@
   "homepage": "http://duice.oopscraft.net",
   "main": "duice",
   "dependencies": {
+    "gulp-concat": "^2.6.1",
     "mysql": "^2.16.0",
     "squel": "^5.12.2"
   },

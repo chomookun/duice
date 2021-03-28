@@ -1,0 +1,26 @@
+ .duice-dialog {
+	position: relative;
+	min-width: var(--duice-dialog-width);
+	max-width: 90vw;
+	border: var(--duice-dialog-border);
+	border-radius: var(--duice-dialog-border-radius);
+	background-color: white;
+	padding: var(--duice-dialog-padding);
+}
+.duice-dialog__closeButton {
+	display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+	width: 24px;
+	height: 24px;
+	margin: 8px;
+	background-image: var(--duice-dialog-close-image);
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+}
+.duice-dialog__closeButton:hover {
+	border-radius: 1rem;
+	background-color: #ccc;
+}

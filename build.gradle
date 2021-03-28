@@ -1,0 +1,12 @@
+task build(type:GradleBuild) {
+    tasks = ['buildTsc','buildGulp']
+}
+
+task buildTsc(type:Exec) {
+    commandLine 'node_modules/typescript/bin/tsc','--watch'
+}
+
+task buildGulp(type:Exec) {
+    commandLine 'echo', 'test'
+}
+

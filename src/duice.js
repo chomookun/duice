@@ -10,14 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var duice;
 (function (duice) {
-    duice.ALIAS = 'duice';
-    duice.ENABLE_CSS = true;
-    function addClass(element, className) {
-        if (duice.ENABLE_CSS) {
-            element.classList.add(className);
-        }
-    }
-    duice.addClass = addClass;
+    var ALIAS = 'duice';
+    var ENABLE_CSS = true;
     duice.componentDefinitionRegistry = {
         componentDefinitions: new Array(),
         add(componentDefinition) {
@@ -44,8 +38,8 @@ var duice;
         [ListComponentFactory, MapComponentFactory]
             .forEach(function (factoryType) {
             duice.componentDefinitionRegistry.getComponentDefinitions().forEach(function (componentDefinition) {
-                console.log(componentDefinition.getSelector() + `[data-${duice.ALIAS}-bind]`);
-                var elements = container.querySelectorAll(componentDefinition.getSelector() + `[data-${duice.ALIAS}-bind]:not([data-${duice.ALIAS}-id])`);
+                console.log(componentDefinition.getSelector() + `[data-${ALIAS}-bind]`);
+                var elements = container.querySelectorAll(componentDefinition.getSelector() + `[data-${ALIAS}-bind]:not([data-${ALIAS}-id])`);
                 console.log(elements);
                 for (var i = 0, size = elements.length; i < size; i++) {
                     var element = elements[i];
@@ -72,15 +66,6 @@ var duice;
         document.head.appendChild(script);
     }
     duice.loadExternalScript = loadExternalScript;
-    function generateUuid() {
-        var dt = new Date().getTime();
-        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = (dt + Math.random() * 16) % 16 | 0;
-            dt = Math.floor(dt / 16);
-            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-        return uuid;
-    }
     function isMobile() {
         if (navigator.userAgent.match(/Android/i)
             || navigator.userAgent.match(/webOS/i)
@@ -206,75 +191,6 @@ var duice;
         document.cookie = name + "= " + "; expires=" + date.toUTCString() + "; path=/";
     }
     duice.deleteCookie = deleteCookie;
-    function executeExpression(element, $context) {
-        var string = element.outerHTML;
-        string = string.replace(/\[@duice\[([\s\S]*?)\]\]/mgi, function (match, command) {
-            try {
-                command = command.replace('&amp;', '&');
-                command = command.replace('&lt;', '<');
-                command = command.replace('&gt;', '>');
-                var result = eval(command);
-                return result;
-            }
-            catch (e) {
-                console.error(e, command);
-                throw e;
-            }
-        });
-        try {
-            var template = document.createElement('template');
-            template.innerHTML = string;
-            return template.content.firstChild;
-        }
-        catch (e) {
-            removeChildNodes(element);
-            element.innerHTML = string;
-            return element;
-        }
-    }
-    duice.executeExpression = executeExpression;
-    function executeFunction(code, $context) {
-        try {
-            const func = Function('$context', '"use strict";' + code + '');
-            var result = func($context);
-            return result;
-        }
-        catch (e) {
-            console.error(code);
-            throw e;
-        }
-    }
-    duice.executeFunction = executeFunction;
-    function escapeHtml(value) {
-        if (!value || typeof value !== 'string') {
-            return value;
-        }
-        var htmlMap = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        };
-        return value.replace(/[&<>"']/g, function (m) {
-            return htmlMap[m];
-        });
-    }
-    duice.escapeHtml = escapeHtml;
-    function removeChildNodes(element) {
-        var node, nodes = element.childNodes, i = 0;
-        while (node = nodes[i++]) {
-            if (node.nodeType === 1) {
-                element.removeChild(node);
-            }
-        }
-        while (element.firstChild) {
-            element.removeChild(element.firstChild);
-        }
-        if (element instanceof HTMLSelectElement) {
-            element.options.length = 0;
-        }
-    }
     function getCurrentWindow() {
         if (window.frameElement) {
             return window.parent;
@@ -282,47 +198,6 @@ var duice;
         else {
             return window;
         }
-    }
-    function clone(obj) {
-        return JSON.parse(JSON.stringify(obj));
-    }
-    function setPositionCentered(element) {
-        var win = getCurrentWindow();
-        var computedStyle = win.getComputedStyle(element);
-        var computedWidth = parseInt(computedStyle.getPropertyValue('width').replace(/px/gi, ''));
-        var computedHeight = parseInt(computedStyle.getPropertyValue('height').replace(/px/gi, ''));
-        var computedLeft = Math.max(0, win.innerWidth / 2 - computedWidth / 2) + win.scrollX;
-        var computedTop = Math.max(0, win.innerHeight / 2 - computedHeight / 2) + win.scrollY;
-        computedTop = computedTop - 100;
-        computedTop = Math.max(10, computedTop);
-        element.style.left = computedLeft + 'px';
-        element.style.top = computedTop + 'px';
-    }
-    duice.setPositionCentered = setPositionCentered;
-    function getElementPosition(element) {
-        var pos = ('absolute relative').indexOf(getComputedStyle(element).position) == -1;
-        var rect1 = { top: element.offsetTop * pos, left: element.offsetLeft * pos };
-        var rect2 = element.offsetParent ? getElementPosition(element.offsetParent) : { top: 0, left: 0 };
-        return {
-            top: rect1.top + rect2.top,
-            left: rect1.left + rect2.left,
-            width: element.offsetWidth,
-            height: element.offsetHeight
-        };
-    }
-    duice.getElementPosition = getElementPosition;
-    function delayCall(millis, callback, _this, ...args) {
-        var interval = setInterval(function () {
-            try {
-                callback.call(_this, ...args);
-            }
-            catch (e) {
-                throw e;
-            }
-            finally {
-                clearInterval(interval);
-            }
-        }, millis);
     }
     function getCurrentMaxZIndex() {
         var zIndex, z = 0, all = document.getElementsByTagName('*');
@@ -543,23 +418,6 @@ var duice;
         }
     }
     duice.Blocker = Blocker;
-    class Progress {
-        constructor(element) {
-            this.blocker = new Blocker(element);
-            this.blocker.setOpacity(0.0);
-        }
-        start() {
-            this.blocker.block();
-            this.div = document.createElement('div');
-            this.div.classList.add('duice-progress');
-            this.blocker.getBlockDiv().appendChild(this.div);
-        }
-        stop() {
-            this.blocker.getBlockDiv().removeChild(this.div);
-            this.blocker.unblock();
-        }
-    }
-    duice.Progress = Progress;
     class DialogEventListener {
     }
     class Dialog {
@@ -999,6 +857,9 @@ var duice;
             this.readonlyAll = false;
             this.visible = true;
         }
+        clone(obj) {
+            return JSON.parse(JSON.stringify(obj));
+        }
         isAvailable() {
             return true;
         }
@@ -1187,9 +1048,9 @@ var duice;
             this.clear();
             for (var i = 0; i < jsonArray.length; i++) {
                 var map = new duice.Map(jsonArray[i]);
-                map.disable = clone(this.disable);
+                map.disable = this.clone(this.disable);
                 map.disableAll = this.disableAll;
-                map.readonly = clone(this.readonly);
+                map.readonly = this.clone(this.readonly);
                 map.readonlyAll = this.readonlyAll;
                 map.onBeforeChange(this.eventListener.onBeforeChangeRow);
                 map.onAfterChange(this.eventListener.onAfterChangeRow);
@@ -1275,9 +1136,9 @@ var duice;
         }
         addRow(map) {
             map.disableAll = this.disableAll;
-            map.disable = clone(this.disable);
+            map.disable = this.clone(this.disable);
             map.readonlyAll = this.readonlyAll;
-            map.readonly = clone(this.readonly);
+            map.readonly = this.clone(this.readonly);
             map.onBeforeChange(this.eventListener.onBeforeChangeRow);
             map.onAfterChange(this.eventListener.onAfterChangeRow);
             map.addObserver(this);
@@ -1287,9 +1148,9 @@ var duice;
         insertRow(index, map) {
             if (0 <= index && index < this.data.length) {
                 map.disableAll = this.disableAll;
-                map.disable = clone(this.disable);
+                map.disable = this.clone(this.disable);
                 map.readonlyAll = this.readonlyAll;
-                map.readonly = clone(this.readonly);
+                map.readonly = this.clone(this.readonly);
                 map.onBeforeChange(this.eventListener.onBeforeChangeRow);
                 map.onAfterChange(this.eventListener.onAfterChangeRow);
                 map.addObserver(this);
@@ -1409,7 +1270,19 @@ var duice;
         constructor(element) {
             super();
             this.element = element;
-            this.element.dataset.duiceId = generateUuid();
+            this.element.dataset.duiceId = this.generateUuid();
+        }
+        generateUuid() {
+            var dt = new Date().getTime();
+            var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = (dt + Math.random() * 16) % 16 | 0;
+                dt = Math.floor(dt / 16);
+                return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+            return uuid;
+        }
+        addClass(element, className) {
+            element.classList.add(className);
         }
         isAvailable() {
             if (!Node.prototype.contains) {
@@ -1428,6 +1301,46 @@ var duice;
                 return false;
             }
         }
+        executeExpression(element, $context) {
+            var string = element.outerHTML;
+            string = string.replace(/\[@duice\[([\s\S]*?)\]\]/mgi, function (match, command) {
+                try {
+                    command = command.replace('&amp;', '&');
+                    command = command.replace('&lt;', '<');
+                    command = command.replace('&gt;', '>');
+                    var result = eval(command);
+                    return result;
+                }
+                catch (e) {
+                    console.error(e, command);
+                    throw e;
+                }
+            });
+            try {
+                var template = document.createElement('template');
+                template.innerHTML = string;
+                return template.content.firstChild;
+            }
+            catch (e) {
+                this.removeChildNodes(element);
+                element.innerHTML = string;
+                return element;
+            }
+        }
+        removeChildNodes(element) {
+            var node, nodes = element.childNodes, i = 0;
+            while (node = nodes[i++]) {
+                if (node.nodeType === 1) {
+                    element.removeChild(node);
+                }
+            }
+            while (element.firstChild) {
+                element.removeChild(element.firstChild);
+            }
+            if (element instanceof HTMLSelectElement) {
+                element.options.length = 0;
+            }
+        }
         setVisible(visible) {
             this.element.style.display = (visible ? '' : 'none');
         }
@@ -1435,6 +1348,29 @@ var duice;
             if (this.element.focus) {
                 this.element.focus();
             }
+        }
+        setPositionCentered(element) {
+            var win = getCurrentWindow();
+            var computedStyle = win.getComputedStyle(element);
+            var computedWidth = parseInt(computedStyle.getPropertyValue('width').replace(/px/gi, ''));
+            var computedHeight = parseInt(computedStyle.getPropertyValue('height').replace(/px/gi, ''));
+            var computedLeft = Math.max(0, win.innerWidth / 2 - computedWidth / 2) + win.scrollX;
+            var computedTop = Math.max(0, win.innerHeight / 2 - computedHeight / 2) + win.scrollY;
+            computedTop = computedTop - 100;
+            computedTop = Math.max(10, computedTop);
+            element.style.left = computedLeft + 'px';
+            element.style.top = computedTop + 'px';
+        }
+        getElementPosition(element) {
+            var pos = ('absolute relative').indexOf(getComputedStyle(element).position) == -1;
+            var rect1 = { top: element.offsetTop * pos, left: element.offsetLeft * pos };
+            var rect2 = element.offsetParent ? this.getElementPosition(element.offsetParent) : { top: 0, left: 0 };
+            return {
+                top: rect1.top + rect2.top,
+                left: rect1.left + rect2.left,
+                width: element.offsetWidth,
+                height: element.offsetHeight
+            };
         }
     }
     class MapComponentFactory extends ComponentFactory {
@@ -1476,6 +1412,9 @@ var duice;
     }
     duice.ListComponent = ListComponent;
     class ScriptletFactory extends MapComponentFactory {
+        getSelector() {
+            return `*[is="${ALIAS}-scriptlet"]`;
+        }
         getComponent(element) {
             var scriptlet = new Scriptlet(element);
             var context;
@@ -1485,8 +1424,8 @@ var duice;
             else {
                 context = {};
             }
-            if (element.dataset[`${duice.ALIAS}Bind`]) {
-                var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
+            if (element.dataset[`${ALIAS}Bind`]) {
+                var bind = element.dataset[`${ALIAS}Bind`].split(',');
                 var _this = this;
                 bind.forEach(function (name) {
                     context[name] = _this.getContextProperty(name);
@@ -1500,7 +1439,7 @@ var duice;
     class Scriptlet extends MapComponent {
         constructor(element) {
             super(element);
-            addClass(element, 'duice-scriptlet');
+            this.addClass(element, 'duice-scriptlet');
             this.expression = element.dataset.duiceValue;
         }
         bind(context) {
@@ -1515,10 +1454,21 @@ var duice;
             }
         }
         update(dataObject, obj) {
-            var result = executeFunction(this.expression, this.context);
+            var result = this.executeFunction(this.expression, this.context);
             this.element.innerHTML = '';
             this.element.appendChild(document.createTextNode(result));
             this.element.style.display = 'unset';
+        }
+        executeFunction(code, $context) {
+            try {
+                const func = Function('$context', '"use strict";' + code + '');
+                var result = func($context);
+                return result;
+            }
+            catch (e) {
+                console.error(code);
+                throw e;
+            }
         }
         getValue() {
             return null;
@@ -1526,6 +1476,9 @@ var duice;
     }
     duice.Scriptlet = Scriptlet;
     class SpanFactory extends MapComponentFactory {
+        getSelector() {
+            return `span[is="${ALIAS}-span"]`;
+        }
         getComponent(element) {
             var span = new Span(element);
             if (element.dataset.duiceMask) {
@@ -1547,7 +1500,7 @@ var duice;
                 }
                 span.setMask(mask);
             }
-            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             span.bind(this.getContextProperty(bind[0]), bind[1]);
             return span;
         }
@@ -1557,13 +1510,13 @@ var duice;
         constructor(span) {
             super(span);
             this.span = span;
-            addClass(this.span, 'duice-span');
+            this.addClass(this.span, 'duice-span');
         }
         setMask(mask) {
             this.mask = mask;
         }
         update(map, obj) {
-            removeChildNodes(this.span);
+            this.removeChildNodes(this.span);
             var value = map.get(this.name);
             value = defaultIfEmpty(value, '');
             if (this.mask) {
@@ -1584,7 +1537,7 @@ var duice;
     class DivFactory extends MapComponentFactory {
         getComponent(element) {
             var div = new Div(element);
-            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             div.bind(this.getContextProperty(bind[0]), bind[1]);
             return div;
         }
@@ -1594,10 +1547,10 @@ var duice;
         constructor(div) {
             super(div);
             this.div = div;
-            addClass(this.div, 'duice-div');
+            this.addClass(this.div, 'duice-div');
         }
         update(map, obj) {
-            removeChildNodes(this.div);
+            this.removeChildNodes(this.div);
             var value = map.get(this.name);
             value = defaultIfEmpty(value, '');
             this.div.innerHTML = value;
@@ -1641,7 +1594,7 @@ var duice;
                 default:
                     input = new InputGeneric(element);
             }
-            let bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
+            let bind = element.dataset[`${ALIAS}Bind`].split(',');
             input.bind(this.getContextProperty(bind[0]), bind[1]);
             return input;
         }
@@ -1696,7 +1649,7 @@ var duice;
     class InputGeneric extends Input {
         constructor(input) {
             super(input);
-            addClass(this.input, 'duice-input-generic');
+            this.addClass(this.input, 'duice-input-generic');
         }
         update(map, obj) {
             var value = map.get(this.getName());
@@ -1723,7 +1676,7 @@ var duice;
     class InputText extends Input {
         constructor(input) {
             super(input);
-            addClass(this.input, 'duice-input-text');
+            this.addClass(this.input, 'duice-input-text');
         }
         setMask(format) {
             this.mask = new StringMask(format);
@@ -1769,7 +1722,7 @@ var duice;
     class InputNumber extends Input {
         constructor(input) {
             super(input);
-            addClass(this.input, 'duice-input-number');
+            this.addClass(this.input, 'duice-input-number');
             this.input.removeAttribute('type');
             this.mask = new NumberMask(0);
         }
@@ -1804,7 +1757,7 @@ var duice;
     class InputCheckbox extends Input {
         constructor(input) {
             super(input);
-            addClass(this.input, 'duice-input-checkbox');
+            this.addClass(this.input, 'duice-input-checkbox');
             this.input.addEventListener('click', function (event) {
                 event.stopPropagation();
             }, true);
@@ -1836,7 +1789,7 @@ var duice;
     class InputRadio extends Input {
         constructor(input) {
             super(input);
-            addClass(this.input, 'duice-input-radio');
+            this.addClass(this.input, 'duice-input-radio');
         }
         update(map, obj) {
             var value = map.get(this.getName());
@@ -1866,7 +1819,7 @@ var duice;
         constructor(input) {
             super(input);
             this.readonly = false;
-            addClass(this.input, 'duice-input-date');
+            this.addClass(this.input, 'duice-input-date');
             this.type = this.input.getAttribute('type').toLowerCase();
             this.input.removeAttribute('type');
             var _this = this;
@@ -2096,7 +2049,7 @@ var duice;
             this.input.parentNode.insertBefore(this.pickerDiv, this.input.nextSibling);
             this.pickerDiv.style.position = 'absolute';
             this.pickerDiv.style.zIndex = String(getCurrentMaxZIndex() + 1);
-            this.pickerDiv.style.left = getElementPosition(this.input).left + 'px';
+            this.pickerDiv.style.left = this.getElementPosition(this.input).left + 'px';
             function updateDate(date) {
                 var yyyy = date.getFullYear();
                 var mm = date.getMonth();
@@ -2121,7 +2074,7 @@ var duice;
                 var rowNum = Math.ceil((startDay + lastDate - 1) / 7);
                 var dNum = 0;
                 var currentDate = new Date();
-                removeChildNodes(calendarTbody);
+                this.removeChildNodes(calendarTbody);
                 for (var i = 1; i <= rowNum; i++) {
                     var dateTr = document.createElement('tr');
                     dateTr.classList.add('duice-input-date__pickerDiv-bodyDiv-calendarTable-dateTr');
@@ -2178,7 +2131,7 @@ var duice;
                 var optionText = option[2];
                 select.setOption(optionList, optionValue, optionText);
             }
-            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             select.bind(this.getContextProperty(bind[0]), bind[1]);
             return select;
         }
@@ -2189,7 +2142,7 @@ var duice;
             super(select);
             this.defaultOptions = new Array();
             this.select = select;
-            addClass(this.select, 'duice-select');
+            this.addClass(this.select, 'duice-select');
             var _this = this;
             this.select.addEventListener('change', function (event) {
                 _this.setChanged();
@@ -2226,7 +2179,7 @@ var duice;
         }
         updateOption() {
             console.debug(this);
-            removeChildNodes(this.select);
+            this.removeChildNodes(this.select);
             for (var i = 0, size = this.defaultOptions.length; i < size; i++) {
                 this.select.appendChild(this.defaultOptions[i]);
             }
@@ -2266,7 +2219,7 @@ var duice;
     class TextareaFactory extends MapComponentFactory {
         getComponent(element) {
             var textarea = new Textarea(element);
-            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             textarea.bind(this.getContextProperty(bind[0]), bind[1]);
             return textarea;
         }
@@ -2276,7 +2229,7 @@ var duice;
         constructor(textarea) {
             super(textarea);
             this.textarea = textarea;
-            addClass(this.textarea, 'duice-textarea');
+            this.addClass(this.textarea, 'duice-textarea');
             var _this = this;
             this.textarea.addEventListener('change', function (event) {
                 _this.setChanged();
@@ -2313,7 +2266,7 @@ var duice;
     class ImgFactory extends MapComponentFactory {
         getComponent(element) {
             var img = new Img(element);
-            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             img.bind(this.getContextProperty(bind[0]), bind[1]);
             if (element.dataset.duiceSize) {
                 var size = element.dataset.duiceSize.split(',');
@@ -2327,14 +2280,14 @@ var duice;
         constructor(img) {
             super(img);
             this.img = img;
-            addClass(this.img, 'duice-img');
+            this.addClass(this.img, 'duice-img');
             this.originSrc = this.img.src;
             var _this = this;
             this.img.addEventListener('click', function (event) {
                 if (_this.disable || _this.readonly) {
                     return false;
                 }
-                var imgPosition = getElementPosition(this);
+                var imgPosition = _this.getElementPosition(this);
                 _this.openMenuDiv(imgPosition.top, imgPosition.left);
                 event.stopPropagation();
             });
@@ -2426,7 +2379,7 @@ var duice;
             this.preview.style.position = 'absolute';
             this.preview.style.zIndex = String(getCurrentMaxZIndex() + 2);
             parentNode.appendChild(this.preview);
-            setPositionCentered(this.preview);
+            this.setPositionCentered(this.preview);
         }
         closePreview() {
             if (this.preview) {
@@ -2504,7 +2457,7 @@ var duice;
             var table = new Table(element);
             table.setSelectable(element.dataset.duiceSelectable === 'true');
             table.setEditable(element.dataset.duiceEditable === 'true');
-            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             table.bind(this.getContextProperty(bind[0]), bind[1]);
             return table;
         }
@@ -2515,10 +2468,10 @@ var duice;
             super(table);
             this.tbodies = new Array();
             this.table = table;
-            addClass(this.table, 'duice-table');
+            this.addClass(this.table, 'duice-table');
             var caption = this.table.querySelector('caption');
             if (caption) {
-                caption = executeExpression(caption, new Object());
+                caption = this.executeExpression(caption, new Object());
                 duice.initializeComponent(caption, new Object());
             }
             var thead = this.table.querySelector('thead');
@@ -2530,7 +2483,7 @@ var duice;
                 thead.querySelectorAll('th').forEach(function (th) {
                     th.classList.add('duice-table__thead-tr-th');
                 });
-                thead = executeExpression(thead, new Object());
+                thead = this.executeExpression(thead, new Object());
                 duice.initializeComponent(thead, new Object());
             }
             var tbody = this.table.querySelector('tbody');
@@ -2552,7 +2505,7 @@ var duice;
                 tfoot.querySelectorAll('td').forEach(function (td) {
                     td.classList.add('duice-table__tfoot-tr-td');
                 });
-                tfoot = executeExpression(tfoot, new Object());
+                tfoot = this.executeExpression(tfoot, new Object());
                 duice.initializeComponent(tfoot, new Object());
             }
         }
@@ -2638,13 +2591,13 @@ var duice;
             var $context = new Object;
             $context['index'] = index;
             $context[this.item] = map;
-            tbody = executeExpression(tbody, $context);
+            tbody = this.executeExpression(tbody, $context);
             duice.initializeComponent(tbody, $context);
             return tbody;
         }
         createEmptyTbody() {
             var emptyTbody = this.tbody.cloneNode(true);
-            removeChildNodes(emptyTbody);
+            this.removeChildNodes(emptyTbody);
             emptyTbody.classList.add('duice-table__tbody--empty');
             var tr = document.createElement('tr');
             tr.classList.add('duice-table__tbody-tr');
@@ -2678,7 +2631,7 @@ var duice;
                 ul.setHierarchy(hirearchy[0], hirearchy[1]);
             }
             ul.setFoldable(element.dataset.duiceFoldable === 'true');
-            var bind = element.dataset[`${duice.ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${ALIAS}Bind`].split(',');
             ul.bind(this.getContextProperty(bind[0]), bind[1]);
             return ul;
         }
@@ -2690,7 +2643,7 @@ var duice;
             this.lis = new Array();
             this.foldName = {};
             this.ul = ul;
-            addClass(this.ul, 'duice-ul');
+            this.addClass(this.ul, 'duice-ul');
             var li = ul.querySelector('li');
             var childUl = li.querySelector('li > ul');
             if (childUl) {
@@ -2793,7 +2746,7 @@ var duice;
             $context['depth'] = Number(depth);
             $context['hasChild'] = (this.hierarchy ? this.hasChild(map) : false);
             $context[this.item] = map;
-            li = executeExpression(li, $context);
+            li = this.executeExpression(li, $context);
             duice.initializeComponent(li, $context);
             this.lis.push(li);
             li.dataset.duiceIndex = String(index);
@@ -2834,7 +2787,7 @@ var duice;
                 var childUl = this.childUl.cloneNode(true);
                 childUl.classList.add('duice-ul');
                 $context['depth'] = Number(depth);
-                childUl = executeExpression(childUl, $context);
+                childUl = this.executeExpression(childUl, $context);
                 var hasChild = false;
                 var hierarchyIdValue = map.get(this.hierarchy.idName);
                 for (var i = 0, size = this.list.getRowCount(); i < size; i++) {
@@ -2981,16 +2934,16 @@ var duice;
         }
     }
     duice.Ul = Ul;
-    console.error(`alias is ${duice.ALIAS}`);
-    duice.componentDefinitionRegistry.add(new ComponentDefinition(`table[is="${duice.ALIAS}-table"]`, duice.TableFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition(`ul[is="${duice.ALIAS}-ul"]`, duice.UlFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition(`input[is="${duice.ALIAS}-input"]`, duice.InputFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition(`select[is="${duice.ALIAS}-select"]`, duice.SelectFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition(`textarea[is="${duice.ALIAS}-textarea"]`, duice.TextareaFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition(`img[is="${duice.ALIAS}-img"]`, duice.ImgFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition(`span[is="${duice.ALIAS}-span"]`, duice.SpanFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition(`div[is="${duice.ALIAS}-div"]`, duice.DivFactory));
-    duice.componentDefinitionRegistry.add(new ComponentDefinition(`*[is="${duice.ALIAS}-scriptlet"]`, duice.ScriptletFactory));
+    console.error(`alias is ${ALIAS}`);
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`table[is="${ALIAS}-table"]`, duice.TableFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`ul[is="${ALIAS}-ul"]`, duice.UlFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`input[is="${ALIAS}-input"]`, duice.InputFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`select[is="${ALIAS}-select"]`, duice.SelectFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`textarea[is="${ALIAS}-textarea"]`, duice.TextareaFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`img[is="${ALIAS}-img"]`, duice.ImgFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`span[is="${ALIAS}-span"]`, duice.SpanFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`div[is="${ALIAS}-div"]`, duice.DivFactory));
+    duice.componentDefinitionRegistry.add(new ComponentDefinition(`*[is="${ALIAS}-scriptlet"]`, duice.ScriptletFactory));
 })(duice || (duice = {}));
 document.addEventListener("DOMContentLoaded", function (event) {
     duice.initializeComponent(document, {});

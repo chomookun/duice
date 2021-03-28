@@ -34,14 +34,14 @@ namespace duice {
             constructor(ul:HTMLUListElement) {
                 super(ul);
                 this.ul = ul;
-                addClass(this.ul, 'duice-widget-pagination');
+                this.addClass(this.ul, 'duice-widget-pagination');
                 
                 // clones li
                 var li = this.ul.querySelector('li');
                 this.li = <HTMLLIElement>li.cloneNode(true);
                 li.parentNode.removeChild(li);
             }
-            bind(map:duice.Map, pageName:string, rowsName:string, totalCountName:string):void {
+            bind(map:Map, pageName:string, rowsName:string, totalCountName:string):void {
                 this.pageName = pageName;
                 this.rowsName = rowsName;
                 this.totalCountName = totalCountName;
@@ -53,7 +53,7 @@ namespace duice {
             setEnable(enable:boolean):void {
                 return;
             }
-            update(map:duice.Map, obj:object):void {
+            update(map:Map, obj:object):void {
                 this.page = Number(defaultIfEmpty(map.get(this.pageName),1));
                 var rows = Number(defaultIfEmpty(map.get(this.rowsName),1));
                 var totalCount = Number(defaultIfEmpty(map.get(this.totalCountName),1));
@@ -118,7 +118,7 @@ namespace duice {
                 var $context:any = {};
                 $context['page'] = Number(page);
                 $context['text'] = String(text);
-                li = executeExpression(li, $context);
+                li = this.executeExpression(li, $context);
                 li.appendChild(document.createTextNode(text));
                 return li;
             }

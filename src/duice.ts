@@ -12,18 +12,8 @@
  */
 namespace duice {
 
-    export var ALIAS = 'duice';
-    
-    export var ENABLE_CSS = true;
-
-    /**
-     * Adds class
-     */
-    export function addClass(element:HTMLElement, className:string):void {
-		if(ENABLE_CSS) {
-            element.classList.add(className);
-        }
-	}
+    var ALIAS = 'duice';
+    var ENABLE_CSS = true;
 
     /**
      * Component definition registry
@@ -102,19 +92,7 @@ namespace duice {
 		document.head.appendChild(script);
     }
 
-    /**
-     * Generates random UUID value
-     * @return  UUID string
-     */
-    function generateUuid():string {
-        var dt = new Date().getTime();
-        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = (dt + Math.random()*16)%16 | 0;
-            dt = Math.floor(dt/16);
-            return (c=='x' ? r :(r&0x3|0x8)).toString(16);
-        });
-        return uuid;
-    }
+
 
     /**
      * Checks mobile browser
@@ -310,105 +288,7 @@ namespace duice {
         var date = new Date();
         document.cookie = name + "= " + "; expires=" + date.toUTCString() + "; path=/";
     }
-    
-    /**
-     * Executes custom expression in HTML element and returns.
-     * @param element
-     * @param $context
-     * @return converted HTML element
-     */
-    export function executeExpression(element:HTMLElement, $context:any):any {
-        var string = element.outerHTML;
-        string = string.replace(/\[@duice\[([\s\S]*?)\]\]/mgi,function(match, command){
-            try {
-                command = command.replace('&amp;', '&');
-                command = command.replace('&lt;', '<');
-                command = command.replace('&gt;', '>');
-                var result = eval(command);
-                return result;
-            }catch(e){
-                console.error(e,command);
-                throw e;
-            }
-        });
-        try {
-            var template = document.createElement('template');
-            template.innerHTML = string;
-            return template.content.firstChild;
-        }catch(e){
-            removeChildNodes(element);
-            element.innerHTML = string;
-            return element;
-        }
-    }
 
-    /**
-     * Executes function from code.
-     * @param code 
-     * @param $context 
-     */
-    export function executeFunction(code:string, $context:any):any {
-        try {
-            const func = Function('$context', '"use strict";' + code + '');
-            var result = func($context);
-            return result;
-        }catch(e){
-            console.error(code);
-            throw e;
-        }
-    }
-    
-    /**
-     * Escapes HTML tag from string value
-     * @param value
-     * @return escaped string value
-     */
-    export function escapeHtml(value:string):string {
-        
-        // checks value is valid.
-        if(!value || typeof value !== 'string'){
-            return value;
-        }
-        
-        // replace tag
-        var htmlMap:any = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        };
-        
-        // replace and returns
-        return value.replace(/[&<>"']/g, function(m:string) {
-            return htmlMap[m];
-        });
-    }
-    
-    /**
-     * Removes child elements from HTML element.
-     * @param element
-     */
-    function removeChildNodes(element:HTMLElement):void {
-        // Remove element nodes and prevent memory leaks
-        var node, nodes = element.childNodes, i = 0;
-        while (node = nodes[i++]) {
-            if (node.nodeType === 1 ) {
-                element.removeChild(node);
-            }
-        }
-
-        // Remove any remaining nodes
-        while (element.firstChild) {
-            element.removeChild(element.firstChild);
-        }
-
-        // If this is a select, ensure that it displays empty
-        if(element instanceof HTMLSelectElement){
-            (<HTMLSelectElement>element).options.length = 0;
-        }
-    }
-    
     /**
      * Returns current upper window object.
      * @return window object
@@ -419,63 +299,6 @@ namespace duice {
         }else{
             return window;
         }
-    }
-
-    /**
-     * clones object
-     * @param obj 
-     */
-    function clone(obj:object){
-        return JSON.parse(JSON.stringify(obj));
-    }
-    
-    /**
-     * Sets element position to be centered
-     * @param element
-     */
-    export function setPositionCentered(element:HTMLElement):void {
-        var win = getCurrentWindow();
-        var computedStyle = win.getComputedStyle(element);
-        var computedWidth = parseInt(computedStyle.getPropertyValue('width').replace(/px/gi, ''));
-        var computedHeight = parseInt(computedStyle.getPropertyValue('height').replace(/px/gi, ''));
-        var computedLeft = Math.max(0,win.innerWidth/2 - computedWidth/2) + win.scrollX;
-        var computedTop = Math.max(0,win.innerHeight/2 - computedHeight/2) + win.scrollY;
-        computedTop = computedTop - 100;
-        computedTop = Math.max(10,computedTop);
-        element.style.left = computedLeft + 'px';
-        element.style.top = computedTop + 'px';
-    }
-
-    /**
-     * Returns position info of specified element
-     * @param element
-     */
-    export function getElementPosition(element:any) {
-        var pos:any = ('absolute relative').indexOf(getComputedStyle(element).position) == -1;
-        var rect1:any = {top: element.offsetTop * pos, left: element.offsetLeft * pos};
-        var rect2:any = element.offsetParent ? getElementPosition(element.offsetParent) : {top:0,left:0};
-        return {
-            top: rect1.top + rect2.top,
-            left: rect1.left + rect2.left,
-            width: element.offsetWidth,
-            height: element.offsetHeight
-        };
-    }
-    
-    /**
-     * Delays specified milliseconds and calls specified function
-     * @param callback
-     */
-    function delayCall(millis:number, callback:Function, _this:any, ...args:any[]){
-			var interval = setInterval(function() {
-            try {
-                callback.call(_this, ...args);
-            }catch(e){
-                throw e;
-            }finally{
-                clearInterval(interval);
-            }
-        },millis); 
     }
     
     /**
@@ -790,29 +613,6 @@ namespace duice {
 		}
 		getBlockDiv():HTMLDivElement {
 			return this.div;	
-		}
-    }
-
-    /**
-     * duice.Progress
-     */
-	export class Progress {
-       	element:HTMLElement;
-		div:HTMLDivElement;
-		blocker:Blocker;
-        constructor(element:HTMLElement){
-			this.blocker =  new Blocker(element);
-			this.blocker.setOpacity(0.0);
-        }
-		start():void {
-			this.blocker.block();
-			this.div = document.createElement('div');
-            this.div.classList.add('duice-progress');
-			this.blocker.getBlockDiv().appendChild(this.div);
-		}
-		stop():void {
-			this.blocker.getBlockDiv().removeChild(this.div);
-			this.blocker.unblock();
 		}
     }
 
@@ -1543,6 +1343,14 @@ namespace duice {
         visible:boolean = true;
 
         /**
+         * clones object
+         * @param obj 
+         */
+        clone(obj:object){
+            return JSON.parse(JSON.stringify(obj));
+        }
+
+        /**
          * Updates self data object from observable instance 
          * @param observable
          * @param obj
@@ -1925,9 +1733,9 @@ namespace duice {
             this.clear();
             for(var i = 0; i < jsonArray.length; i ++ ) {
                 var map = new duice.Map(jsonArray[i]);
-                map.disable = clone(this.disable);
+                map.disable = this.clone(this.disable);
                 map.disableAll = this.disableAll;
-                map.readonly = clone(this.readonly);
+                map.readonly = this.clone(this.readonly);
                 map.readonlyAll = this.readonlyAll;
                 map.onBeforeChange(this.eventListener.onBeforeChangeRow);
                 map.onAfterChange(this.eventListener.onAfterChangeRow);
@@ -2079,9 +1887,9 @@ namespace duice {
          */
         addRow(map:Map):void {
             map.disableAll = this.disableAll;
-            map.disable = clone(this.disable);
+            map.disable = this.clone(this.disable);
             map.readonlyAll = this.readonlyAll;
-            map.readonly = clone(this.readonly);
+            map.readonly = this.clone(this.readonly);
             map.onBeforeChange(this.eventListener.onBeforeChangeRow);
             map.onAfterChange(this.eventListener.onAfterChangeRow);
             map.addObserver(this);
@@ -2097,9 +1905,9 @@ namespace duice {
         insertRow(index:number, map:Map):void {
             if(0 <= index && index < this.data.length) {
                 map.disableAll = this.disableAll;
-                map.disable = clone(this.disable);
+                map.disable = this.clone(this.disable);
                 map.readonlyAll = this.readonlyAll;
-                map.readonly = clone(this.readonly);
+                map.readonly = this.clone(this.readonly);
                 map.onBeforeChange(this.eventListener.onBeforeChangeRow);
                 map.onAfterChange(this.eventListener.onAfterChangeRow);
                 map.addObserver(this);
@@ -2267,6 +2075,7 @@ namespace duice {
                 this.setContext(context);
             }
         }
+        abstract getSelector():string;
         setContext(context:any){
             this.context = context;
         }
@@ -2293,11 +2102,38 @@ namespace duice {
      * duice.Component
      */
     abstract class Component extends Observable implements Observer {
+
         element:HTMLElement;
+        
+        /**
+         * constructor
+         * @param element
+         */
         constructor(element:HTMLElement){
             super();
             this.element = element;
-            this.element.dataset.duiceId = generateUuid();
+            this.element.dataset.duiceId = this.generateUuid();
+        }
+
+        /**
+         * Generates random UUID value
+         * @return  UUID string
+         */
+        generateUuid():string {
+            var dt = new Date().getTime();
+            var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = (dt + Math.random()*16)%16 | 0;
+                dt = Math.floor(dt/16);
+                return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+            });
+            return uuid;
+        }
+
+        /**
+         * Adds class
+         */
+        addClass(element:HTMLElement, className:string):void {
+            element.classList.add(className);
         }
         abstract bind(...args: any[]):void;
         abstract update(dataObject:duice.DataObject, obj:object):void;
@@ -2322,6 +2158,61 @@ namespace duice {
         }
 
         /**
+         * Executes custom expression in HTML element and returns.
+         * @param element
+         * @param $context
+         * @return converted HTML element
+         */
+        executeExpression(element:HTMLElement, $context:any):any {
+            var string = element.outerHTML;
+            string = string.replace(/\[@duice\[([\s\S]*?)\]\]/mgi,function(match, command){
+                try {
+                    command = command.replace('&amp;', '&');
+                    command = command.replace('&lt;', '<');
+                    command = command.replace('&gt;', '>');
+                    var result = eval(command);
+                    return result;
+                }catch(e){
+                    console.error(e,command);
+                    throw e;
+                }
+            });
+            try {
+                var template = document.createElement('template');
+                template.innerHTML = string;
+                return template.content.firstChild;
+            }catch(e){
+                this.removeChildNodes(element);
+                element.innerHTML = string;
+                return element;
+            }
+        }
+
+        /**
+         * Removes child elements from HTML element.
+         * @param element
+         */
+        removeChildNodes(element:HTMLElement):void {
+            // Remove element nodes and prevent memory leaks
+            var node, nodes = element.childNodes, i = 0;
+            while (node = nodes[i++]) {
+                if (node.nodeType === 1 ) {
+                    element.removeChild(node);
+                }
+            }
+
+            // Remove any remaining nodes
+            while (element.firstChild) {
+                element.removeChild(element.firstChild);
+            }
+
+            // If this is a select, ensure that it displays empty
+            if(element instanceof HTMLSelectElement){
+                (<HTMLSelectElement>element).options.length = 0;
+            }
+        }
+
+        /**
          * Sets element visible
          * @param visible 
          */
@@ -2336,6 +2227,40 @@ namespace duice {
             if(this.element.focus){
                 this.element.focus();
             }
+        }
+
+        /**
+         * Sets element position to be centered
+         * @param element
+         */
+        setPositionCentered(element:HTMLElement):void {
+            var win = getCurrentWindow();
+            var computedStyle = win.getComputedStyle(element);
+            var computedWidth = parseInt(computedStyle.getPropertyValue('width').replace(/px/gi, ''));
+            var computedHeight = parseInt(computedStyle.getPropertyValue('height').replace(/px/gi, ''));
+            var computedLeft = Math.max(0,win.innerWidth/2 - computedWidth/2) + win.scrollX;
+            var computedTop = Math.max(0,win.innerHeight/2 - computedHeight/2) + win.scrollY;
+            computedTop = computedTop - 100;
+            computedTop = Math.max(10,computedTop);
+            element.style.left = computedLeft + 'px';
+            element.style.top = computedTop + 'px';
+        }
+
+
+        /**
+         * Returns position info of specified element
+         * @param element
+         */
+        getElementPosition(element:any) {
+            var pos:any = ('absolute relative').indexOf(getComputedStyle(element).position) == -1;
+            var rect1:any = {top: element.offsetTop * pos, left: element.offsetLeft * pos};
+            var rect2:any = element.offsetParent ? this.getElementPosition(element.offsetParent) : {top:0,left:0};
+            return {
+                top: rect1.top + rect2.top,
+                left: rect1.left + rect2.left,
+                width: element.offsetWidth,
+                height: element.offsetHeight
+            };
         }
     }
 
@@ -2398,6 +2323,9 @@ namespace duice {
      * duice.ScriptletFactory
      */
     export class ScriptletFactory extends MapComponentFactory {
+        getSelector(): string {
+            return `*[is="${ALIAS}-scriptlet"]`;
+        }
         getComponent(element:HTMLElement):Scriptlet {
             var scriptlet = new Scriptlet(element);
             var context:any;
@@ -2426,7 +2354,7 @@ namespace duice {
         context:any;
         constructor(element:HTMLElement){
             super(element);
-            addClass(element, 'duice-scriptlet');
+            this.addClass(element, 'duice-scriptlet');
             this.expression = element.dataset.duiceValue;
         }
         bind(context:any):void {
@@ -2441,11 +2369,28 @@ namespace duice {
             }
         }
         update(dataObject:duice.DataObject, obj:object) {
-            var result = executeFunction(this.expression, this.context);
+            var result = this.executeFunction(this.expression, this.context);
             this.element.innerHTML = '';
             this.element.appendChild(document.createTextNode(result));
             this.element.style.display = 'unset';
         }
+
+        /**
+         * Executes function from code.
+         * @param code 
+         * @param $context 
+         */
+        executeFunction(code:string, $context:any):any {
+            try {
+                const func = Function('$context', '"use strict";' + code + '');
+                var result = func($context);
+                return result;
+            }catch(e){
+                console.error(code);
+                throw e;
+            }
+        }
+
         getValue():string {
             return null;
         }
@@ -2455,6 +2400,9 @@ namespace duice {
      * duice.SpanFactory
      */
     export class SpanFactory extends MapComponentFactory {
+        getSelector(): string {
+            return `span[is="${ALIAS}-span"]`;
+        }
         getComponent(element:HTMLSpanElement):Span {
             var span = new Span(element);
             
@@ -2495,13 +2443,13 @@ namespace duice {
         constructor(span:HTMLSpanElement){
             super(span);
             this.span = span;
-            addClass(this.span, 'duice-span');
+            this.addClass(this.span, 'duice-span');
         }
         setMask(mask:Mask){
             this.mask = mask;
         }
         update(map:Map, obj:object):void {
-            removeChildNodes(this.span);
+            this.removeChildNodes(this.span);
             var value = map.get(this.name);
             value = defaultIfEmpty(value,'');
             if(this.mask){
@@ -2541,10 +2489,10 @@ namespace duice {
         constructor(div:HTMLDivElement){
             super(div);
             this.div = div;
-            addClass(this.div, 'duice-div');
+            this.addClass(this.div, 'duice-div');
         }
         update(map:Map, obj:object):void {
-            removeChildNodes(this.div);
+            this.removeChildNodes(this.div);
             var value = map.get(this.name);
             value = defaultIfEmpty(value,'');
             this.div.innerHTML = value;
@@ -2657,7 +2605,7 @@ namespace duice {
     export class InputGeneric extends Input {
         constructor(input:HTMLInputElement){
             super(input);
-            addClass(this.input, 'duice-input-generic');
+            this.addClass(this.input, 'duice-input-generic');
         }
         update(map:duice.Map, obj:object):void {
             var value = map.get(this.getName());
@@ -2686,7 +2634,7 @@ namespace duice {
         mask:StringMask;
         constructor(input:HTMLInputElement){
             super(input);
-            addClass(this.input,'duice-input-text');
+            this.addClass(this.input,'duice-input-text');
             
         }
         setMask(format:string){
@@ -2740,7 +2688,7 @@ namespace duice {
         mask:NumberMask;
         constructor(input:HTMLInputElement){
             super(input);
-            addClass(this.input, 'duice-input-number');
+            this.addClass(this.input, 'duice-input-number');
             this.input.removeAttribute('type');
 
             // default mask
@@ -2779,7 +2727,7 @@ namespace duice {
     export class InputCheckbox extends Input {
         constructor(input:HTMLInputElement){
             super(input);
-            addClass(this.input, 'duice-input-checkbox');
+            this.addClass(this.input, 'duice-input-checkbox');
 
             // stop click event propagation
             this.input.addEventListener('click', function(event){
@@ -2814,7 +2762,7 @@ namespace duice {
     export class InputRadio extends Input {
         constructor(input:HTMLInputElement){
             super(input);
-            addClass(this.input, 'duice-input-radio');
+            this.addClass(this.input, 'duice-input-radio');
         }
         update(map:duice.Map, obj:object):void {
             var value = map.get(this.getName());
@@ -2849,7 +2797,7 @@ namespace duice {
         clickListener:any;
         constructor(input:HTMLInputElement){
             super(input);
-            addClass(this.input, 'duice-input-date');
+            this.addClass(this.input, 'duice-input-date');
             this.type = this.input.getAttribute('type').toLowerCase();
             this.input.removeAttribute('type');
             
@@ -3133,7 +3081,7 @@ namespace duice {
             this.input.parentNode.insertBefore(this.pickerDiv, this.input.nextSibling);
             this.pickerDiv.style.position = 'absolute';
             this.pickerDiv.style.zIndex = String(getCurrentMaxZIndex() + 1);
-            this.pickerDiv.style.left = getElementPosition(this.input).left + 'px';
+            this.pickerDiv.style.left = this.getElementPosition(this.input).left + 'px';
             
             // updates date
             function updateDate(date:Date):void {
@@ -3166,7 +3114,7 @@ namespace duice {
                 var rowNum = Math.ceil((startDay + lastDate - 1)/7);
                 var dNum = 0;
                 var currentDate = new Date();
-                removeChildNodes(calendarTbody);
+                this.removeChildNodes(calendarTbody);
                 for (var i=1; i<=rowNum; i++) {
                     var dateTr = document.createElement('tr');
                     dateTr.classList.add('duice-input-date__pickerDiv-bodyDiv-calendarTable-dateTr');
@@ -3248,7 +3196,7 @@ namespace duice {
         constructor(select:HTMLSelectElement) {
             super(select);
             this.select = select;
-            addClass(this.select, 'duice-select');
+            this.addClass(this.select, 'duice-select');
             var _this = this;
             this.select.addEventListener('change', function(event){
                 _this.setChanged();
@@ -3295,7 +3243,7 @@ namespace duice {
             console.debug(this); 
 
             // removes all options
-            removeChildNodes(this.select);
+            this.removeChildNodes(this.select);
                 
             // adds default options
             for(var i = 0, size = this.defaultOptions.length; i < size; i ++){
@@ -3356,7 +3304,7 @@ namespace duice {
         constructor(textarea:HTMLTextAreaElement) {
             super(textarea);
             this.textarea = textarea;
-            addClass(this.textarea, 'duice-textarea');
+            this.addClass(this.textarea, 'duice-textarea');
             var _this = this;
             this.textarea.addEventListener('change', function(event){
                 _this.setChanged();
@@ -3425,7 +3373,7 @@ namespace duice {
         constructor(img:HTMLImageElement) {
             super(img);
             this.img = img;
-            addClass(this.img, 'duice-img');
+            this.addClass(this.img, 'duice-img');
             this.originSrc = this.img.src;
             var _this = this;
 
@@ -3434,7 +3382,7 @@ namespace duice {
                 if(_this.disable || _this.readonly){
                     return false;
                 }
-                var imgPosition = getElementPosition(this);
+                var imgPosition = _this.getElementPosition(this);
                 _this.openMenuDiv(imgPosition.top,imgPosition.left);
                 event.stopPropagation();
             });
@@ -3577,7 +3525,7 @@ namespace duice {
             this.preview.style.position = 'absolute';
             this.preview.style.zIndex = String(getCurrentMaxZIndex() + 2);
             parentNode.appendChild(this.preview);
-            setPositionCentered(this.preview);
+            this.setPositionCentered(this.preview);
         }
 
         /**
@@ -3696,12 +3644,12 @@ namespace duice {
         constructor(table:HTMLTableElement) {
             super(table);
             this.table = table;
-            addClass(this.table, 'duice-table');
+            this.addClass(this.table, 'duice-table');
             
             // initializes caption
             var caption = <HTMLTableCaptionElement>this.table.querySelector('caption');
             if(caption){
-                caption = executeExpression(<HTMLElement>caption, new Object());
+                caption = this.executeExpression(<HTMLElement>caption, new Object());
                 duice.initializeComponent(caption, new Object());
             }
             
@@ -3715,7 +3663,7 @@ namespace duice {
                 thead.querySelectorAll('th').forEach(function(th){
                     th.classList.add('duice-table__thead-tr-th');
                 });
-                thead = executeExpression(<HTMLElement>thead, new Object());
+                thead = this.executeExpression(<HTMLElement>thead, new Object());
                 duice.initializeComponent(thead, new Object());
             }
             
@@ -3741,7 +3689,7 @@ namespace duice {
                 tfoot.querySelectorAll('td').forEach(function(td){
                     td.classList.add('duice-table__tfoot-tr-td');
                 });
-                tfoot = executeExpression(<HTMLElement>tfoot, new Object());
+                tfoot = this.executeExpression(<HTMLElement>tfoot, new Object());
                 duice.initializeComponent(tfoot, new Object());
             }
         }
@@ -3862,7 +3810,7 @@ namespace duice {
             var $context:any = new Object;
             $context['index'] = index;
             $context[this.item] = map;
-            tbody = executeExpression(<HTMLElement>tbody,$context);
+            tbody = this.executeExpression(<HTMLElement>tbody,$context);
             duice.initializeComponent(tbody,$context);
             return tbody;
         }
@@ -3872,7 +3820,7 @@ namespace duice {
          */
         createEmptyTbody():HTMLTableSectionElement {
             var emptyTbody:HTMLTableSectionElement = <HTMLTableSectionElement>this.tbody.cloneNode(true);
-            removeChildNodes(emptyTbody);
+            this.removeChildNodes(emptyTbody);
             emptyTbody.classList.add('duice-table__tbody--empty')
             var tr = document.createElement('tr');
             tr.classList.add('duice-table__tbody-tr');
@@ -3940,7 +3888,7 @@ namespace duice {
         constructor(ul:HTMLUListElement) {
             super(ul);
             this.ul = ul;
-            addClass(this.ul, 'duice-ul');
+            this.addClass(this.ul, 'duice-ul');
             var li = <HTMLLIElement>ul.querySelector('li');
 
             // checks child UList
@@ -4098,7 +4046,7 @@ namespace duice {
             $context['depth'] = Number(depth);
             $context['hasChild'] = (this.hierarchy ? this.hasChild(map) : false);
             $context[this.item] = map;
-            li = executeExpression(<HTMLElement>li,$context);
+            li = this.executeExpression(<HTMLElement>li,$context);
             duice.initializeComponent(li,$context);
             this.lis.push(li);
             li.dataset.duiceIndex = String(index);
@@ -4141,7 +4089,7 @@ namespace duice {
                 var childUl = <HTMLUListElement>this.childUl.cloneNode(true);
                 childUl.classList.add('duice-ul');
                 $context['depth'] = Number(depth);
-                childUl = executeExpression(childUl,$context);
+                childUl = this.executeExpression(childUl,$context);
                 var hasChild:boolean = false;
                 var hierarchyIdValue = map.get(this.hierarchy.idName);
                 for(var i = 0, size = this.list.getRowCount(); i < size; i ++ ){
