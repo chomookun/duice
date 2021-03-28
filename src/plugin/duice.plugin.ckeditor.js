@@ -5,7 +5,7 @@ var duice;
     (function (plugin) {
         class CkeditorFactory extends duice.MapComponentFactory {
             getSelector() {
-                return `div[is="${duice.ALIAS}-plugin-ckeditor"]`;
+                return `div[is="${duice.getAlias()}-plugin-ckeditor"]`;
             }
             getComponent(element) {
                 var config = null;
@@ -51,6 +51,6 @@ var duice;
             }
         }
         plugin.Ckeditor = Ckeditor;
-        duice.COMPONENT_FACTORIES.push(new CkeditorFactory());
+        duice.addComponentFactory(new CkeditorFactory());
     })(plugin = duice.plugin || (duice.plugin = {}));
 })(duice || (duice = {}));

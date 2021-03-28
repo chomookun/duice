@@ -8,7 +8,7 @@ var duice;
             console.log('duice.initializeComponent', container, $context);
             [duice.ListComponentFactory, duice.MapComponentFactory]
                 .forEach(function (factoryType) {
-                duice.COMPONENT_FACTORIES.forEach(function (componentDefinition) {
+                COMPONENT_FACTORIES.forEach(function (componentDefinition) {
                     var elements = container.querySelectorAll(componentDefinition.getSelector() + ':not([data-duice-id])');
                     for (var i = 0, size = elements.length; i < size; i++) {
                         let element = elements[i];

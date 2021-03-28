@@ -5,7 +5,7 @@ var duice;
     (function (plugin) {
         class MarkedFactory extends duice.MapComponentFactory {
             getSelector() {
-                return `div[is="${duice.ALIAS}-plugin-marked"]`;
+                return `div[is="${duice.getAlias()}-plugin-marked"]`;
             }
             getComponent(element) {
                 var marked = new Marked(element);
@@ -33,6 +33,6 @@ var duice;
             }
         }
         plugin.Marked = Marked;
-        duice.COMPONENT_FACTORIES.push(new MarkedFactory());
+        duice.addComponentFactory(new MarkedFactory());
     })(plugin = duice.plugin || (duice.plugin = {}));
 })(duice || (duice = {}));

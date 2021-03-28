@@ -11,7 +11,7 @@ namespace duice {
          */
         export class MarkedFactory extends duice.MapComponentFactory {
             getSelector(): string {
-                return `div[is="${ALIAS}-plugin-marked"]`;
+                return `div[is="${getAlias()}-plugin-marked"]`;
             }
             getComponent(element:HTMLDivElement):Marked {
                 var marked = new Marked(element);
@@ -46,7 +46,7 @@ namespace duice {
         }
 
         // Adds component definition
-        COMPONENT_FACTORIES.push(new MarkedFactory());
+        addComponentFactory(new MarkedFactory());
     }
 
 }

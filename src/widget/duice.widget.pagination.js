@@ -5,7 +5,7 @@ var duice;
     (function (widget) {
         class PaginationFactory extends duice.MapComponentFactory {
             getSelector() {
-                return `ul[is="${duice.ALIAS}-widget-pagination"]`;
+                return `ul[is="${duice.getAlias()}-widget-pagination"]`;
             }
             getComponent(element) {
                 var pagination = new Pagination(element);
@@ -105,6 +105,6 @@ var duice;
             }
         }
         widget.Pagination = Pagination;
-        duice.COMPONENT_FACTORIES.push(new PaginationFactory());
+        duice.addComponentFactory(new PaginationFactory());
     })(widget = duice.widget || (duice.widget = {}));
 })(duice || (duice = {}));

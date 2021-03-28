@@ -12,15 +12,31 @@
  */
 namespace duice {
 
-    /**
-     * attribute alias
-     */
-    export var ALIAS = 'duice';
+    var alias = 'duice';
+    var componentFactories = new Array();
 
     /**
-     * component factory registry
+     * sets alias
+     * @param alias 
      */
-    export var COMPONENT_FACTORIES = new Array();
+    export function setAlias(value:string):void {
+        alias = value;
+    }
+
+    /**
+     * gets alias
+     */
+    export function getAlias():string {
+        return alias;
+    }
+
+    /**
+     * adds component factory
+     * @param componentFactory 
+     */
+    export function addComponentFactory(componentFactory:ComponentFactory):void {
+        componentFactories.push(componentFactory);
+    }
 
     /**
      * Initializes component
@@ -29,9 +45,9 @@ namespace duice {
      */
     export function initializeComponent(container:any, $context:any) {
         [ListComponentFactory, MapComponentFactory].forEach(function(factoryType){
-            COMPONENT_FACTORIES.forEach(function(componentFactory:ComponentFactory){
-                console.log(componentFactory.getSelector()+`[data-${ALIAS}-bind]`);
-                var elements = container.querySelectorAll(componentFactory.getSelector()+`[data-${ALIAS}-bind]:not([data-${ALIAS}-id])`);
+            componentFactories.forEach(function(componentFactory:ComponentFactory){
+                console.log(componentFactory.getSelector()+`[data-${getAlias()}-bind]`);
+                var elements = container.querySelectorAll(componentFactory.getSelector()+`[data-${getAlias()}-bind]:not([data-${getAlias()}-id])`);
                 console.log(elements);
                 for(var i = 0, size = elements.length; i < size; i ++ ){
                     var element = elements[i];
@@ -2291,7 +2307,7 @@ namespace duice {
      */
     export class ScriptletFactory extends MapComponentFactory {
         getSelector(): string {
-            return `*[is="${ALIAS}-scriptlet"]`;
+            return `*[is="${getAlias()}-scriptlet"]`;
         }
         getComponent(element:HTMLElement):Scriptlet {
             var scriptlet = new Scriptlet(element);
@@ -2301,8 +2317,8 @@ namespace duice {
             }else{
                 context = {};
             }
-            if(element.dataset[`${ALIAS}Bind`]) {
-                var bind = element.dataset[`${ALIAS}Bind`].split(',');
+            if(element.dataset[`${getAlias()}Bind`]) {
+                var bind = element.dataset[`${getAlias()}Bind`].split(',');
                 var _this = this;
                 bind.forEach(function(name){
                     context[name] = _this.getContextProperty(name); 
@@ -2368,7 +2384,7 @@ namespace duice {
      */
     export class SpanFactory extends MapComponentFactory {
         getSelector(): string {
-            return `span[is="${ALIAS}-span"]`;
+            return `span[is="${getAlias()}-span"]`;
         }
         getComponent(element:HTMLSpanElement):Span {
             var span = new Span(element);
@@ -2395,7 +2411,7 @@ namespace duice {
             }
             
             // binds
-            var bind = element.dataset[`${ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${getAlias()}Bind`].split(',');
             span.bind(this.getContextProperty(bind[0]), bind[1]);
             return span;
         }
@@ -2439,13 +2455,13 @@ namespace duice {
      */
     export class DivFactory extends MapComponentFactory {
         getSelector(): string {
-            return `div[is="${ALIAS}-div"]`;
+            return `div[is="${getAlias()}-div"]`;
         }
         getComponent(element:HTMLDivElement):Div {
             var div = new Div(element);
 
             // binds
-            var bind = element.dataset[`${ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${getAlias()}Bind`].split(',');
             div.bind(this.getContextProperty(bind[0]), bind[1]);
             return div;
         }
@@ -2478,7 +2494,7 @@ namespace duice {
      */
     export class InputFactory extends MapComponentFactory {
         getSelector(): string {
-            return `input[is="${ALIAS}-input"]`;         
+            return `input[is="${getAlias()}-input"]`;         
         }
         getComponent(element:HTMLInputElement):Input {
             let input = null;
@@ -2514,7 +2530,7 @@ namespace duice {
             }
             
             // bind
-            let bind = element.dataset[`${ALIAS}Bind`].split(',');
+            let bind = element.dataset[`${getAlias()}Bind`].split(',');
             input.bind(this.getContextProperty(bind[0]), bind[1]);
             return input;
         }
@@ -3143,7 +3159,7 @@ namespace duice {
      */
     export class SelectFactory extends MapComponentFactory {
         getSelector(): string {
-            return `select[is="${ALIAS}-select"]`;
+            return `select[is="${getAlias()}-select"]`;
         }
         getComponent(element:HTMLSelectElement):Select {
             var select = new Select(element);
@@ -3154,7 +3170,7 @@ namespace duice {
                 var optionText = option[2];
                 select.setOption(optionList, optionValue, optionText);
             }
-            var bind = element.dataset[`${ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${getAlias()}Bind`].split(',');
             select.bind(this.getContextProperty(bind[0]), bind[1]);
             return select;
         }
@@ -3265,11 +3281,11 @@ namespace duice {
      */
     export class TextareaFactory extends MapComponentFactory {
         getSelector(): string {
-            return `textarea[is="${ALIAS}-textarea"]`;
+            return `textarea[is="${getAlias()}-textarea"]`;
         }
         getComponent(element:HTMLTextAreaElement):Textarea {
             var textarea = new Textarea(element);
-            var bind = element.dataset[`${ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${getAlias()}Bind`].split(',');
             textarea.bind(this.getContextProperty(bind[0]), bind[1]);
             return textarea;
         }
@@ -3320,11 +3336,11 @@ namespace duice {
      */
     export class ImgFactory extends MapComponentFactory {
         getSelector(): string {
-            return `img[is="${ALIAS}-img"]`;
+            return `img[is="${getAlias()}-img"]`;
         }
         getComponent(element:HTMLImageElement):Img {
             var img = new Img(element);
-            var bind = element.dataset[`${ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${getAlias()}Bind`].split(',');
             img.bind(this.getContextProperty(bind[0]), bind[1]);
             if(element.dataset.duiceSize){
                 var size = element.dataset.duiceSize.split(',');
@@ -3600,13 +3616,13 @@ namespace duice {
      */
     export class TableFactory extends ListComponentFactory {
         getSelector(): string {
-            return `table[is="${ALIAS}-table"]`;
+            return `table[is="${getAlias()}-table"]`;
         }
         getComponent(element:HTMLTableElement):Table {
             var table = new Table(element);
             table.setSelectable(element.dataset.duiceSelectable === 'true');
             table.setEditable(element.dataset.duiceEditable === 'true');
-            var bind = element.dataset[`${ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${getAlias()}Bind`].split(',');
             table.bind(this.getContextProperty(bind[0]), bind[1]);
             return table;
         }
@@ -3838,7 +3854,7 @@ namespace duice {
      */
     export class UlFactory extends ListComponentFactory {
         getSelector(): string {
-            return `ul[is="${ALIAS}-ul"]`;
+            return `ul[is="${getAlias()}-ul"]`;
         }
         getComponent(element:HTMLUListElement):Ul {
             var ul = new Ul(element);
@@ -3849,7 +3865,7 @@ namespace duice {
                 ul.setHierarchy(hirearchy[0], hirearchy[1]);
             }
             ul.setFoldable(element.dataset.duiceFoldable === 'true');
-            var bind = element.dataset[`${ALIAS}Bind`].split(',');
+            var bind = element.dataset[`${getAlias()}Bind`].split(',');
             ul.bind(this.getContextProperty(bind[0]), bind[1]);
             return ul;
         }
@@ -4281,16 +4297,15 @@ namespace duice {
     }
 
     // Adds components
-    COMPONENT_FACTORIES.push(new duice.TableFactory());
-    COMPONENT_FACTORIES.push(new duice.UlFactory());
-    COMPONENT_FACTORIES.push(new duice.InputFactory());
-    COMPONENT_FACTORIES.push(new duice.SelectFactory());
-    COMPONENT_FACTORIES.push(new duice.TextareaFactory());
-    COMPONENT_FACTORIES.push(new duice.ImgFactory());
-    COMPONENT_FACTORIES.push(new duice.SpanFactory());
-    COMPONENT_FACTORIES.push(new duice.DivFactory());
-    COMPONENT_FACTORIES.push(new duice.ScriptletFactory());
-
+    addComponentFactory(new TableFactory());
+    addComponentFactory(new UlFactory());
+    addComponentFactory(new InputFactory());
+    addComponentFactory(new SelectFactory());
+    addComponentFactory(new TextareaFactory());
+    addComponentFactory(new ImgFactory());
+    addComponentFactory(new SpanFactory());
+    addComponentFactory(new DivFactory());
+    addComponentFactory(new ScriptletFactory());
 }
 
 /**
