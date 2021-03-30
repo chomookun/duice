@@ -39,6 +39,13 @@ namespace duice {
     }
 
     /**
+     * returns component factories
+     */
+    export function getComponentFactories():any {
+        return componentFactories;
+    }
+
+    /**
      * Initializes component
      * @param container
      * @param $context
@@ -46,9 +53,7 @@ namespace duice {
     export function initializeComponent(container:any, $context:any) {
         [ListComponentFactory, MapComponentFactory].forEach(function(factoryType){
             componentFactories.forEach(function(componentFactory:ComponentFactory){
-                console.log(componentFactory.getSelector()+`[data-${getAlias()}-bind]`);
                 var elements = container.querySelectorAll(componentFactory.getSelector()+`[data-${getAlias()}-bind]:not([data-${getAlias()}-id])`);
-                console.log(elements);
                 for(var i = 0, size = elements.length; i < size; i ++ ){
                     var element = elements[i];
                     if(componentFactory instanceof factoryType){
@@ -58,6 +63,17 @@ namespace duice {
                 }
             });
         });
+    }
+
+    /**
+     * assert
+     * @param expression 
+     * @param message 
+     */
+    export function assert(expression:boolean, message:string) {
+        if(!expression){
+            throw message;
+        }
     }
 
     /**
@@ -2073,8 +2089,7 @@ namespace duice {
             try {
                 return eval.call(this.context, name);
             }catch(e){
-                console.error(e,this.context, name);
-                throw e;
+                return null;
             }
         }
         abstract getSelector():string;
@@ -2258,7 +2273,8 @@ namespace duice {
     export abstract class MapComponent extends Component {
         map:duice.Map;
         name:string;
-        bind(map:duice.Map, name:string, ...args:any[]):void {
+        bind(map:Map, name:string, ...args:any[]):void {
+            assert(map instanceof Map, 'duice bind error: ' + this.element.outerHTML);
             this.map = map;
             this.name = name;
             this.map.addObserver(this);
@@ -2284,9 +2300,10 @@ namespace duice {
      * duice.ListComponent
      */
     export abstract class ListComponent extends Component {
-        list:duice.List;
+        list:List;
         item:string;
-        bind(list:duice.List, item:string):void {
+        bind(list:List, item:string):void {
+            assert(list instanceof List, 'duice bind error: ' + this.element.outerHTML);
             this.list = list;
             this.item = item;
             this.list.addObserver(this);

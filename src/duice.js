@@ -24,12 +24,14 @@ var duice;
         componentFactories.push(componentFactory);
     }
     duice.addComponentFactory = addComponentFactory;
+    function getComponentFactories() {
+        return componentFactories;
+    }
+    duice.getComponentFactories = getComponentFactories;
     function initializeComponent(container, $context) {
         [ListComponentFactory, MapComponentFactory].forEach(function (factoryType) {
             componentFactories.forEach(function (componentFactory) {
-                console.log(componentFactory.getSelector() + `[data-${getAlias()}-bind]`);
                 var elements = container.querySelectorAll(componentFactory.getSelector() + `[data-${getAlias()}-bind]:not([data-${getAlias()}-id])`);
-                console.log(elements);
                 for (var i = 0, size = elements.length; i < size; i++) {
                     var element = elements[i];
                     if (componentFactory instanceof factoryType) {
@@ -41,6 +43,12 @@ var duice;
         });
     }
     duice.initializeComponent = initializeComponent;
+    function assert(expression, message) {
+        if (!expression) {
+            throw message;
+        }
+    }
+    duice.assert = assert;
     function loadExternalStyle(href) {
         var link = document.createElement('link');
         link.rel = 'stylesheet';
@@ -1244,8 +1252,7 @@ var duice;
                 return eval.call(this.context, name);
             }
             catch (e) {
-                console.error(e, this.context, name);
-                throw e;
+                return null;
             }
         }
     }
@@ -1361,6 +1368,7 @@ var duice;
     duice.MapComponentFactory = MapComponentFactory;
     class MapComponent extends Component {
         bind(map, name, ...args) {
+            assert(map instanceof Map, 'duice bind error: ' + this.element.outerHTML);
             this.map = map;
             this.name = name;
             this.map.addObserver(this);
@@ -1380,6 +1388,7 @@ var duice;
     duice.ListComponentFactory = ListComponentFactory;
     class ListComponent extends Component {
         bind(list, item) {
+            assert(list instanceof List, 'duice bind error: ' + this.element.outerHTML);
             this.list = list;
             this.item = item;
             this.list.addObserver(this);
