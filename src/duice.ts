@@ -2109,7 +2109,7 @@ namespace duice {
          */
         constructor(element:HTMLElement){
             super();
-            this.element = element;
+            this.element = this.executeExpression(<HTMLElement>element, new Object());
             this.element.dataset.duiceId = this.generateUuid();
         }
 
@@ -2168,6 +2168,7 @@ namespace duice {
                     command = command.replace('&amp;', '&');
                     command = command.replace('&lt;', '<');
                     command = command.replace('&gt;', '>');
+                    console.log("#### command:" + command);
                     var result = eval(command);
                     return result;
                 }catch(e){
@@ -2175,6 +2176,7 @@ namespace duice {
                     throw e;
                 }
             });
+
             try {
                 var template = document.createElement('template');
                 template.innerHTML = string;

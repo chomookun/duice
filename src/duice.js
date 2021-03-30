@@ -1259,7 +1259,7 @@ var duice;
     class Component extends Observable {
         constructor(element) {
             super();
-            this.element = element;
+            this.element = this.executeExpression(element, new Object());
             this.element.dataset.duiceId = this.generateUuid();
         }
         generateUuid() {
@@ -1298,6 +1298,7 @@ var duice;
                     command = command.replace('&amp;', '&');
                     command = command.replace('&lt;', '<');
                     command = command.replace('&gt;', '>');
+                    console.log("#### command:" + command);
                     var result = eval(command);
                     return result;
                 }
