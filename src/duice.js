@@ -2073,7 +2073,7 @@ var duice;
                 var rowNum = Math.ceil((startDay + lastDate - 1) / 7);
                 var dNum = 0;
                 var currentDate = new Date();
-                this.removeChildNodes(calendarTbody);
+                _this.removeChildNodes(calendarTbody);
                 for (var i = 1; i <= rowNum; i++) {
                     var dateTr = document.createElement('tr');
                     dateTr.classList.add('duice-input-date__pickerDiv-bodyDiv-calendarTable-dateTr');
