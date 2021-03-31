@@ -2163,12 +2163,12 @@ namespace duice {
          */
         executeExpression(element:HTMLElement, $context:any):any {
             var string = element.outerHTML;
-            string = string.replace(/\[@duice\[([\s\S]*?)\]\]/mgi,function(match, command){
+            var regExp = new RegExp(`\\[@${getAlias()}\\[([\\s\\S]*?)\\]\\]`,'mgi');
+            string = string.replace(regExp,function(match, command){
                 try {
                     command = command.replace('&amp;', '&');
                     command = command.replace('&lt;', '<');
                     command = command.replace('&gt;', '>');
-                    console.log("#### command:" + command);
                     var result = eval(command);
                     return result;
                 }catch(e){
