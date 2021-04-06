@@ -6,6 +6,7 @@
   "main": "duice",
   "dependencies": {
     "gulp-concat": "^2.6.1",
+    "http-server": "^0.12.3",
     "mysql": "^2.16.0",
     "squel": "^5.12.2"
   },

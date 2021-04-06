@@ -12,10 +12,12 @@ var duice;
 (function (duice) {
     var alias = 'duice';
     var componentFactories = new Array();
-    function setAlias(value) {
-        alias = value;
-    }
-    duice.setAlias = setAlias;
+    f;
+    beunction;
+    setAlias(value, string);
+    void {
+        alias = value
+    };
     function getAlias() {
         return alias;
     }

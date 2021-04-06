@@ -1,12 +1,12 @@
 task build(type:GradleBuild) {
-    tasks = ['buildTsc','buildGulp']
+    tasks = ['startHttpServer', 'buildTsc']
+}
+
+task startHttpServer(type:Exec) {
+    commandLine 'npx', 'http-server'
 }
 
 task buildTsc(type:Exec) {
     commandLine 'node_modules/typescript/bin/tsc','--watch'
-}
-
-task buildGulp(type:Exec) {
-    commandLine 'echo', 'test'
 }
 
