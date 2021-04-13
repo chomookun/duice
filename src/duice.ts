@@ -2109,8 +2109,8 @@ namespace duice {
          */
         constructor(element:HTMLElement){
             super();
-            this.element = this.executeExpression(<HTMLElement>element, new Object());
-            this.element.dataset.duiceId = this.generateUuid();
+            this.element = element;
+            this.element.dataset[`${getAlias()}Id`] = this.generateUuid();
         }
 
         /**

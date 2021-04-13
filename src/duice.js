@@ -1259,8 +1259,8 @@ var duice;
     class Component extends Observable {
         constructor(element) {
             super();
-            this.element = this.executeExpression(element, new Object());
-            this.element.dataset.duiceId = this.generateUuid();
+            this.element = element;
+            this.element.dataset[`${getAlias()}Id`] = this.generateUuid();
         }
         generateUuid() {
             var dt = new Date().getTime();
