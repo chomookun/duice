@@ -620,7 +620,7 @@ namespace duice {
     }
 
     /**
-     * duice.ModalEventListener
+     * DialogEventListener
      */
     class DialogEventListener {
         onBeforeOpen:Function;
@@ -632,7 +632,7 @@ namespace duice {
     }
 	
    /**
-     * duice.Modal
+     * Dialog
      */
     export abstract class Dialog {
         dialog:HTMLDialogElement;
@@ -1029,55 +1029,7 @@ namespace duice {
     export function prompt(message:string, defaultValue:string) {
         return new duice.Prompt(message, defaultValue).open();
     }
-    
-	/**
-	 * duice.Dialog
-	 * @param dialog
 
-    export class Dialog extends Modal {
-        dialog:HTMLDivElement;
-        parentNode:Node;
-        constructor(dialog:HTMLDivElement) {
-            super();
-            this.dialog = dialog;
-            this.dialog.classList.add('duice-dialog');
-            this.parentNode = this.dialog.parentNode;
-        }
-        open(...args:any[]) {
-            this.dialog.style.display = 'block';
-            this.addContent(this.dialog);
-
-            // opens dialog
-            try {
-                return super.open(...args);
-            }catch(e){
-                this.dialog.style.display = 'none';
-                this.parentNode.appendChild(this.dialog);
-                throw e;
-            }
-        }
-        close(...args:any[]) {
-            var promise = super.close(...args);
-            this.dialog.style.display = 'none';
-            this.parentNode.appendChild(this.dialog);
-            return promise;
-        }
-        confirm(...args:any[]) {
-            var promise = super.confirm(...args);
-            this.dialog.style.display = 'none';
-            this.parentNode.appendChild(this.dialog);
-            return promise;
-        }
-    }
-	 */
-    /**
-     * Help function for duice.Dialog class
-     * @param message 
-
-    export function dialog(dialog:HTMLDivElement) {
-        return new duice.Dialog(dialog).open();
-    }
-     */
     /**
      * duice.TabFolderEventListener
      */
