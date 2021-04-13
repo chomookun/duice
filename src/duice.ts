@@ -19,7 +19,7 @@ namespace duice {
      * sets alias
      * @param alias 
      */
-    export f beunction setAlias(value:string):void {
+    export function setAlias(value:string):void {
         alias = value;
     }
 
