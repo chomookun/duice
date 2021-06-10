@@ -2309,7 +2309,7 @@ namespace duice {
         constructor(element:HTMLElement){
             super(element);
             this.addClass(element, 'duice-scriptlet');
-            this.expression = element.dataset.duiceValue;
+            this.expression = element.dataset[`${getAlias()}Value`];
         }
         bind(context:any):void {
             this.context = context;
@@ -2470,17 +2470,18 @@ namespace duice {
         getComponent(element:HTMLInputElement):Input {
             let input = null;
             let type = element.getAttribute('type');
+            let mask = element.dataset[`${getAlias()}Mask`];
             switch(type){
                 case 'text':
                     input = new InputText(element);
-                    if(element.dataset.duiceMask){
-                        input.setMask(element.dataset.duiceMask);
+                    if(mask){
+                        input.setMask(mask);
                     }
                     break;
                 case 'number':
                     input = new InputNumber(element);
-                    if(element.dataset.duiceMask){
-                        input.setMask(parseInt(element.dataset.duiceMask));
+                    if(mask){
+                        input.setMask(parseInt(mask));
                     }
                     break;
                 case 'checkbox':
@@ -2492,8 +2493,8 @@ namespace duice {
                 case 'date':
                 case 'datetime-local':
                     input = new InputDate(element);
-                    if(element.dataset.duiceMask){
-                        input.setMask(element.dataset.duiceMask);
+                    if(mask){
+                        input.setMask(mask);
                     }
                     break;
                default:
@@ -3133,16 +3134,18 @@ namespace duice {
             return `select[is="${getAlias()}-select"]`;
         }
         getComponent(element:HTMLSelectElement):Select {
-            var select = new Select(element);
-            if(element.dataset.duiceOption){
-                var option = element.dataset.duiceOption.split(',');
-                var optionList = this.getContextProperty(option[0]);
-                var optionValue = option[1];
-                var optionText = option[2];
+            let select = new Select(element);
+            let option = element.dataset[`${getAlias()}Option`];
+            if(option){
+                var options = option.split(',');
+                var optionList = this.getContextProperty(options[0]);
+                var optionValue = options[1];
+                var optionText = options[2];
                 select.setOption(optionList, optionValue, optionText);
             }
-            var bind = element.dataset[`${getAlias()}Bind`].split(',');
-            select.bind(this.getContextProperty(bind[0]), bind[1]);
+            let bind = element.dataset[`${getAlias()}Bind`];
+            let binds = bind.split(',');
+            select.bind(this.getContextProperty(binds[0]), binds[1]);
             return select;
         }
     }
@@ -3313,9 +3316,10 @@ namespace duice {
             var img = new Img(element);
             var bind = element.dataset[`${getAlias()}Bind`].split(',');
             img.bind(this.getContextProperty(bind[0]), bind[1]);
-            if(element.dataset.duiceSize){
-                var size = element.dataset.duiceSize.split(',');
-                img.setSize(parseInt(size[0]),parseInt(size[1]));
+            var size = element.dataset[`${getAlias()}Size`];
+            if(size){
+                var sizes = size.split(',');
+                img.setSize(parseInt(sizes[0]),parseInt(sizes[1]));                
             }
             return img;
         }
@@ -3591,8 +3595,8 @@ namespace duice {
         }
         getComponent(element:HTMLTableElement):Table {
             var table = new Table(element);
-            table.setSelectable(element.dataset.duiceSelectable === 'true');
-            table.setEditable(element.dataset.duiceEditable === 'true');
+            table.setSelectable(element.dataset[`${getAlias()}Selectable`] === 'true');
+            table.setEditable(element.dataset[`${getAlias()}Editable`] === 'true');
             var bind = element.dataset[`${getAlias()}Bind`].split(',');
             table.bind(this.getContextProperty(bind[0]), bind[1]);
             return table;
@@ -3828,16 +3832,33 @@ namespace duice {
             return `ul[is="${getAlias()}-ul"]`;
         }
         getComponent(element:HTMLUListElement):Ul {
-            var ul = new Ul(element);
-            ul.setSelectable(element.dataset.duiceSelectable === 'true');
-            ul.setEditable(element.dataset.duiceEditable === 'true');
-            if(element.dataset.duiceHierarchy){
-                var hirearchy = element.dataset.duiceHierarchy.split(',');
-                ul.setHierarchy(hirearchy[0], hirearchy[1]);
+            let ul = new Ul(element);
+            
+            // selectable
+            let selectable = element.dataset[`${getAlias()}Selectable`];
+            ul.setSelectable(selectable === 'true');
+
+            // editable
+            let editable = element.dataset[`${getAlias()}Editable`];
+            ul.setEditable(editable === 'true');
+
+            // hierarchy
+            let hierarchy = element.dataset[`${getAlias()}Hierarchy`];
+            if(hierarchy){
+                let hierarchys = hierarchy.split(',');
+                ul.setHierarchy(hierarchys[0], hierarchys[1]);
             }
-            ul.setFoldable(element.dataset.duiceFoldable === 'true');
-            var bind = element.dataset[`${getAlias()}Bind`].split(',');
-            ul.bind(this.getContextProperty(bind[0]), bind[1]);
+
+            // foldable
+            let foldable = element.dataset[`${getAlias()}Foldable`];
+            ul.setFoldable(foldable === 'true');
+
+            // bind
+            let bind = element.dataset[`${getAlias()}Bind`];
+            let binds = bind.split(',');
+            ul.bind(this.getContextProperty(binds[0]), binds[1]);
+
+            // return
             return ul;
         }
     }
