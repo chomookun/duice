@@ -49,47 +49,6 @@ var duice;
         }
     }
     duice.assert = assert;
-    function loadExternalStyle(href) {
-        var link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = href;
-        document.head.appendChild(link);
-    }
-    duice.loadExternalStyle = loadExternalStyle;
-    function loadExternalScript(src) {
-        var script = document.createElement('script');
-        script.src = src;
-        document.head.appendChild(script);
-    }
-    duice.loadExternalScript = loadExternalScript;
-    function isMobile() {
-        if (navigator.userAgent.match(/Android/i)
-            || navigator.userAgent.match(/webOS/i)
-            || navigator.userAgent.match(/iPhone/i)
-            || navigator.userAgent.match(/iPad/i)
-            || navigator.userAgent.match(/iPod/i)
-            || navigator.userAgent.match(/BlackBerry/i)
-            || navigator.userAgent.match(/Windows Phone/i)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-    duice.isMobile = isMobile;
-    function parseQueryString() {
-        var queryVariables = new Object();
-        var queryString = window.location.search.substring(1);
-        var vars = queryString.split('&');
-        for (var i = 0; i < vars.length; i++) {
-            var pair = vars[i].split('=');
-            var key = decodeURIComponent(pair[0]);
-            var value = decodeURIComponent(pair[1]);
-            queryVariables[key] = value;
-        }
-        return queryVariables;
-    }
-    duice.parseQueryString = parseQueryString;
     function isEmpty(value) {
         if (value === undefined
             || value === null
@@ -169,24 +128,6 @@ var duice;
         return value;
     }
     duice.rpad = rpad;
-    function getCookie(name) {
-        var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-        return value ? value[2] : null;
-    }
-    duice.getCookie = getCookie;
-    ;
-    function setCookie(name, value, day) {
-        var date = new Date();
-        date.setTime(date.getTime() + day * 60 * 60 * 24 * 1000);
-        document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
-    }
-    duice.setCookie = setCookie;
-    ;
-    function deleteCookie(name) {
-        var date = new Date();
-        document.cookie = name + "= " + "; expires=" + date.toUTCString() + "; path=/";
-    }
-    duice.deleteCookie = deleteCookie;
     function getCurrentWindow() {
         if (window.frameElement) {
             return window.parent;

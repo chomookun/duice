@@ -77,61 +77,6 @@ namespace duice {
     }
 
     /**
-     * Loads external style
-     * @param href
-     */
-	export function loadExternalStyle(href:string):void {
-		var link = document.createElement('link');
-		link.rel = 'stylesheet';
-		link.href = href;
-		document.head.appendChild(link);
-	}
-	
-    /**
-     * Loads external script
-     * @param src
-     */
-	export function loadExternalScript(src:string):void {
-		var script = document.createElement('script');
-		script.src = src;
-		document.head.appendChild(script);
-    }
-
-    /**
-     * Checks mobile browser
-     */
-    export function isMobile() { 
-        if( navigator.userAgent.match(/Android/i)
-        || navigator.userAgent.match(/webOS/i)
-        || navigator.userAgent.match(/iPhone/i)
-        || navigator.userAgent.match(/iPad/i)
-        || navigator.userAgent.match(/iPod/i)
-        || navigator.userAgent.match(/BlackBerry/i)
-        || navigator.userAgent.match(/Windows Phone/i)
-        ){
-            return true;
-        }else {
-            return false;
-        }
-    }
-
-    /**
-     * Returns Query String as JSON object
-     */
-	export function parseQueryString():any {
-		var queryVariables:any = new Object();
-		var queryString = window.location.search.substring(1);
-	    var vars = queryString.split('&');
-	    for (var i = 0; i < vars.length; i++) {
-	        var pair = vars[i].split('=');
-			var key = decodeURIComponent(pair[0]);
-			var value = decodeURIComponent(pair[1]);
-			queryVariables[key] = value;
-	    }
-		return queryVariables;
-	}
-    
-    /**
      * Check if value is empty
      * @param value
      * @return whether value is empty
@@ -260,36 +205,6 @@ namespace duice {
             value = value + padChar;
         }
         return value;
-    }
-
-    /**
-     * Gets cookie value
-     * @param name 
-     */
-    export function getCookie(name:string):string {
-        var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-        return value? value[2] : null;
-    };
-
-    /**
-     * Sets cookie value
-     * @param name
-     * @param value 
-     * @param day 
-     */
-    export function setCookie(name:string, value:string, day:number):void {
-        var date = new Date();
-        date.setTime(date.getTime() + day * 60 * 60 * 24 * 1000);
-        document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
-    };
-
-    /**
-     * Deletes cookie
-     * @param name 
-     */
-    export function deleteCookie(name:string):void {
-        var date = new Date();
-        document.cookie = name + "= " + "; expires=" + date.toUTCString() + "; path=/";
     }
 
     /**
