@@ -1,5 +1,5 @@
 # **DUICE** (Data-oriented UI Component Engine)
-------------------------------------------------------------------------------------------
+
 
 ## Concept
 
@@ -19,7 +19,60 @@ This library is developted by just pure javascript prototype. It is oriented tow
 Therefore you can use it with another javascript library together.
 You can use it with JQuery, AngularJS and so on, also Responsive UI framework like Bootstrap.
 
-------------------------------------------------------------------------------------------
+## Getting Started
+```html
+<html>
+  <head>
+    ...
+    <!-- includes core modules -->
+    <script src="duice.js"></script>
+    <link rel="stylesheet" type="text/css" href="duice.css">
+    ...
+  </head>
+  ...
+</html>
+```
+
+## Map Data Bind
+Map 데이터객체 생성 후 HTML 엘레멘트에 데이터를 바인딩시키는 예시이다.
+
+### Creates Map data
+```javascript
+// creates data object
+const user = new duice.Map();
+user.fromJson({
+  id: 'apple',
+  name: 'Apple'
+});
+```
+### HTML Element
+```html
+<!-- span element -->
+<span is="duice-span" data-duice-bind="user,id"></span>
+<!-- input[type=text] element -->
+<input is="duice-span" type="text" data-duice-bind="user,id"/>
+...
+```
+
+## List Data Bind
+List(내부적으로 배열) 데이터객체를 생성 후 HTML 객체와 바인딩하는 예시
+
+### Creats List Data
+```javascript
+const users = new duice.List();
+users.fromJson([
+  {id:'apple', name:'Apple'},
+  {id:'orange', name:'Orange'}
+]);
+```
+
+
+
+
+
+
+
+
 
 ## References 
 
