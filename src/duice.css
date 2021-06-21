@@ -758,7 +758,6 @@ table[is='duice-table'],
 	background-color: var(--duice-table-thead-color);
 	padding: 0.25rem;
 	font-weight: bold;
-	text-align: left;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
@@ -775,7 +774,6 @@ table[is='duice-table'],
 }
 .duice-table__tbody-tr-td {
 	border: var(--duice-table-border);
-	text-align: left;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
