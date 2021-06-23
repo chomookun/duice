@@ -774,6 +774,7 @@ table[is='duice-table'],
 }
 .duice-table__tbody-tr-td {
 	border: var(--duice-table-border);
+	text-align: center;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;

@@ -12,7 +12,7 @@ var duice;
                 if (element.dataset.duiceSize) {
                     pagination.setSize(Number(element.dataset.duiceSize));
                 }
-                var bind = element.dataset.duiceBind.split(',');
+                var bind = element.dataset[`${duice.getAlias()}Bind`].split(',');
                 pagination.bind(this.getContextProperty(bind[0]), bind[1], bind[2], bind[3]);
                 return pagination;
             }
