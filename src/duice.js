@@ -74,42 +74,6 @@ var duice;
         }
     }
     duice.defaultIfEmpty = defaultIfEmpty;
-    function isNumeric(value) {
-        return !Array.isArray(value) && (value - parseFloat(value) + 1) >= 0;
-    }
-    duice.isNumeric = isNumeric;
-    function isIdFormat(value) {
-        if (value) {
-            var pattern = /^[a-zA-Z0-9\-\_]{1,}$/;
-            return pattern.test(value);
-        }
-        return false;
-    }
-    duice.isIdFormat = isIdFormat;
-    function isPasswordFormat(value) {
-        if (value) {
-            var pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
-            return pattern.test(value);
-        }
-        return false;
-    }
-    duice.isPasswordFormat = isPasswordFormat;
-    function isEmailFormat(value) {
-        if (value) {
-            var pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-            return pattern.test(value);
-        }
-        return false;
-    }
-    duice.isEmailFormat = isEmailFormat;
-    function isUrlFormat(value) {
-        if (value) {
-            var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
-            return pattern.test(value);
-        }
-        return false;
-    }
-    duice.isUrlFormat = isUrlFormat;
     function trim(value) {
         return (value + "").trim();
     }
@@ -355,11 +319,8 @@ var duice;
         }
     }
     duice.Blocker = Blocker;
-    class DialogEventListener {
-    }
     class Dialog {
         constructor(contentDiv) {
-            this.eventListener = new DialogEventListener();
             var _this = this;
             this.contentDiv = contentDiv;
             this.dialog = document.createElement('dialog');
@@ -367,7 +328,7 @@ var duice;
             var closeButton = document.createElement('span');
             closeButton.classList.add('duice-dialog__closeButton');
             closeButton.addEventListener('click', function (event) {
-                _this.close();
+                _this.reject();
             });
             this.dialog.appendChild(closeButton);
         }
@@ -379,11 +340,6 @@ var duice;
             getCurrentWindow().document.body.appendChild(this.dialog);
             this.contentDiv.style.display = 'block';
             this.dialog.showModal();
-            return new Promise(function (resolve, reject) {
-                setTimeout(function () {
-                    resolve(true);
-                }, 100);
-            });
         }
         hide() {
             if (this.contentParentNode) {
@@ -391,23 +347,10 @@ var duice;
             }
             this.dialog.close();
             this.contentDiv.style.display = 'none';
-            return new Promise(function (resolve, reject) {
-                setTimeout(function () {
-                    resolve(true);
-                }, 100);
-            });
         }
-        open(...args) {
+        open() {
             return __awaiter(this, void 0, void 0, function* () {
-                if (this.eventListener.onBeforeOpen) {
-                    if ((yield this.eventListener.onBeforeOpen.call(this, ...args)) === false) {
-                        return;
-                    }
-                }
-                yield this.show();
-                if (this.eventListener.onAfterOpen) {
-                    yield this.eventListener.onAfterOpen.call(this, ...args);
-                }
+                this.show();
                 var _this = this;
                 this.promise = new Promise(function (resolve, reject) {
                     _this.promiseResolve = resolve;
@@ -416,57 +359,13 @@ var duice;
                 return this.promise;
             });
         }
-        close(...args) {
-            return __awaiter(this, void 0, void 0, function* () {
-                if (this.eventListener.onBeforeClose) {
-                    if ((yield this.eventListener.onBeforeClose.call(this, ...args)) === false) {
-                        return;
-                    }
-                }
-                yield this.hide();
-                if (this.eventListener.onAfterClose) {
-                    yield this.eventListener.onAfterClose.call(this, ...args);
-                }
-                this.promiseResolve(...args);
-            });
+        resolve(...args) {
+            this.hide();
+            this.promiseResolve(...args);
         }
-        confirm(...args) {
-            return __awaiter(this, void 0, void 0, function* () {
-                if (this.eventListener.onBeforeConfirm) {
-                    if ((yield this.eventListener.onBeforeConfirm.call(this, ...args)) === false) {
-                        return;
-                    }
-                }
-                yield this.hide();
-                if (this.eventListener.onAfterConfirm) {
-                    yield this.eventListener.onAfterConfirm.call(this, ...args);
-                }
-                this.promiseResolve(...args);
-            });
-        }
-        onBeforeOpen(listener) {
-            this.eventListener.onBeforeOpen = listener;
-            return this;
-        }
-        onAfterOpen(listener) {
-            this.eventListener.onAfterOpen = listener;
-            return this;
-        }
-        onBeforeClose(listener) {
-            this.eventListener.onBeforeClose = listener;
-            return this;
-        }
-        onAfterClose(listener) {
-            this.eventListener.onAfterClose = listener;
-            return this;
-        }
-        onBeforeConfirm(listener) {
-            this.eventListener.onBeforeConfirm = listener;
-            return this;
-        }
-        onAfterConfirm(listener) {
-            this.eventListener.onAfterConfirm = listener;
-            return this;
+        reject(...args) {
+            this.hide();
+            this.promiseReject(...args);
         }
     }
     duice.Dialog = Dialog;
@@ -487,7 +386,7 @@ var duice;
             this.confirmButton.classList.add('duice-alert__buttonDiv-button');
             this.confirmButton.classList.add('duice-alert__buttonDiv-button--confirm');
             this.confirmButton.addEventListener('click', function (event) {
-                _this.close();
+                _this.resolve();
             });
             this.buttonDiv.appendChild(this.confirmButton);
             contentDiv.appendChild(this.iconDiv);
@@ -501,10 +400,6 @@ var duice;
         }
     }
     duice.Alert = Alert;
-    function alert(message) {
-        return new duice.Alert(message).open();
-    }
-    duice.alert = alert;
     class Confirm extends Dialog {
         constructor(message) {
             let contentDiv = document.createElement('div');
@@ -522,14 +417,14 @@ var duice;
             this.confirmButton.classList.add('duice-confirm__buttonDiv-button');
             this.confirmButton.classList.add('duice-confirm__buttonDiv-button--confirm');
             this.confirmButton.addEventListener('click', function (event) {
-                _this.confirm(true);
+                _this.resolve(true);
             });
             this.buttonDiv.appendChild(this.confirmButton);
             this.cancelButton = document.createElement('button');
             this.cancelButton.classList.add('duice-confirm__buttonDiv-button');
             this.cancelButton.classList.add('duice-confirm__buttonDiv-button--cancel');
             this.cancelButton.addEventListener('click', function (event) {
-                _this.close(false);
+                _this.resolve(false);
             });
             this.buttonDiv.appendChild(this.cancelButton);
             contentDiv.appendChild(this.iconDiv);
@@ -543,10 +438,6 @@ var duice;
         }
     }
     duice.Confirm = Confirm;
-    function confirm(message) {
-        return new duice.Confirm(message).open();
-    }
-    duice.confirm = confirm;
     class Prompt extends Dialog {
         constructor(message, defaultValue) {
             let contentDiv = document.createElement('div');
@@ -573,14 +464,14 @@ var duice;
             this.confirmButton.classList.add('duice-prompt__buttonDiv-button');
             this.confirmButton.classList.add('duice-prompt__buttonDiv-button--confirm');
             this.confirmButton.addEventListener('click', function (event) {
-                _this.confirm(_this.getValue());
+                _this.resolve(_this.input.value);
             });
             this.buttonDiv.appendChild(this.confirmButton);
             this.cancelButton = document.createElement('button');
             this.cancelButton.classList.add('duice-prompt__buttonDiv-button');
             this.cancelButton.classList.add('duice-prompt__buttonDiv-button--cancel');
             this.cancelButton.addEventListener('click', function (event) {
-                _this.close(false);
+                _this.resolve(null);
             });
             this.buttonDiv.appendChild(this.cancelButton);
             contentDiv.appendChild(this.iconDiv);
@@ -593,15 +484,8 @@ var duice;
             this.input.focus();
             return promise;
         }
-        getValue() {
-            return this.input.value;
-        }
     }
     duice.Prompt = Prompt;
-    function prompt(message, defaultValue) {
-        return new duice.Prompt(message, defaultValue).open();
-    }
-    duice.prompt = prompt;
     class TabFolderEventListener {
     }
     class TabFolder {

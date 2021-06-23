@@ -12,9 +12,10 @@ namespace duice {
                 return `ul[is="${getAlias()}-widget-pagination"]`;
             }
             getComponent(element:HTMLUListElement):Pagination {
-                var pagination = new Pagination(element);
-                if(element.dataset.duiceSize){
-                    pagination.setSize(Number(element.dataset.duiceSize));
+                let pagination = new Pagination(element);
+                let size = element.dataset[`${getAlias()}Size`];
+                if(size){
+                    pagination.setSize(Number(size));
                 }
                 var bind = element.dataset[`${getAlias()}Bind`].split(',');
                 pagination.bind(this.getContextProperty(bind[0]), bind[1], bind[2], bind[3]);

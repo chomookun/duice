@@ -115,61 +115,7 @@ namespace duice {
         }
     }
 
-    /**
-     * Checks value is number
-     * @param value
-     */
-    export function isNumeric(value:any):boolean {
-        return !Array.isArray( value ) && (value - parseFloat(value) + 1) >= 0;
-    }
 
-    /**
-     * Checks generic ID (alphabet + number + -,_)
-     * @param value 
-     */
-    export function isIdFormat(value:any):boolean {
-        if(value){
-            var pattern = /^[a-zA-Z0-9\-\_]{1,}$/;
-            return pattern.test(value);
-        }
-        return false;
-    }
-
-    /**
-     * Checks generic password (At least 1 alphabet, 1 number, 1 special char)
-     * @param value 
-     */
-    export function isPasswordFormat(value:any):boolean {
-        if(value){
-            var pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
-            return pattern.test(value);
-        }
-        return false;
-    }
-
-    /**
-     * Checks valid email address pattern
-     * @param value 
-     */
-    export function isEmailFormat(value:any):boolean {
-        if(value){
-            var pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-            return pattern.test(value);
-        }
-        return false;
-    }
-
-    /**
-     * Checks if value is URL address format
-     * @param value 
-     */
-    export function isUrlFormat(value:any):boolean {
-        if(value){
-            var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
-            return pattern.test(value);
-        }
-        return false;
-    }
 
     /**
      * trim string
@@ -534,18 +480,6 @@ namespace duice {
 		}
     }
 
-    /**
-     * DialogEventListener
-     */
-    class DialogEventListener {
-        onBeforeOpen:Function;
-        onAfterOpen:Function;
-        onBeforeClose:Function;
-        onAfterClose:Function;
-        onBeforeConfirm:Function;
-        onAfterConfirm:Function;
-    }
-	
    /**
      * Dialog
      */
@@ -553,7 +487,6 @@ namespace duice {
         dialog:HTMLDialogElement;
         contentDiv:HTMLDivElement;
         contentParentNode:Node;
-        eventListener:DialogEventListener = new DialogEventListener();
         promise:Promise<any>;
         promiseResolve:Function;
         promiseReject:Function;
@@ -568,7 +501,7 @@ namespace duice {
             var closeButton = document.createElement('span');
             closeButton.classList.add('duice-dialog__closeButton');
             closeButton.addEventListener('click', function(event){
-               _this.close();
+               _this.reject();
             });
             this.dialog.appendChild(closeButton);
         }
@@ -589,13 +522,6 @@ namespace duice {
             getCurrentWindow().document.body.appendChild(this.dialog);
             this.contentDiv.style.display = 'block';
             this.dialog.showModal();
-
-            //return promise to delay
-            return new Promise(function(resolve,reject){
-                setTimeout(function(){
-                    resolve(true);
-                }, 100);
-            });
         }
 
         /**
@@ -610,29 +536,16 @@ namespace duice {
             // closes modal
             this.dialog.close();
             this.contentDiv.style.display = 'none';
-
-            // return promise to delay
-            return new Promise(function(resolve,reject){
-                setTimeout(function(){
-                    resolve(true);
-                }, 100);
-            });
         }
 
         /**
          * open
          * @param args 
          */
-        async open(...args:any[]) {
-            if(this.eventListener.onBeforeOpen){
-                if(await this.eventListener.onBeforeOpen.call(this, ...args) === false){
-                    return;
-                }
-            }
-            await this.show();
-            if(this.eventListener.onAfterOpen){
-                await this.eventListener.onAfterOpen.call(this, ...args);
-            }
+        async open() {
+
+            // show modal
+            this.show();
 
             // creates promise
             var _this = this;
@@ -644,95 +557,21 @@ namespace duice {
         }
 
         /**
-         * close
-         * @param args 
-         */
-        async close(...args:any[]) {
-            if(this.eventListener.onBeforeClose){
-                if(await this.eventListener.onBeforeClose.call(this, ...args) === false){
-                    return;
-                }
-            }
-            await this.hide();
-            if(this.eventListener.onAfterClose){
-                await this.eventListener.onAfterClose.call(this, ...args);
-            }
-
-            // resolves promise
-            this.promiseResolve(...args);
-        }
-
-        /**
          * confirm
          * @param args 
          */
-        async confirm(...args: any[]) {
-            if(this.eventListener.onBeforeConfirm){
-                if(await this.eventListener.onBeforeConfirm.call(this, ...args) === false){
-                    return;
-                }
-            }
-            await this.hide();
-            if(this.eventListener.onAfterConfirm){
-                await this.eventListener.onAfterConfirm.call(this, ...args);
-            }
-
-            // resolves promise
+        resolve(...args: any[]) {
+            this.hide();
             this.promiseResolve(...args);
         }
 
         /**
-         * Adds onBeforeOpen event listener
-         * @param listener 
+         * close
+         * @param args 
          */
-        onBeforeOpen(listener:Function):any {
-            this.eventListener.onBeforeOpen = listener;
-            return this;
-        }
-        
-        /**
-         * Adds onAfterOpen even listener
-         * @param listener 
-         */
-        onAfterOpen(listener:Function):any {
-            this.eventListener.onAfterOpen = listener;
-            return this;
-        }
-
-        /**
-         * Adds onBeforeClose event listener
-         * @param listener
-         */
-        onBeforeClose(listener:Function):any{
-            this.eventListener.onBeforeClose = listener;
-            return this;
-        }
-
-        /**
-         * Adds onAfterClose event listener
-         * @param listener 
-         */
-        onAfterClose(listener:Function):any {
-            this.eventListener.onAfterClose = listener;
-            return this;
-        }
-
-        /**
-         * Adds onBeforeConfirm event listener
-         * @param listener 
-         */
-        onBeforeConfirm(listener:Function):any {
-            this.eventListener.onBeforeConfirm = listener;
-            return this;
-        }
-
-        /**
-         * Adds onAfterConfirm event listener
-         * @param listener 
-         */
-        onAfterConfirm(listener:Function):any {
-            this.eventListener.onAfterConfirm = listener;
-            return this;
+        reject(...args:any[]) {
+            this.hide();
+            this.promiseReject(...args);
         }
     }
 
@@ -769,7 +608,7 @@ namespace duice {
             this.confirmButton.classList.add('duice-alert__buttonDiv-button');
             this.confirmButton.classList.add('duice-alert__buttonDiv-button--confirm');
             this.confirmButton.addEventListener('click', function(event){
-                _this.close(); 
+                _this.resolve(); 
             });
             this.buttonDiv.appendChild(this.confirmButton);
 
@@ -783,14 +622,6 @@ namespace duice {
             this.confirmButton.focus();
             return promise;
         }
-    }
-
-    /**
-     * Help function for duice.Alert class
-     * @param message 
-     */
-    export function alert(message:string){
-        return new duice.Alert(message).open();
     }
     
     /**
@@ -827,7 +658,7 @@ namespace duice {
             this.confirmButton.classList.add('duice-confirm__buttonDiv-button');
             this.confirmButton.classList.add('duice-confirm__buttonDiv-button--confirm');
             this.confirmButton.addEventListener('click', function(event){
-               _this.confirm(true); 
+               _this.resolve(true); 
             });
             this.buttonDiv.appendChild(this.confirmButton);
 
@@ -836,7 +667,7 @@ namespace duice {
             this.cancelButton.classList.add('duice-confirm__buttonDiv-button');
             this.cancelButton.classList.add('duice-confirm__buttonDiv-button--cancel');
             this.cancelButton.addEventListener('click', function(event){
-               _this.close(false); 
+               _this.resolve(false); 
             });
             this.buttonDiv.appendChild(this.cancelButton);
             
@@ -850,14 +681,6 @@ namespace duice {
             this.confirmButton.focus();
             return promise;
         }
-    }
-
-    /**
-     * Help function for duice.Confirm class
-     * @param message 
-     */
-    export function confirm(message:string){
-        return new duice.Confirm(message).open();
     }
     
     /**
@@ -908,7 +731,7 @@ namespace duice {
             this.confirmButton.classList.add('duice-prompt__buttonDiv-button');
             this.confirmButton.classList.add('duice-prompt__buttonDiv-button--confirm');
             this.confirmButton.addEventListener('click', function(event){
-               _this.confirm(_this.getValue()); 
+               _this.resolve(_this.input.value); 
             });
             this.buttonDiv.appendChild(this.confirmButton);
 
@@ -917,7 +740,7 @@ namespace duice {
             this.cancelButton.classList.add('duice-prompt__buttonDiv-button');
             this.cancelButton.classList.add('duice-prompt__buttonDiv-button--cancel');
             this.cancelButton.addEventListener('click', function(event){
-               _this.close(false);
+               _this.resolve(null);
             });
             this.buttonDiv.appendChild(this.cancelButton);
             
@@ -932,17 +755,6 @@ namespace duice {
             this.input.focus();
             return promise;
         }
-        getValue():string {
-            return this.input.value;
-        }
-    }
-
-    /**
-     * Help function for duice.Prompt class
-     * @param message 
-     */
-    export function prompt(message:string, defaultValue:string) {
-        return new duice.Prompt(message, defaultValue).open();
     }
 
     /**

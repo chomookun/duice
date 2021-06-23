@@ -1224,11 +1224,11 @@ button {
 	</section>
 
 	<!-- ================================================================ -->
-	<!-- duice.ui.Modal													  -->
+	<!-- duice.ui.Dialog													  -->
 	<!-- ================================================================ -->
 	<section class="chapter">
 		<div class="chapter__headerDiv">
-			<h2>Modal Dialog Example</h2>
+			<h2>Dialog Example</h2>
 		</div>
 		<div class="chapter__bodyDiv">
 			<div>
@@ -1237,150 +1237,62 @@ button {
 				<!-- duice.Alert									  				-->
 				<!-- ============================================================== -->
 				<button onclick="
-					(async function(){
-						await duice.alert('alert message.');
-						alert('complete');
-					}).call();
-				">await duice.alert([message])</button>
-				<button onclick="
-					duice.alert('message')
-					.then(function(){
-						console.log('complete');
-						alert('complete');
+					new duice.Alert('message...').open()
+					.then(function(result){
+						alert(result);
 					});
-				">duice.alert([message]).then(...)</button>
-				<button onclick="
-					new duice.Alert('alert message...')
-					.onBeforeOpen(function(result){
-						console.log('onBeforeOpen', result);
-						return confirm('onBeforeOpen');
-					})
-					.onAfterOpen(function(result){
-						console.log('onAfterOpen', result);
-						alert('onAfterOpen');
-					})
-					.onBeforeClose(function(result){
-						console.log('onBeforeClose', result);
-						return confirm('onBeforeClose');
-					})
-					.onAfterClose(function(result){
-						console.log('onAfterClose', result);
-						alert('onAfterClose');
-					})
-					.open();
-				">duice.Alert with event</button>
+				">new duice.Alert('message').open().then(...)</button>
 				<br/>
 				<!-- ============================================================== -->
 				<!-- duice.Confirm									  				-->
 				<!-- ============================================================== -->
 				<button onclick="
-					(async function(){
-						var result = await duice.confirm('confirm message.');
-						alert(result);
-					}).call();
-				">await duice.confirm([message])</button>
-				<button onclick="
-					duice.confirm('confirm message')
+					new duice.Confirm('message').open()
 					.then(function(result){
-						console.log(result);
 						alert(result);
 					});
-				">duice.confirm([message]).then(...)</button>
-				<button onclick="
-					new duice.Confirm('confirm message...')
-					.onBeforeOpen(function(result){
-						console.log('onBeforeOpen', result);
-						return confirm('onBeforeOpen');
-					})
-					.onAfterOpen(function(result){
-						console.log('onAfterOpen',result);
-						alert('onAfterOpen');
-					})
-					.onBeforeConfirm(function(result){
-						console.log('onBeforeConfirm', result);
-						return confirm('onBeforeConfirm');
-					})
-					.onAfterConfirm(function(result){
-						console.log('onAfterConfirm', result);
-						alert('onAfterConfirm');
-					})
-					.onBeforeClose(function(result){
-						console.log('onBeforeClose', result);
-						return confirm('onBeforeClose');
-					})
-					.onAfterClose(function(result){
-						console.log('onAfterClose', result);
-						alert('onAfterClose');
-					})
-					.open();
-				">duice.Confirm with event</button>
+				">new duice.Confirm('message').open().then(...)</button>
 				<br/>
 				<!-- ============================================================== -->
 				<!-- duice.Prompt									  				-->
 				<!-- ============================================================== -->
 				<button onclick="
-					(async function(){
-						var value = await duice.prompt('prompt message.', 'default');
-						alert(value);
-					}).call();
-				">duice.prompt([message], [default])</button>
-				<button onclick="
-					duice.prompt('message', 'default')
+					new duice.Prompt('message').open()
 					.then(function(result){
-						console.log(result);
 						alert(result);
 					});
-				">duice.prompt([message],[default]).then(...)</button>
-				<button onclick="
-					new duice.Prompt('prompt message.', 'default')
-					.onBeforeOpen(function(){
-						return confirm('onBeforeOpen');
-					})
-					.onAfterOpen(function(){
-						alert('onAfterOpen');
-					})
-					.onBeforeClose(function(){
-						return confirm('onBeforeClose');
-					})
-					.onAfterClose(function(){
-						alert('onAfterClose');
-					})
-					.onBeforeConfirm(function(){
-						return confirm('onBeforeConfirm:' + this.getValue());
-					})
-					.onAfterConfirm(function(){
-						alert('onAfterConfirm:' + this.getValue());
-					})
-					.open();
-				">duice.Prompt with event</button>
+				">new duice.Prompt('message').open().then(...)</button>
 				<br/>
 				<!-- ============================================================== -->
 				<!-- duice.Dialog									  				-->
 				<!-- ============================================================== -->
 				<script>
-					var dialog = {
-						dialog: null,
-						map: new duice.Map(),
-						open: function(){
-							this.dialog = new duice.Dialog(document.getElementById('dialog'));
-							return this.dialog.open();
-						},
-						confirm: function(){
-							return this.dialog.confirm(this.map);
-						},
-						cancel: function(){
-							return this.dialog.close(false);
-						}
-					}
 				</script>
 				<button onclick="
-					dialog.open().then(function(result){
-						console.log(result);
-					}).catch(function(e){
-						console.err(e);
+					dialog.open()
+					.then(function(result){
+						alert('confirm:' + result);
+					})
+					.catch(function(e){
+						alert('concel:' + e);
 					});
 				">duice.dialog</button>
 				<div id="dialog" style="display:none; width:600px;">
+					<script>
+					const dialog = {
+						dialog: new duice.Dialog(document.getElementById('dialog')),
+						map: new duice.Map(),
+						open: function(){
+							return this.dialog.open();
+						},
+						confirm: function(){
+							return this.dialog.resolve(this.map);
+						},
+						cancel: function(){
+							return this.dialog.reject();
+						}
+					}
+					</script>
 					<div style="text-align:center;">
 						<img is="duice-img" data-duice-bind="user,image" style="height:64px;"/>
 					</div>
