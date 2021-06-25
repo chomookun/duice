@@ -2050,10 +2050,12 @@ namespace duice {
             }
         }
         update(dataObject:duice.DataObject, obj:object) {
-            var result = this.executeFunction(this.expression, this.context);
-            this.element.innerHTML = '';
-            this.element.appendChild(document.createTextNode(result));
-            this.element.style.display = 'unset';
+            if(this.expression){
+                var result = this.executeFunction(this.expression, this.context);
+                this.element.innerHTML = '';
+                this.element.appendChild(document.createTextNode(result));
+                this.element.style.display = 'unset';
+            }
         }
 
         /**
@@ -3312,7 +3314,7 @@ namespace duice {
             this.notifyObservers(this);
         }
     }
-    
+   
     /**
      * duice.TableFactory
      */

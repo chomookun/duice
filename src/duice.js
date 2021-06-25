@@ -1272,10 +1272,12 @@ var duice;
             }
         }
         update(dataObject, obj) {
-            var result = this.executeFunction(this.expression, this.context);
-            this.element.innerHTML = '';
-            this.element.appendChild(document.createTextNode(result));
-            this.element.style.display = 'unset';
+            if (this.expression) {
+                var result = this.executeFunction(this.expression, this.context);
+                this.element.innerHTML = '';
+                this.element.appendChild(document.createTextNode(result));
+                this.element.style.display = 'unset';
+            }
         }
         executeFunction(code, $context) {
             try {

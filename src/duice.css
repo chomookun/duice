@@ -257,6 +257,7 @@
  */
 input[is='duice-input'][type='text'],
 .duice-input-text {
+	font-family: inherit;
 	margin: 0px;
 	padding: var(--duice-input-padding);
 	border: var(--duice-input-border);
@@ -629,6 +630,7 @@ select[is='duice-select'],
  */
 textarea[is='duice-textarea'],
 .duice-textarea {
+	font-family: inherit;
 	margin: 0px;
 	padding: var(--duice-textarea-padding);
 	border: var(--duice-textarea-border);
