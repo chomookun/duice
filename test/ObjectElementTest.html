@@ -65,7 +65,8 @@
                 {id: 'a', name: 'A'},
                 {id: 'b', name: 'B'},
                 {id: 'c', name: 'C'}
-            ]
+            ],
+            primitives: [1,2,3],
         });
 
         const myTypes = new duice.ArrayProxy([
@@ -599,9 +600,25 @@
                         </td>
                     </tr>
                     </tbody>
+                    <!-- primitives -->
+                    <tbody>
+                    <tr>
+                        <td>primitives</td>
+                        <td data-duice-bind="myObject" data-duice-property="primitives"></td>
+                        <td>
+                            <span data-duice-bind="myObject" data-duice-property="primitives"></span>
+                        </td>
+                        <td>
+                            &lt;* data-duice-bind="myObject" data-duice-property="items[0].name"&gt; &lt;/*&gt;
+                        </td>
+                    </tr>
+                    </tbody>
                 </table>
             </div>
         </section>
     </main>
+    <footer>
+        &nbsp;
+    </footer>
 </body>
 </html>

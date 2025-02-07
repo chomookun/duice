@@ -36,7 +36,7 @@ export class ArrayHandler extends DataHandler<object[]> {
 
             // push, unshift
             if (['push', 'unshift'].includes(property)) {
-                return async function () {
+                return function () {
                     let index;
                     if (property === 'push') {
                         index = receiver['length'];
@@ -47,7 +47,7 @@ export class ArrayHandler extends DataHandler<object[]> {
                     for (let i in arguments) {
                         rows.push(arguments[i]);
                     }
-                    await _this.insertItem(target, index, ...rows);
+                    _this.insertItem(target, index, ...rows);
                     return target.length;
                 }
             }
@@ -70,12 +70,12 @@ export class ArrayHandler extends DataHandler<object[]> {
 
                     // delete rows
                     if(deleteCount > 0) {
-                        await _this.deleteItem(target, start, deleteCount);
+                        _this.deleteItem(target, start, deleteCount);
                     }
 
                     // insert rows
                     if(insertRows.length > 0){
-                        await _this.insertItem(target, start, ...insertRows);
+                        _this.insertItem(target, start, ...insertRows);
                     }
 
                     // returns deleted rows
@@ -93,7 +93,7 @@ export class ArrayHandler extends DataHandler<object[]> {
                         index = 0;
                     }
                     let rows = [target[index]];
-                    await _this.deleteItem(target, index);
+                    _this.deleteItem(target, index);
                     return rows;
                 }
             }
@@ -114,7 +114,7 @@ export class ArrayHandler extends DataHandler<object[]> {
         return true;
     }
 
-    async update(observable: Observable, event: DataEvent): Promise<void> {
+    update(observable: Observable, event: DataEvent): Promise<void> {
         console.debug("ArrayHandler.update", observable, event);
 
         // instance is array component
@@ -135,41 +135,43 @@ export class ArrayHandler extends DataHandler<object[]> {
         this.notifyObservers(event);
     }
 
-    async insertItem(arrayProxy: object[], index: number, ...rows: object[]): Promise<void> {
+    insertItem(arrayProxy: object[], index: number, ...rows: object[]): void {
         let arrayHandler = ArrayProxy.getHandler(arrayProxy);
         let proxyTarget = ArrayProxy.getTarget(arrayProxy);
         rows.forEach((object, index) => {
-            let objectProxy = new ObjectProxy(object);
-            let objectHandler = ObjectProxy.getHandler(objectProxy);
-            objectHandler.propertyChangingListener = this.propertyChangingListener;
-            objectHandler.propertyChangedListener = this.propertyChangedListener;
-            rows[index] = objectProxy;
+            if (typeof object === 'object') {
+                let objectProxy = new ObjectProxy(object);
+                let objectHandler = ObjectProxy.getHandler(objectProxy);
+                objectHandler.propertyChangingListener = this.propertyChangingListener;
+                objectHandler.propertyChangedListener = this.propertyChangedListener;
+                rows[index] = objectProxy;
+            }
         });
         let event = new ItemInsertEvent(this, index, rows);
-        if (await arrayHandler.checkListener(arrayHandler.rowInsertingListener, event)) {
+        if (arrayHandler.checkListener(arrayHandler.rowInsertingListener, event)) {
             proxyTarget.splice(index, 0, ...rows);
-            await arrayHandler.checkListener(arrayHandler.rowInsertedListener, event);
+            arrayHandler.checkListener(arrayHandler.rowInsertedListener, event);
             arrayHandler.notifyObservers(event);
         }
     }
 
-    async deleteItem(arrayProxy: object[], index: number, size?: number): Promise<void> {
+    deleteItem(arrayProxy: object[], index: number, size?: number): void {
         let arrayHandler = ArrayProxy.getHandler(arrayProxy);
         let proxyTarget = ArrayProxy.getTarget(arrayProxy);
         let sliceBegin = index;
         let sliceEnd = (size ? index + size : index + 1);
         let rows = proxyTarget.slice(sliceBegin, sliceEnd);
         let event = new ItemDeleteEvent(this, index, rows);
-        if (await arrayHandler.checkListener(arrayHandler.rowDeletingListener, event)) {
+        if (arrayHandler.checkListener(arrayHandler.rowDeletingListener, event)) {
             let spliceStart = index;
             let spliceDeleteCount = (size ? size : 1);
             proxyTarget.splice(spliceStart, spliceDeleteCount);
-            await arrayHandler.checkListener(arrayHandler.rowDeletedListener, event);
+            arrayHandler.checkListener(arrayHandler.rowDeletedListener, event);
             arrayHandler.notifyObservers(event);
         }
     }
 
-    async appendItem(arrayProxy: object[], ...rows: object[]): Promise<void> {
+    appendItem(arrayProxy: object[], ...rows: object[]): void {
         let index = arrayProxy.length;
         return this.insertItem(arrayProxy, index, ...rows);
     }

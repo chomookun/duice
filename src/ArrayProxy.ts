@@ -23,7 +23,9 @@ export class ArrayProxy extends globalThis.Array {
         // copy array elements
         if(globalThis.Array.isArray(array)){
             for(let i = 0; i < array.length; i++ ){
-                array[i] = new ObjectProxy(array[i]);
+                if (typeof array[i] === 'object') {
+                    array[i] = new ObjectProxy(array[i]);
+                }
             }
         }
 
@@ -87,7 +89,14 @@ export class ArrayProxy extends globalThis.Array {
             arrayProxy.length = 0;
 
             // creates elements
-            array.forEach((object, index) => {
+            for (let index = 0; index < array.length; index ++) {
+                let object = array[index];
+
+                // if not object, skip
+                if (typeof object !== 'object') {
+                    continue;
+                }
+
                 let objectProxy = new ObjectProxy(object);
                 arrayProxy[index] = objectProxy;
 
@@ -106,7 +115,7 @@ export class ArrayProxy extends globalThis.Array {
                 // add listener
                 ObjectProxy.onPropertyChanging(objectProxy, arrayHandler.propertyChangingListener);
                 ObjectProxy.onPropertyChanged(objectProxy, arrayHandler.propertyChangedListener);
-            });
+            }
 
         } finally {
             // resume

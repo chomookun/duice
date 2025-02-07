@@ -88,9 +88,9 @@ export abstract class DataHandler<T> extends Observable implements Observer {
         this.listenerEnabled = true;
     }
 
-    async checkListener(listener: Function, event: DataEvent): Promise<boolean> {
+    checkListener(listener: Function, event: DataEvent): boolean {
         if(this.listenerEnabled && listener){
-            let result = await listener.call(this.getTarget(), event);
+            let result = listener.call(this.getTarget(), event);
             if(result == false){
                 return false;
             }

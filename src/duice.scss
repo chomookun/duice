@@ -117,6 +117,13 @@
     }
   }
 
+  /* table-layout */
+  @each $value in auto fixed {
+    .#{$prefix}table-layout--#{$value} {
+      table-layout: #{$value};
+    }
+  }
+
   /* margin */
   @for $i from 0 through 3 {
     @each $unit in px rem em {
@@ -237,8 +244,8 @@
   }
 
   /* width */
-  @for $i from 1 through 10 {
-    $value: $i*10;
+  @for $i from 1 through 20 {
+    $value: $i*5;
     .#{$prefix}width--#{$value} {
       width: #{$value + '%'};
     }
