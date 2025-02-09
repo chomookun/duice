@@ -1,5 +1,5 @@
 /*!
- * duice - v0.2.58
+ * duice - v0.2.59
  * git: https://gitbub.com/chomookun/duice
  * website: https://duice.chomookun.com
  * Released under the LGPL(GNU Lesser General Public License version 3) License
@@ -594,15 +594,6 @@ var duice = (function (exports) {
         }
     }
 
-    var __awaiter$4 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-        return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-            step((generator = generator.apply(thisArg, _arguments || [])).next());
-        });
-    };
     class ObjectHandler extends DataHandler {
         constructor() {
             super();
@@ -620,20 +611,18 @@ var duice = (function (exports) {
             return true;
         }
         update(observable, event) {
-            return __awaiter$4(this, void 0, void 0, function* () {
-                console.debug("ObjectHandler.update", observable, event);
-                // Element
-                if (observable instanceof ObjectElement) {
-                    let property = observable.getProperty();
-                    let value = observable.getValue();
-                    if (yield this.checkListener(this.propertyChangingListener, event)) {
-                        this.setValue(property, value);
-                        yield this.checkListener(this.propertyChangedListener, event);
-                    }
+            console.debug("ObjectHandler.update", observable, event);
+            // Element
+            if (observable instanceof ObjectElement) {
+                let property = observable.getProperty();
+                let value = observable.getValue();
+                if (this.checkListener(this.propertyChangingListener, event)) {
+                    this.setValue(property, value);
+                    this.checkListener(this.propertyChangedListener, event);
                 }
-                // notify
-                this.notifyObservers(event);
-            });
+            }
+            // notify
+            this.notifyObservers(event);
         }
         getValue(property) {
             property = property.replace('.', '?.');
@@ -709,7 +698,7 @@ var duice = (function (exports) {
         }
     }
 
-    var __awaiter$3 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    var __awaiter$3 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
             function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -1340,7 +1329,7 @@ var duice = (function (exports) {
         }
     }
 
-    var __awaiter$2 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    var __awaiter$2 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
             function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -1635,7 +1624,7 @@ var duice = (function (exports) {
         }
     }
 
-    var __awaiter$1 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    var __awaiter$1 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
             function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -2119,7 +2108,7 @@ var duice = (function (exports) {
         DataElementRegistry.register('textarea', new TextareaElementFactory());
     })();
 
-    var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    var __awaiter = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
             function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -2487,13 +2476,25 @@ var duice = (function (exports) {
         }
     }
 
-    //  listens DOMContentLoaded event
-    if (globalThis.document) {
-        // initialize elements
-        document.addEventListener("DOMContentLoaded", event => {
-            Initializer.initialize(document.documentElement, {});
-        });
-    }
+    // initializes
+    (function () {
+        // listen DOMContentLoaded
+        if (globalThis.document) {
+            document.addEventListener("DOMContentLoaded", event => {
+                Initializer.initialize(document.documentElement, {});
+            });
+        }
+        // listen history event and forward to DOMContentLoaded event
+        if (globalThis.window) {
+            ['popstate', 'pageshow'].forEach(event => {
+                window.addEventListener(event, (e) => {
+                    if (event === 'pageshow' && !e.persisted)
+                        return;
+                    document.dispatchEvent(new CustomEvent('DOMContentLoaded'));
+                });
+            });
+        }
+    })();
 
     exports.AlertDialog = AlertDialog;
     exports.ArrayElement = ArrayElement;

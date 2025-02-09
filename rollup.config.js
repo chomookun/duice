@@ -30,9 +30,16 @@ export default {
             banner: banner,
         }
     ],
+    context: "window",
     plugins: [
         visualizer({
             filename: "./dist/bundle-analysis.html"
         })
     ],
+    onwarn(warning, warn) {
+        if (warning.code === "CIRCULAR_DEPENDENCY") {
+            return;
+        }
+        warn(warning);
+    }
 };

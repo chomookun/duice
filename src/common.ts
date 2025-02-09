@@ -1,4 +1,6 @@
 import {Configuration} from "./Configuration";
+import {ObjectHandler} from "./ObjectHandler";
+import {ArrayHandler} from "./ArrayHandler";
 
 export function getElementQuerySelector(): string {
     let namespace = Configuration.getNamespace();

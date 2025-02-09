@@ -31,16 +31,16 @@ export class ObjectHandler extends DataHandler<object> {
         return true;
     }
 
-    async update(observable: Observable, event: DataEvent): Promise<void> {
+    update(observable: Observable, event: DataEvent): void {
         console.debug("ObjectHandler.update", observable, event);
 
         // Element
         if (observable instanceof ObjectElement) {
             let property = observable.getProperty();
             let value = observable.getValue();
-            if(await this.checkListener(this.propertyChangingListener, event)){
+            if(this.checkListener(this.propertyChangingListener, event)){
                 this.setValue(property, value);
-                await this.checkListener(this.propertyChangedListener, event);
+                this.checkListener(this.propertyChangedListener, event);
             }
         }
 

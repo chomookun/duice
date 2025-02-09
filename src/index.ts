@@ -30,10 +30,23 @@ export * from "./dialog/PromptDialog";
 export * from "./tab/TabFolder";
 export * from "./tab/TabItem";
 
-//  listens DOMContentLoaded event
-if(globalThis.document) {
-    // initialize elements
-    document.addEventListener("DOMContentLoaded", event => {
-        Initializer.initialize(document.documentElement, {});
-    });
-}
+// initializes
+(function() {
+    // listen DOMContentLoaded
+    if(globalThis.document) {
+        document.addEventListener("DOMContentLoaded", event => {
+            Initializer.initialize(document.documentElement, {});
+        });
+    }
+    // listen history event and forward to DOMContentLoaded event
+    if (globalThis.window) {
+        ['popstate', 'pageshow'].forEach(event => {
+            window.addEventListener(event, (e) => {
+                if (event === 'pageshow' && !(e as PageTransitionEvent).persisted) return;
+                document.dispatchEvent(new CustomEvent('DOMContentLoaded'));
+            });
+        });
+    }
+})();
+
+
