@@ -13,4 +13,11 @@ dist/*
 !dist/*.css
 !dist/*.css.map
 
+# ignores gem vendor
+vendor/bundle/
 
+# ignores bundle
+.bundle/
+
+# ignores _site
+_site/

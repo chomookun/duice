@@ -322,6 +322,13 @@
     }
   }
 
+  /* vertical-align */
+    @each $value in baseline top middle bottom text-top text-bottom sub super {
+        .#{$prefix}vertical-align--#{$value} {
+        vertical-align: #{$value};
+        }
+    }
+
   /* cursor */
   @each $value in pointer now-allowed move {
     .#{$prefix}cursor--#{$value} {
