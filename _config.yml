@@ -1,5 +1,6 @@
 remote_theme: chomookun/jekyll-plain
 plugins:
   - jekyll-remote-theme
+source: ./docs
 include:
-  - ../README.md
+  - ./README.md
