@@ -205,18 +205,18 @@
   }
 
   /* border-radius */
-  @for $i from 0 through 3 {
+  @for $i from 1 through 3 {
     @each $unit in px rem em {
       $value: unit-value($i, $unit);
       .#{$prefix}border-radius--#{$value} {
-          border-radius: #{$value};
+          border-radius: #{$value} !important;
       }
     }
   }
   @for $i from 1 through 5 {
     $value: $i*10;
     .#{$prefix}border-radius--#{$value} {
-      border-radius: #{$value + '%'};
+      border-radius: #{$value + '%'} !important;
     }
   }
 
@@ -240,6 +240,13 @@
   @each $value in thin normal bold {
     .#{$prefix}font-weight--#{$value} {
       font-weight: #{$value};
+    }
+  }
+
+  /* font-style */
+  @each $value in normal italic oblique {
+    .#{$prefix}font-style--#{$value} {
+      font-style: #{$value} !important;
     }
   }
 
