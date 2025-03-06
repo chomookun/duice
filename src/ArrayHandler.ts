@@ -54,8 +54,7 @@ export class ArrayHandler extends DataHandler<object[]> {
 
             // splice
             if (['splice'].includes(property)) {
-                return async function () {
-
+                return function () {
                     // parse arguments
                     let start = arguments[0];
                     let deleteCount = arguments[1];
@@ -85,7 +84,7 @@ export class ArrayHandler extends DataHandler<object[]> {
 
             // pop, shift
             if (['pop', 'shift'].includes(property)) {
-                return async function () {
+                return function () {
                     let index;
                     if (property === 'pop') {
                         index = receiver['length'] - 1;
