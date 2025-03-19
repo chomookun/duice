@@ -1,8 +1,16 @@
-import {DataEvent} from "./event/DataEvent";
+import {Event} from "./event/Event";
 import {Observable} from "./Observable";
 
+/**
+ * Observer interface
+ */
 export interface Observer {
 
-    update(observable: Observable, dataEvent: DataEvent): void;
+    /**
+     * Updates observer
+     * @param observable observable
+     * @param event event
+     */
+    update(observable: Observable, event: Event): void;
 
 }

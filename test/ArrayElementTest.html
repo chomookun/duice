@@ -151,29 +151,40 @@
             viewMyArray();
         });
 
-        // row inserting listener
-        duice.ArrayProxy.onRowInserting(myArray, async event => {
+        // item inserting listener
+        duice.ArrayProxy.onItemInserting(myArray, async event => {
             if(!await new duice.ConfirmDialog(`insert [${event.getIndex()}]${JSON.stringify(event.getItems())}`)){
                 return false;
             }
         });
 
-        // row inserted listener
-        duice.ArrayProxy.onRowInserted(myArray, event => {
+        // item inserted listener
+        duice.ArrayProxy.onItemInserted(myArray, event => {
             viewMyArray();
         });
 
-        // row deleting listener
-        duice.ArrayProxy.onRowDeleting(myArray, async event => {
+        // item deleting listener
+        duice.ArrayProxy.onItemDeleting(myArray, async event => {
             if(!await new duice.ConfirmDialog(`delete [${event.getIndex()}]${JSON.stringify(event.getItems())}`)){
                 return false;
             }
         });
 
-        // row deleted listener
-        duice.ArrayProxy.onRowDeleted(myArray, event => {
+        // item deleted listener
+        duice.ArrayProxy.onItemDeleted(myArray, event => {
             viewMyArray();
         })
+
+        // item moving listener
+        duice.ArrayProxy.onItemMoving(myArray, async event => {
+            if(!await new duice.ConfirmDialog(`move [${event.getFromIndex()}] to [${event.getToIndex()}]`)){
+                return false;
+            }
+        });
+
+        duice.ArrayProxy.onItemMoved(myArray, event => {
+            viewMyArray();
+        });
 
         // adds DOMContentLoaded event listener
         document.addEventListener("DOMContentLoaded", event => {
@@ -275,10 +286,10 @@
                 </div>
             </div>
             <!-- end of simple table -->
-            <!-- start of editable table -->
+            <!-- start of nested table -->
             <div>
                 <h3>
-                    Complex Table
+                    Nested Table
                     <small>&lt;tr data-duice-bind="myArray" data-duice-loop="item,status" data-duice-selected-item-class="selected" data-duice-editable="true" &gt;</small>
                 </h3>
                 <div class="overflow-x--auto">
@@ -372,7 +383,7 @@
                     </table>
                 </div>
             </div>
-            <!-- end of editable table -->
+            <!-- end of nested table -->
             <!-- start of hierarchy -->
             <div>
                 <h3>
@@ -387,6 +398,38 @@
                 </div>
             </div>
             <!-- end of hierarchy -->
+            <!-- start of blend table -->
+            <div>
+                <h3>Blend</h3>
+                <table>
+                    <tbody data-duice-bind="myArray" data-duice-loop="myObject,status" data-duice-selected-item-class="selected" data-duice-editable="true" >
+                    <tr data-duice-bind="myObject" data-duice-if="return myObject.type!=='human';">
+                        <td>
+                           <span data-duice-bind="myObject" data-duice-property="id"></span>
+                        </td>
+                        <td>
+                            <span data-duice-bind="myObject" data-duice-property="name"></span>
+                        </td>
+                        <td>
+                            <span data-duice-bind="myObject" data-duice-property="phoneNo"></span>
+                        </td>
+                    </tr>
+                    <tr data-duice-bind="myObject" data-duice-if="return myObject.type==='human';">
+                        <td>
+                            <span data-duice-bind="myObject" data-duice-property="id"></span>
+                        </td>
+                        <td colspan="100%">
+                            <span data-duice-bind="myObject" data-duice-execute="this.innerHTML=JSON.stringify(myObject) + 'test';"></span>
+                        </td>
+                    </tr>
+                    <tr data-duice-bind="myObject" data-duice-if="return !myObject.type;">
+                        <td data-duice-bind="myObject"></td>
+                        <td>TEST</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- end of blend table -->
         </section>
     </main>
     <footer>

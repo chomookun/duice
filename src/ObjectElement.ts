@@ -1,21 +1,30 @@
 import {findVariable, getElementAttribute, runExecuteCode, runIfCode} from "./common";
-import {DataElement} from "./DataElement";
+import {Element} from "./Element";
 import {ObjectProxy} from "./ObjectProxy";
 import {Observable} from "./Observable";
-import {ObjectHandler} from "./ObjectHandler";
+import {ObjectProxyHandler} from "./ObjectProxyHandler";
 import {Format} from "./format/Format";
 import {FormatFactory} from "./format/FormatFactory";
-import {DataEvent} from "./event/DataEvent";
+import {Event} from "./event/Event";
+import {Configuration} from "./Configuration";
 
-export class ObjectElement<T extends HTMLElement> extends DataElement<T, object> {
+/**
+ * Object Element
+ */
+export class ObjectElement<T extends HTMLElement> extends Element<T, object> {
 
     property: string;
 
     format: Format;
 
+    /**
+     * Constructor
+     * @param htmlElement html element
+     * @param bindData bind data
+     * @param context context
+     */
     constructor(htmlElement: T, bindData: object, context: object) {
         super(htmlElement, bindData, context);
-
         // attributes
         this.property = getElementAttribute(htmlElement,'property')
         let format = getElementAttribute(htmlElement, 'format');
@@ -24,40 +33,49 @@ export class ObjectElement<T extends HTMLElement> extends DataElement<T, object>
         }
     }
 
+    /**
+     * Gets property
+     */
     getProperty(): string {
         return this.property;
     }
 
+    /**
+     * Gets format
+     */
     getFormat(): Format {
         return this.format;
     }
 
+    /**
+     * Overrides render
+     */
     override render(): void {
-
         // check if
-        this.checkIf();
-
+        if (!this.checkIf()) {
+            return;
+        }
+        // property
         if(this.property){
-            let objectHandler = ObjectProxy.getHandler(this.getBindData());
-
+            let objectHandler = ObjectProxy.getProxyHandler(this.getBindData());
             // set value
             let value = objectHandler.getValue(this.property);
             this.setValue(value);
-
             // set readonly
             let readonly = objectHandler.isReadonly(this.property);
             this.setReadonly(readonly);
-
             // set disable
             let disable = objectHandler.isDisable(this.property);
             this.setDisable(disable);
         }
-
         // executes script
         this.executeScript();
     }
 
-    checkIf(): void {
+    /**
+     * Check if condition in attribute
+     */
+    checkIf(): boolean {
         let context = Object.assign({}, this.getContext());
         let bind = getElementAttribute(this.getHtmlElement(), 'bind');
         let bindSplit = bind.split('.');
@@ -66,10 +84,13 @@ export class ObjectElement<T extends HTMLElement> extends DataElement<T, object>
         }else{
             context[bind] = this.getBindData();
         }
-        runIfCode(this.htmlElement, context);
+        return runIfCode(this.htmlElement, context);
     }
 
-    executeScript(): void {
+    /**
+     * Executes script in attribute
+     */
+    executeScript(): boolean {
         let context = Object.assign({}, this.getContext());
         let bind = getElementAttribute(this.getHtmlElement(), 'bind');
         let bindSplit = bind.split('.');
@@ -78,35 +99,40 @@ export class ObjectElement<T extends HTMLElement> extends DataElement<T, object>
         }else{
             context[bind] = this.getBindData();
         }
-        runExecuteCode(this.htmlElement, context);
+        return runExecuteCode(this.htmlElement, context);
     }
 
-    override update(observable: Observable, event: DataEvent): void {
-        console.debug('ObjectElement.update', observable, event);
-
+    /**
+     * Updates
+     * @param observable observable
+     * @param event event
+     */
+    override update(observable: Observable, event: Event): void {
+        console.trace('ObjectElement.update', observable, event);
         // ObjectHandler
-        if(observable instanceof ObjectHandler) {
-
+        if(observable instanceof ObjectProxyHandler) {
             // check if
-            this.checkIf();
-
+            if (!this.checkIf()) {
+                return;
+            }
+            // property
             if(this.property){
-
                 // set value
                 this.setValue(observable.getValue(this.property));
-
                 // set readonly
                 this.setReadonly(observable.isReadonly(this.property));
-
                 // set disable
                 this.setDisable(observable.isDisable(this.property));
             }
-
             // executes script
             this.executeScript();
         }
     }
 
+    /**
+     * Sets property value
+     * @param value property value
+     */
     setValue(value: any): void {
         if(value != null) {
             value = this.getFormat() ? this.getFormat().format(value) : value;
@@ -116,6 +142,9 @@ export class ObjectElement<T extends HTMLElement> extends DataElement<T, object>
         }
     }
 
+    /**
+     * Gets property value
+     */
     getValue(): any {
         let value = this.htmlElement.innerText;
         if(value && value.trim().length > 0) {
@@ -126,14 +155,25 @@ export class ObjectElement<T extends HTMLElement> extends DataElement<T, object>
         return value;
     }
 
+    /**
+     * Sets readonly
+     * @param readonly readonly or not
+     */
     setReadonly(readonly: boolean): void {
         // no-op
     }
 
+    /**
+     * Sets disable
+     * @param disable disable or not
+     */
     setDisable(disable: boolean): void {
         // no-op
     }
 
+    /**
+     * Gets index
+     */
     getIndex(): number {
         let index = getElementAttribute(this.htmlElement, 'index');
         if(index){
@@ -141,6 +181,9 @@ export class ObjectElement<T extends HTMLElement> extends DataElement<T, object>
         }
     }
 
+    /**
+     * Focus
+     */
     focus(): boolean {
         // no-ops
         return false;

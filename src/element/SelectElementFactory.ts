@@ -1,16 +1,28 @@
 import {ObjectElementFactory} from "../ObjectElementFactory";
 import {SelectElement} from "./SelectElement";
-import {DataElementRegistry} from "../DataElementRegistry";
+import {ElementRegistry} from "../ElementRegistry";
 
+/**
+ * Select Element Factory
+ */
 export class SelectElementFactory extends ObjectElementFactory<HTMLSelectElement> {
 
+    /**
+     * Static block
+     */
     static {
         // register factory instance
-        DataElementRegistry.register('select', new SelectElementFactory());
+        ElementRegistry.register('select', new SelectElementFactory());
     }
 
-    override createElement(element: HTMLSelectElement, bindData: object, context: object): SelectElement {
-        return new SelectElement(element, bindData, context);
+    /**
+     * Creates element
+     * @param htmlElement html element
+     * @param bindData bind data
+     * @param context context
+     */
+    override createElement(htmlElement: HTMLSelectElement, bindData: object, context: object): SelectElement {
+        return new SelectElement(htmlElement, bindData, context);
     }
 
 }

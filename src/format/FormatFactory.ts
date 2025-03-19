@@ -3,26 +3,35 @@ import {StringFormat} from "./StringFormat";
 import {NumberFormat} from "./NumberFormat";
 import {DateFormat} from "./DateFormat";
 
+/**
+ * Format Factory
+ */
 export class FormatFactory {
 
+    /**
+     * Gets format instance
+     * @param format format
+     */
     static getFormat(format: string): Format {
-        let name;
-        let args;
+        let name: string;
+        let args: string[];
         const match = format.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\((.*)\)$/);
         if (match) {
             name = match[1];
             args = match[2].split(',').map(arg => arg.trim().replace(/^['"]|['"]$/g, ''));
+        } else {
+            throw new Error(`Invalid format: ${format}`);
         }
-        if(format.startsWith('string')){
-            return new StringFormat(args[0]);
+        switch(name) {
+            case 'string':
+                return new StringFormat(args[0]);
+            case 'number':
+                return new NumberFormat(parseInt(args[0]));
+            case 'date':
+                return new DateFormat(args[0]);
+            default:
+                throw new Error(`Unknown format: ${name}`);
         }
-        if(format.startsWith('number')){
-            return new NumberFormat(args[0]);
-        }
-        if(format.startsWith('date')){
-            return new DateFormat(args[0]);
-        }
-        return null;
     }
 
 }

@@ -1,15 +1,23 @@
 import {getElementAttribute} from "../common";
 import {InputElement} from "./InputElement";
 
+/**
+ * Input Checkbox Element
+ */
 export class InputCheckboxElement extends InputElement {
 
     trueValue: any = true;
 
     falseValue: any = false;
 
-    constructor(element: HTMLInputElement, bindData: object, context: object) {
-        super(element, bindData, context);
-
+    /**
+     * Constructor
+     * @param htmlElement html element
+     * @param bindData bind data
+     * @param context context
+     */
+    constructor(htmlElement: HTMLInputElement, bindData: object, context: object) {
+        super(htmlElement, bindData, context);
         // true false value
         let trueValue = getElementAttribute(this.getHtmlElement(), 'true-value');
         this.trueValue = trueValue ? trueValue : this.trueValue;
@@ -17,6 +25,10 @@ export class InputCheckboxElement extends InputElement {
         this.falseValue = falseValue ? falseValue : this.falseValue;
     }
 
+    /**
+     * Sets element value
+     * @param value element value
+     */
     override setValue(value: any): void {
         if (value === this.trueValue) {
             this.getHtmlElement().checked = true;
@@ -25,6 +37,9 @@ export class InputCheckboxElement extends InputElement {
         }
     }
 
+    /**
+     * Gets value
+     */
     override getValue(): any {
         if(this.htmlElement.checked){
             return this.trueValue;
@@ -33,10 +48,18 @@ export class InputCheckboxElement extends InputElement {
         }
     }
 
-    disableClick(event): void {
+    /**
+     * Disable click
+     * @param event event
+     */
+    disableClick(event: globalThis.Event): void {
         event.preventDefault();
     }
 
+    /**
+     * Sets readonly
+     * @param readonly readonly or not
+     */
     override setReadonly(readonly: boolean): void {
         if(readonly){
             this.getHtmlElement().addEventListener('click', this.disableClick);

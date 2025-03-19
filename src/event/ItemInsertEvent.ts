@@ -1,6 +1,6 @@
-import {DataEvent} from "./DataEvent";
+import {Event} from "./Event";
 
-export class ItemDeleteEvent extends DataEvent {
+export class ItemInsertEvent extends Event {
 
     index: number;
 

@@ -1,9 +1,12 @@
 import {ArrayElementFactory} from "./ArrayElementFactory";
-import {DataElementFactory} from "./DataElementFactory";
+import {ElementFactory} from "./ElementFactory";
 import {CustomElementFactory} from "./CustomElementFactory";
 import {ObjectElementFactory} from "./ObjectElementFactory";
 
-export class DataElementRegistry {
+/**
+ * Element Registry
+ */
+export class ElementRegistry {
 
     static defaultObjectElementFactory = new ObjectElementFactory();
 
@@ -15,7 +18,12 @@ export class DataElementRegistry {
 
     static customElementFactories = new Map<string, CustomElementFactory<any>>();
 
-    static register(tagName: string, elementFactory: DataElementFactory<HTMLElement, any>) {
+    /**
+     * Registers element factory
+     * @param tagName tag name
+     * @param elementFactory element factory
+     */
+    static register(tagName: string, elementFactory: ElementFactory<HTMLElement, any>) {
         if(elementFactory instanceof ArrayElementFactory) {
             this.arrayElementFactories.set(tagName, elementFactory);
         }else if(elementFactory instanceof ObjectElementFactory) {
@@ -23,21 +31,24 @@ export class DataElementRegistry {
         }else if(elementFactory instanceof CustomElementFactory) {
             this.customElementFactories.set(tagName, elementFactory);
         }
-
         // register custom html element
         if(tagName.includes('-')) {
             globalThis.customElements.define(tagName, class extends HTMLElement {});
         }
     }
 
-    static getFactory(htmlElement: HTMLElement, bindData: any, context: object): DataElementFactory<HTMLElement, any> {
+    /**
+     * Gets factory
+     * @param htmlElement html element
+     * @param bindData bind data
+     * @param context context
+     */
+    static getFactory(htmlElement: HTMLElement, bindData: any, context: object): ElementFactory<HTMLElement, any> {
         let tagName = htmlElement.tagName.toLowerCase();
-
         // custom element
         if(this.customElementFactories.has(tagName)) {
             return this.customElementFactories.get(tagName);
         }
-
         // array element
         if(Array.isArray(bindData)) {
             if(this.arrayElementFactories.has(tagName)) {
@@ -52,7 +63,6 @@ export class DataElementRegistry {
             }
             return this.defaultObjectElementFactory;
         }
-
     }
 
 }

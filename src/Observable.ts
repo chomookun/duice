@@ -1,16 +1,27 @@
-import {DataEvent} from "./event/DataEvent";
+import {Event} from "./event/Event";
 import {Observer} from "./Observer";
 
+/**
+ * Observable
+ */
 export class Observable {
 
     observers: Observer[] = [];
 
     notifyEnabled: boolean = true;
 
+    /**
+     * Adds observer
+     * @param observer observer
+     */
     addObserver(observer: Observer): void {
         this.observers.push(observer);
     }
 
+    /**
+     * Removes observer
+     * @param observer observer
+     */
     removeObserver(observer: Observer): void {
         for(let i = 0, size = this.observers.length; i < size; i++){
             if(this.observers[i] === observer){
@@ -20,18 +31,28 @@ export class Observable {
         }
     }
 
+    /**
+     * Suspends notify
+     */
     suspendNotify(): void {
         this.notifyEnabled = false;
     }
 
+    /**
+     * Resumes notify
+     */
     resumeNotify(): void {
         this.notifyEnabled = true;
     }
 
-    notifyObservers(dataEvent: DataEvent): void {
+    /**
+     * Notifies to observers
+     * @param event event
+     */
+    notifyObservers(event: Event): void {
         if(this.notifyEnabled){
             this.observers.forEach(observer => {
-                observer.update(this, dataEvent);
+                observer.update(this, event);
             });
         }
     }

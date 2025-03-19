@@ -6,10 +6,18 @@ export class DateFormat implements Format {
 
     patternRex = /yyyy|yy|MM|dd|HH|hh|mm|ss/gi;
 
+    /**
+     * Constructor
+     * @param pattern pattern
+     */
     constructor(pattern: string){
         this.pattern = pattern;
     }
 
+    /**
+     * Implements format
+     * @param string origin value
+     */
     format(string: string): string {
         if (!string) {
             return '';
@@ -40,12 +48,16 @@ export class DateFormat implements Format {
         return string;
     }
 
+    /**
+     * Implements parse
+     * @param string formatted value
+     */
     parse(string:string):string{
         if(!string){
             return null;
         }
-        let date = new Date(0,0,0,0,0,0);
-        let match;
+        let date: Date = new Date(0,0,0,0,0,0);
+        let match: RegExpExecArray;
         while ((match = this.patternRex.exec(this.pattern)) != null) {
             let formatString = match[0];
             let formatIndex = match.index;
@@ -97,14 +109,12 @@ export class DateFormat implements Format {
                 }
             }
         }
-
         // timezone offset
         let tzo = new Date().getTimezoneOffset() * -1,
             dif = tzo >= 0 ? '+' : '-',
             pad = function(num) {
                 return (num < 10 ? '0' : '') + num;
             };
-
         // return iso string
         return date.getFullYear() +
             '-' + pad(date.getMonth() + 1) +

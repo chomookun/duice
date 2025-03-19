@@ -1,10 +1,4 @@
 import {Initializer} from "./Initializer";
-import {AlertDialog} from "./dialog/AlertDialog";
-import {ConfirmDialog} from "./dialog/ConfirmDialog";
-import {PromptDialog} from "./dialog/PromptDialog";
-import {Dialog} from "./dialog/Dialog";
-import {TabFolder} from "./tab/TabFolder";
-import {TabItem} from "./tab/TabItem";
 
 // export class
 export * from "./common"
@@ -12,7 +6,7 @@ export * from "./Configuration";
 export * from "./Initializer";
 export * from "./ArrayProxy";
 export * from "./ObjectProxy";
-export * from "./DataElementRegistry"
+export * from "./ElementRegistry"
 export * from "./ObjectElement";
 export * from "./ObjectElementFactory";
 export * from "./ArrayElement";

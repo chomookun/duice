@@ -4,10 +4,18 @@ export class StringFormat implements Format {
 
     pattern: string;
 
+    /**
+     * Constructor
+     * @param pattern pattern
+     */
     constructor(pattern: string){
         this.pattern = pattern;
     }
 
+    /**
+     * Implements format
+     * @param value origin value
+     */
     format(value: string): string{
         if(!value) {
             return value;
@@ -30,6 +38,10 @@ export class StringFormat implements Format {
         return encodedValue;
     }
 
+    /**
+     * Implements parse
+     * @param value formatted value
+     */
     parse(value: string): string {
         if(!value) {
             return value;

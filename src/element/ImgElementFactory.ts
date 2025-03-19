@@ -1,16 +1,28 @@
 import {ObjectElementFactory} from "../ObjectElementFactory";
-import {DataElementRegistry} from "../DataElementRegistry";
+import {ElementRegistry} from "../ElementRegistry";
 import {ImgElement} from "./ImgElement";
 
+/**
+ * Img Element Factory
+ */
 export class ImgElementFactory extends ObjectElementFactory<HTMLImageElement> {
 
+    /**
+     * Static block
+     */
     static {
         // register factory instance
-        DataElementRegistry.register('img', new ImgElementFactory());
+        ElementRegistry.register('img', new ImgElementFactory());
     }
 
-    override createElement(element: HTMLImageElement, bindData: object, context: object): ImgElement {
-        return new ImgElement(element, bindData, context);
+    /**
+     * Creates element
+     * @param htmlElement html element
+     * @param bindData bind data
+     * @param context context
+     */
+    override createElement(htmlElement: HTMLImageElement, bindData: object, context: object): ImgElement {
+        return new ImgElement(htmlElement, bindData, context);
     }
 
 }
