@@ -23,6 +23,12 @@ export * from "./dialog/ConfirmDialog";
 export * from "./dialog/PromptDialog";
 export * from "./tab/TabFolder";
 export * from "./tab/TabItem";
+export * from "./event/Event";
+export * from "./event/PropertyChangeEvent";
+export * from "./event/ItemMoveEvent";
+export * from "./event/ItemDeleteEvent";
+export * from "./event/ItemSelectEvent";
+export * from "./event/ItemInsertEvent";
 
 // initializes
 (function() {

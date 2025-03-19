@@ -1,5 +1,5 @@
 /*!
- * duice - v0.2.63
+ * duice - v0.2.64
  * git: https://gitbub.com/chomookun/duice
  * website: https://duice.chomookun.com
  * Released under the LGPL(GNU Lesser General Public License version 3) License
@@ -3347,13 +3347,19 @@ var duice = (function (exports) {
     exports.CustomElementFactory = CustomElementFactory;
     exports.Dialog = Dialog;
     exports.ElementRegistry = ElementRegistry;
+    exports.Event = Event;
     exports.ImgElementFactory = ImgElementFactory;
     exports.Initializer = Initializer;
     exports.InputElementFactory = InputElementFactory;
+    exports.ItemDeleteEvent = ItemDeleteEvent;
+    exports.ItemInsertEvent = ItemInsertEvent;
+    exports.ItemMoveEvent = ItemMoveEvent;
+    exports.ItemSelectEvent = ItemSelectEvent;
     exports.ObjectElement = ObjectElement;
     exports.ObjectElementFactory = ObjectElementFactory;
     exports.ObjectProxy = ObjectProxy;
     exports.PromptDialog = PromptDialog;
+    exports.PropertyChangeEvent = PropertyChangeEvent;
     exports.SelectElementFactory = SelectElementFactory;
     exports.TabFolder = TabFolder;
     exports.TabItem = TabItem;
