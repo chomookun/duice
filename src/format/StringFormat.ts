@@ -1,5 +1,8 @@
 import {Format} from "./Format";
 
+/**
+ * String Format
+ */
 export class StringFormat implements Format {
 
     pattern: string;

@@ -4,6 +4,7 @@ import {Initializer} from "./Initializer";
 export * from "./common"
 export * from "./Configuration";
 export * from "./Initializer";
+export * from "./ProxyHandler";
 export * from "./ArrayProxy";
 export * from "./ObjectProxy";
 export * from "./ElementRegistry"
@@ -23,12 +24,13 @@ export * from "./dialog/ConfirmDialog";
 export * from "./dialog/PromptDialog";
 export * from "./tab/TabFolder";
 export * from "./tab/TabItem";
-export * from "./event/Event";
-export * from "./event/PropertyChangeEvent";
-export * from "./event/ItemMoveEvent";
-export * from "./event/ItemDeleteEvent";
-export * from "./event/ItemSelectEvent";
-export * from "./event/ItemInsertEvent";
+// event
+export * from "./event/PropertyChangingEvent";
+export * from "./event/PropertyChangedEvent";
+export * from "./event/ItemSelectingEvent";
+export * from "./event/ItemSelectedEvent";
+export * from "./event/ItemMovingEvent";
+export * from "./event/ItemMovedEvent";
 
 // initializes
 (function() {

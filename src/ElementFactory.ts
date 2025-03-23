@@ -3,7 +3,7 @@ import {Element} from "./Element";
 /**
  * Element factory
  */
-export abstract class ElementFactory<T extends HTMLElement, V> {
+export abstract class ElementFactory<T extends HTMLElement, V extends object> {
 
     /**
      * Creates element

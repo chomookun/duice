@@ -1,9 +1,9 @@
 import {Event} from "./Event";
 
 /**
- * Property Change Event
+ * Property Changed Event
  */
-export class PropertyChangeEvent extends Event {
+export class PropertyChangedEvent extends Event {
 
     property: string;
 
@@ -13,13 +13,14 @@ export class PropertyChangeEvent extends Event {
 
     /**
      * Constructor
-     * @param source source
+     * @param element element
+     * @param data data
      * @param property property
      * @param value value
      * @param index index (optional)
      */
-    constructor(source: any, property: string, value: any, index?: number){
-        super(source);
+    constructor(element: HTMLElement, data: object, property: string, value: any, index?: number){
+        super(element, data);
         this.property = property;
         this.value = value;
         this.index = index;

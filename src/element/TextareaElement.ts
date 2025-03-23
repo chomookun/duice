@@ -1,5 +1,6 @@
 import {ObjectElement} from "../ObjectElement";
-import {PropertyChangeEvent} from "../event/PropertyChangeEvent";
+import {PropertyChangingEvent} from "../event/PropertyChangingEvent";
+import {getProxyTarget} from "../common";
 
 /**
  * Textarea Element
@@ -16,8 +17,10 @@ export class TextareaElement extends ObjectElement<HTMLTextAreaElement> {
         super(htmlElement, bindData, context);
         // adds change event listener
         this.getHtmlElement().addEventListener('change', e => {
-            let event = new PropertyChangeEvent(this, this.getProperty(), this.getValue(), this.getIndex());
-            this.notifyObservers(event);
+            let element = this.getHtmlElement();
+            let data = getProxyTarget(this.getBindData());
+            let propertyChangingEvent = new PropertyChangingEvent(element, data, this.getProperty(), this.getValue(), this.getIndex());
+            this.notifyObservers(propertyChangingEvent);
         }, true);
     }
 

@@ -8,7 +8,7 @@ import {Event} from "./event/Event";
 /**
  * Custom Element
  */
-export abstract class CustomElement<V> extends Element<HTMLElement, V> {
+export abstract class CustomElement<V extends object> extends Element<HTMLElement, V> {
 
     protected constructor(htmlElement: HTMLElement, bindData: V, context: object) {
         super(htmlElement, bindData, context);

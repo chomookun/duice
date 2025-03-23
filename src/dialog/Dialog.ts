@@ -1,3 +1,6 @@
+/**
+ * Dialog
+ */
 export class Dialog {
 
     protected dialogElement: HTMLDialogElement;
@@ -20,10 +23,13 @@ export class Dialog {
 
     closedListener: Function;
 
+    /**
+     * Constructor
+     * @param dialogElement dialog element
+     */
     constructor(dialogElement: HTMLDialogElement) {
         this.dialogElement = dialogElement;
         let _this = this;
-
         // dialog fixed style
         this.dialogElement.style.position = 'absolute';
         this.dialogElement.style.left = '0';
@@ -31,7 +37,6 @@ export class Dialog {
         this.dialogElement.style.overflowX = 'hidden';
         this.dialogElement.style.boxSizing = 'border-box';
         this.dialogElement.style.maxWidth = '100%';
-
         // header
         this.header = document.createElement('div');
         this.dialogElement.appendChild(this.header);
@@ -43,7 +48,6 @@ export class Dialog {
         this.header.style.top = '0';
         this.header.style.width = '100%';
         this.header.style.cursor = 'pointer';
-
         // drag
         this.header.onmousedown = function (event) {
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -63,7 +67,6 @@ export class Dialog {
                 _this.dialogElement.style.top = (_this.dialogElement.offsetTop - pos2) + 'px';
             };
         };
-
         // creates close button
         this.closeButton = document.createElement('span');
         this.closeButton.innerHTML = '&#10005;';
@@ -80,34 +83,52 @@ export class Dialog {
             this.header.style.top = `${scrollTop}px`;
         });
         this.header.appendChild(this.closeButton);
-
         // on resize event
         window.addEventListener('resize', function (event) {
-            _this.moveToCenterPosition();
+            _this.movePositionToCenter();
         });
     }
 
+    /**
+     * Sets opening listener
+     * @param listener listener
+     */
     onOpening(listener: Function): Dialog {
         this.openingListener = listener;
         return this;
     }
 
+    /**
+     * Sets opened listener
+     * @param listener listener
+     */
     onOpened(listener: Function): Dialog {
         this.openedListener = listener;
         return this;
     }
 
+    /**
+     * Sets closing listener
+     * @param listener listener
+     */
     onClosing(listener: Function): Dialog {
         this.closingListener = listener;
         return this;
     }
 
+    /**
+     * Sets closed listener
+     * @param listener listener
+     */
     onClosed(listener: Function): Dialog {
         this.closedListener = listener;
         return this;
     }
 
-    moveToCenterPosition() {
+    /**
+     * Moves position to center
+     */
+    movePositionToCenter() {
         let computedStyle = window.getComputedStyle(this.dialogElement);
         this.dialogElement.style.boxSizing = 'border-box';
         let computedWidth = this.dialogElement.offsetWidth;
@@ -118,43 +139,42 @@ export class Dialog {
         this.dialogElement.style.top = Math.max(0, window.innerHeight / 3 - computedHeight / 3) + scrollY + 'px';
     }
 
+    /**
+     * Gets dialog element
+     * @protected
+     */
     protected getDialogElement(): HTMLDialogElement {
         return this.dialogElement;
     }
 
+    /**
+     * Shows dialog
+     * @protected
+     */
     protected show(): void {
-
         // saves current scroll position
         let scrollX = window.scrollX;
         let scrollY = window.scrollY;
-
         // show dialog modal
-        this.dialogElement.style.opacity = '0';
         window.document.body.appendChild(this.dialogElement);
         this.dialogElement.showModal();
-
         // restore previous scroll position
         window.scrollTo(scrollX, scrollY);
-
         // adjusting position
-        this.moveToCenterPosition();
-
-        // fade in
-        let _this = this;
-        (function fade() {
-            let val = parseFloat(_this.dialogElement.style.opacity);
-            if (!((val += .1) > 1)) {
-                _this.dialogElement.style.opacity = String(val);
-                requestAnimationFrame(fade);
-            }
-        })();
+        this.movePositionToCenter();
     }
 
+    /**
+     * Hides dialog
+     * @protected
+     */
     protected hide(): void {
-        // closes modal
         this.dialogElement.close();
     }
 
+    /**
+     * Opens dialog
+     */
     async open() {
         // opening listener
         if (this.openingListener) {
@@ -162,15 +182,12 @@ export class Dialog {
                 return;
             }
         }
-
         // show modal
         this.show();
-
         // opened listener
         if (this.openedListener) {
             this.openedListener.call(this);
         }
-
         // creates promise
         let _this = this;
         this.promise = new Promise(function (resolve, reject) {
@@ -180,6 +197,11 @@ export class Dialog {
         return this.promise;
     }
 
+    /**
+     * Closes dialog
+     * @param args args
+     * @protected
+     */
     protected close(...args: any[]) {
         // closing listener
         if (this.closingListener) {

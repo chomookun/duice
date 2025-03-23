@@ -1,6 +1,6 @@
 import {ObjectElement} from "../ObjectElement";
-import {getElementAttribute} from "../common";
-import {PropertyChangeEvent} from "../event/PropertyChangeEvent";
+import {getElementAttribute, getProxyTarget} from "../common";
+import {PropertyChangingEvent} from "../event/PropertyChangingEvent";
 
 /**
  * Img Element
@@ -96,7 +96,9 @@ export class ImgElement extends ObjectElement<HTMLImageElement> {
             this.getHtmlElement().src = null;
         }
         // notify observers
-        let event = new PropertyChangeEvent(this, this.getProperty(), this.getValue(), this.getIndex());
+        let element = this.getHtmlElement();
+        let data = getProxyTarget(this.getBindData());
+        let event = new PropertyChangingEvent(element, data, this.getProperty(), this.getValue(), this.getIndex());
         this.notifyObservers(event);
     }
 
@@ -120,9 +122,10 @@ export class ImgElement extends ObjectElement<HTMLImageElement> {
                         value = await _this.convertImage(image);
                     }
                     _this.setValue(value);
-
                     // notify observers
-                    let event = new PropertyChangeEvent(_this, _this.getProperty(), _this.getValue(), _this.getIndex());
+                    let element = _this.getHtmlElement();
+                    let data = getProxyTarget(_this.getBindData());
+                    let event = new PropertyChangingEvent(element, data, _this.getProperty(), _this.getValue(), _this.getIndex());
                     _this.notifyObservers(event);
                 });
                 fileReader.readAsDataURL(this.files[0]);

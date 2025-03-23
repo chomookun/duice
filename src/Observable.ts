@@ -47,9 +47,9 @@ export class Observable {
 
     /**
      * Notifies to observers
-     * @param event event
+     * @param event event (optional)
      */
-    notifyObservers(event: Event): void {
+    notifyObservers(event?: Event): void {
         if(this.notifyEnabled){
             this.observers.forEach(observer => {
                 observer.update(this, event);

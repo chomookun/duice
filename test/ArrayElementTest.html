@@ -123,6 +123,15 @@
                 items: []
             }
         ]);
+        // on property changing
+        duice.ArrayProxy.onPropertyChanging(myArray, async event => {
+            console.log(event);
+            return await new duice.ConfirmDialog(`Do you want to change?\n- property:[${event.getProperty()}]\n- value:[${event.getValue()}]`).open();
+        });
+        duice.ArrayProxy.onPropertyChanged(myArray, event => {
+            console.log(event);
+            viewMyObject();
+        });
 
         /**
          * viewMyArray
@@ -137,54 +146,54 @@
             duice.ArrayProxy.assign(myArray, array);
         }
 
-        // property changing listener
-        duice.ArrayProxy.onPropertyChanging(myArray, async event => {
-            if(event.getProperty() === 'name') {
-                if(!await new duice.ConfirmDialog(`Do you want to change [${event.getProperty()}] is [${event.getValue()}]`)){
-                    return false;
-                }
-            }
-        })
-
-        // property changed listener
-        duice.ArrayProxy.onPropertyChanged(myArray, event => {
-            viewMyArray();
-        });
-
-        // item inserting listener
-        duice.ArrayProxy.onItemInserting(myArray, async event => {
-            if(!await new duice.ConfirmDialog(`insert [${event.getIndex()}]${JSON.stringify(event.getItems())}`)){
-                return false;
-            }
-        });
-
-        // item inserted listener
-        duice.ArrayProxy.onItemInserted(myArray, event => {
-            viewMyArray();
-        });
-
-        // item deleting listener
-        duice.ArrayProxy.onItemDeleting(myArray, async event => {
-            if(!await new duice.ConfirmDialog(`delete [${event.getIndex()}]${JSON.stringify(event.getItems())}`)){
-                return false;
-            }
-        });
-
-        // item deleted listener
-        duice.ArrayProxy.onItemDeleted(myArray, event => {
-            viewMyArray();
-        })
-
-        // item moving listener
-        duice.ArrayProxy.onItemMoving(myArray, async event => {
-            if(!await new duice.ConfirmDialog(`move [${event.getFromIndex()}] to [${event.getToIndex()}]`)){
-                return false;
-            }
-        });
-
-        duice.ArrayProxy.onItemMoved(myArray, event => {
-            viewMyArray();
-        });
+        // // property changing listener
+        // duice.ArrayProxy.onPropertyChanging(myArray, async event => {
+        //     if(event.getProperty() === 'name') {
+        //         if(!await new duice.ConfirmDialog(`Do you want to change [${event.getProperty()}] is [${event.getValue()}]`)){
+        //             return false;
+        //         }
+        //     }
+        // })
+        //
+        // // property changed listener
+        // duice.ArrayProxy.onPropertyChanged(myArray, event => {
+        //     viewMyArray();
+        // });
+        //
+        // // item inserting listener
+        // duice.ArrayProxy.onItemInserting(myArray, async event => {
+        //     if(!await new duice.ConfirmDialog(`insert [${event.getIndex()}]${JSON.stringify(event.getItems())}`)){
+        //         return false;
+        //     }
+        // });
+        //
+        // // item inserted listener
+        // duice.ArrayProxy.onItemInserted(myArray, event => {
+        //     viewMyArray();
+        // });
+        //
+        // // item deleting listener
+        // duice.ArrayProxy.onItemDeleting(myArray, async event => {
+        //     if(!await new duice.ConfirmDialog(`delete [${event.getIndex()}]${JSON.stringify(event.getItems())}`)){
+        //         return false;
+        //     }
+        // });
+        //
+        // // item deleted listener
+        // duice.ArrayProxy.onItemDeleted(myArray, event => {
+        //     viewMyArray();
+        // })
+        //
+        // // item moving listener
+        // duice.ArrayProxy.onItemMoving(myArray, async event => {
+        //     if(!await new duice.ConfirmDialog(`move [${event.getFromIndex()}] to [${event.getToIndex()}]`)){
+        //         return false;
+        //     }
+        // });
+        //
+        // duice.ArrayProxy.onItemMoved(myArray, event => {
+        //     viewMyArray();
+        // });
 
         // adds DOMContentLoaded event listener
         document.addEventListener("DOMContentLoaded", event => {
@@ -246,13 +255,18 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr data-duice-bind="myArray" data-duice-loop="myObject,status" data-duice-selected-item-class="selected" data-duice-execute="this.dataset.name=myObject.name;">
+                        <tr data-duice-bind="myArray"
+                            data-duice-loop="myObject,status"
+                            data-duice-selected-item-class="selected"
+                            data-duice-execute="this.dataset.name=myObject.name;"
+                            data-duice-on-item-selecting="console.log('selecting'); return;"
+                            data-duice-on-item-selected="console.log('selected');">
                             <td data-duice-bind="status" data-duice-property="index"></td>
                             <td data-duice-bind="status" data-duice-property="count"></td>
                             <td data-duice-bind="myObject" data-duice-property="name"></td>
-                            <td data-duice-bind="myObject" data-duice-property="phoneNo" dc:mask="string('###-####-####')"></td>
-                            <td data-duice-bind="myObject" data-duice-property="cardNo" dc:mask="string('####-####-####-####')"></td>
-                            <td data-duice-bind="myObject" data-duice-property="balanceAmount" dc:mask="number(2)"></td>
+                            <td data-duice-bind="myObject" data-duice-property="phoneNo" data-duice-format="string('###-####-####')"></td>
+                            <td data-duice-bind="myObject" data-duice-property="cardNo" data-duice-format="string('####-####-####-####')"></td>
+                            <td data-duice-bind="myObject" data-duice-property="balanceAmount" data-duice-format="number(2)"></td>
                             <td data-duice-bind="myObject" data-duice-property="type"></td>
                             <td data-duice-bind="myObject" data-duice-property="enabled"></td>
                             <td data-duice-bind="myObject" data-duice-property="enabledYn"></td>
@@ -315,14 +329,38 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr data-duice-bind="myArray" data-duice-loop="myObject,status" data-duice-selected-item-class="selected" data-duice-editable="true" >
+                        <tr data-duice-bind="myArray"
+                            data-duice-loop="myObject,status"
+                            data-duice-selected-item-class="selected"
+                            data-duice-editable="true"
+                            data-duice-on-item-moving="console.log('item moving'); return false;"
+                            data-duice-on-item-moved="console.log('item moved');">
                             <td><span data-duice-bind="status" data-duice-property="index"></span></td>
                             <td><span data-duice-bind="status" data-duice-property="count"></span></td>
-                            <td><input data-duice-bind="myObject" data-duice-property="name"/></td>
-                            <td><input type="text" data-duice-bind="myObject" data-duice-property="phoneNo"
-                                       dc:mask="string('###-####-####')"/></td>
-                            <td><input type="text" data-duice-bind="myObject" data-duice-property="cardNo"
-                                       dc:mask="string('####-####-####-####')"/></td>
+                            <td>
+                                <label>
+                                    <input type="text"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="name"/>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="text"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="phoneNo"
+                                           data-duice-format="string('###-####-####')"/>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="text"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="cardNo"
+                                           data-duice-format="string('####-####-####-####')"/>
+                                </label>
+                            </td>
+
                             <td><input type="number" data-duice-bind="myObject" data-duice-property="balanceAmount"
                                        dc:mask="number(2)"/></td>
                             <td>

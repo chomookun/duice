@@ -41,6 +41,7 @@
     </style>
     <script>
         'use strict';
+        // my object
         const myObject = new duice.ObjectProxy({
             name: 'Apple',
             phoneNo: '01012345678',
@@ -68,12 +69,30 @@
             ],
             primitives: [1,2,3],
         });
-
+        // adds event listener
+        duice.ObjectProxy.onPropertyChanging(myObject, async event => {
+            console.log(event);
+            return await new duice.ConfirmDialog(`Do you want to change?\n- property:[${event.getProperty()}]\n- value:[${event.getValue()}]`).open();
+        });
+        duice.ObjectProxy.onPropertyChanged(myObject, event => {
+            console.log(event);
+            viewMyObject();
+        });
+        // my types
         const myTypes = new duice.ArrayProxy([
             {type: 'human', name: 'Human'},
             {type: 'fruit', name: 'Fruit'},
             {type: 'animal', name: 'Animal'}
         ]);
+
+        /**
+         * Checks confirm
+         * @param event
+         * @returns {Promise<*>}
+         */
+        async function checkConfirm(event) {
+            return await new duice.ConfirmDialog(`Do you want to change?\n- property:[${event.getProperty()}]\n- value:[${event.getValue()}]`).open();
+        }
 
         /**
          * viewMyObject
@@ -90,20 +109,6 @@
             let object = JSON.parse(document.getElementById('myObject').value);
             duice.ObjectProxy.assign(myObject, object);
         }
-
-        // adds before change listener
-        duice.ObjectProxy.onPropertyChanging(myObject, async (event) => {
-            if (await new duice.ConfirmDialog(`Do you want to change [${event.getProperty()}] is [${event.getValue()}]`).open()) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-
-        // adds after change listener
-        duice.ObjectProxy.onPropertyChanged(myObject, event => {
-            viewMyObject();
-        });
 
         // adds DOMContentLoaded event listener
         document.addEventListener("DOMContentLoaded", event => {
@@ -151,7 +156,7 @@
                         <td rowspan="2">name</td>
                         <td rowspan="2" data-duice-bind="myObject" data-duice-property="name"></td>
                         <td>
-                            <span data-duice-bind="myObject" data-duice-property="name"/></span>
+                            <span data-duice-bind="myObject" data-duice-property="name"></span>
                         </td>
                         <td>
                             &lt;* data-duice-bind="myObject" data-duice-property="name"&gt; &lt;/*&gt;
@@ -159,7 +164,13 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="text" data-duice-bind="myObject" data-duice-property="name"/>
+                            <label>
+                                <input type="text"
+                                       data-duice-bind="myObject"
+                                       data-duice-property="name"
+                                       data-duice-on-property-changing="return checkConfirm(event);"
+                                       data-duice-on-property-changed="new duice.AlertDialog(`Property changed.\n- property:[${event.getProperty()}]\n- value:[${event.getValue()}]`).open();"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="text" data-duice-bind="myObject" data-duice-property="name"/&gt;
@@ -397,10 +408,12 @@
                     </tr>
                     <tr>
                         <td>
-                            <select data-duice-bind="myObject" data-duice-property="type"
-                                    data-duice-option="myTypes" data-duice-option-value-property="type" data-duice-option-text-property="name">
-                                <option value>- Select Type -</option>
-                            </select>
+                            <label>
+                                <select data-duice-bind="myObject" data-duice-property="type"
+                                        data-duice-option="myTypes" data-duice-option-value-property="type" data-duice-option-text-property="name">
+                                    <option value>- Select Type -</option>
+                                </select>
+                            </label>
                         </td>
                         <td>
                             &lt;select data-duice-bind="myObject" data-duice-property="type"/&gt; ... &lt;/select&gt;

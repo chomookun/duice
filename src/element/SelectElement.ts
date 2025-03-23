@@ -1,16 +1,13 @@
 import {ObjectElement} from "../ObjectElement";
-import {findVariable, getElementAttribute} from "../common";
-import {Observable} from "../Observable";
-import {Event} from "../event/Event";
-import {PropertyChangeEvent} from "../event/PropertyChangeEvent";
-import {ArrayProxy} from "../ArrayProxy";
+import {findVariable, getElementAttribute, getProxyTarget} from "../common";
+import {PropertyChangingEvent} from "../event/PropertyChangingEvent";
 
 /**
  * Select Element
  */
 export class SelectElement extends ObjectElement<HTMLSelectElement> {
 
-    option: object[];
+    option: string;
 
     optionValueProperty: string;
 
@@ -26,28 +23,29 @@ export class SelectElement extends ObjectElement<HTMLSelectElement> {
      */
     constructor(htmlElement: HTMLSelectElement, bindData: object, context: object){
         super(htmlElement, bindData, context);
-        // checks if
-        if (!this.checkIf()) {
-            return;
-        }
-        // adds event listener
-        this.getHtmlElement().addEventListener('change', () => {
-            let event = new PropertyChangeEvent(this, this.getProperty(), this.getValue(), this.getIndex());
-            this.notifyObservers(event);
-        }, true);
         // stores default option
         for(let i = 0; i < this.getHtmlElement().options.length; i ++){
             this.defaultOptions.push(this.getHtmlElement().options[i])
         }
         // option property
-        let optionName = getElementAttribute(this.getHtmlElement(),'option');
-        if(optionName) {
-            this.option = findVariable(this.getContext(), optionName);
-            this.optionValueProperty = getElementAttribute(this.getHtmlElement(), 'option-value-property');
-            this.optionTextProperty = getElementAttribute(this.getHtmlElement(), 'option-text-property');
-            ArrayProxy.getProxyHandler(this.option).addObserver(this);
-            this.updateOptions();
-        }
+        this.option = getElementAttribute(this.getHtmlElement(),'option');
+        this.optionValueProperty = getElementAttribute(this.getHtmlElement(), 'option-value-property');
+        this.optionTextProperty = getElementAttribute(this.getHtmlElement(), 'option-text-property');
+        // adds event listener
+        this.getHtmlElement().addEventListener('change', () => {
+            let element = this.getHtmlElement();
+            let data = getProxyTarget(this.getBindData());
+            let propertyChangingEvent = new PropertyChangingEvent(element, data, this.getProperty(), this.getValue(), this.getIndex());
+            this.notifyObservers(propertyChangingEvent);
+        }, true);
+    }
+
+    /**
+     * Overrides render
+     */
+    override render(): void {
+        super.render();
+        this.updateOptions();
     }
 
     /**
@@ -59,29 +57,16 @@ export class SelectElement extends ObjectElement<HTMLSelectElement> {
         this.defaultOptions.forEach(defaultOption => {
             this.getHtmlElement().appendChild(defaultOption);
         });
-        this.option.forEach(data => {
-            let option = document.createElement('option');
-            option.value = data[this.optionValueProperty];
-            option.appendChild(document.createTextNode(data[this.optionTextProperty]));
-            this.getHtmlElement().appendChild(option);
-        });
+        if (this.option) {
+            let optionArray = findVariable(this.getContext(), this.option);
+            optionArray.forEach(it => {
+                let option = document.createElement('option');
+                option.value = it[this.optionValueProperty];
+                option.appendChild(document.createTextNode(it[this.optionTextProperty]));
+                this.getHtmlElement().appendChild(option);
+            });
+        }
         this.getHtmlElement().value = value;
-    }
-
-    /**
-     * Overrides update
-     * @param observable observable
-     * @param event event
-     */
-    override update(observable: Observable, event: Event): void {
-        super.update(observable, event);
-        // checks if
-        if (!this.checkIf()) {
-            return;
-        }
-        if(this.option) {
-            this.updateOptions();
-        }
     }
 
     /**

@@ -1,4 +1,4 @@
-import {findVariable, getElementAttribute, runExecuteCode, runIfCode} from "./common";
+import {findVariable, getElementAttribute, getProxyHandler, runExecuteCode, runIfCode, trace} from "./common";
 import {Element} from "./Element";
 import {ObjectProxy} from "./ObjectProxy";
 import {Observable} from "./Observable";
@@ -51,55 +51,38 @@ export class ObjectElement<T extends HTMLElement> extends Element<T, object> {
      * Overrides render
      */
     override render(): void {
-        // check if
-        if (!this.checkIf()) {
-            return;
+        // context
+        let context = Object.assign({}, this.getContext());
+        let bind = getElementAttribute(this.getHtmlElement(), 'bind');
+        let bindSplit = bind.split('.');
+        if(bindSplit.length > 1) {
+            context[bindSplit[0]] = findVariable(context, bindSplit[0]);
+        }else{
+            context[bind] = this.getBindData();
         }
-        // property
-        if(this.property){
-            let objectHandler = ObjectProxy.getProxyHandler(this.getBindData());
+        // run if code
+        runIfCode(this.htmlElement, context).then(result => {
+            if (result == false) {
+                return;
+            }
+            let objectProxyHandler = getProxyHandler<ObjectProxyHandler>(this.getBindData());
             // set value
-            let value = objectHandler.getValue(this.property);
-            this.setValue(value);
+            if (this.property) {
+                let value = objectProxyHandler.getValue(this.property);
+                this.setValue(value);
+            }
             // set readonly
-            let readonly = objectHandler.isReadonly(this.property);
+            let readonly = objectProxyHandler.isReadonly(this.property);
             this.setReadonly(readonly);
             // set disable
-            let disable = objectHandler.isDisable(this.property);
-            this.setDisable(disable);
-        }
-        // executes script
-        this.executeScript();
-    }
-
-    /**
-     * Check if condition in attribute
-     */
-    checkIf(): boolean {
-        let context = Object.assign({}, this.getContext());
-        let bind = getElementAttribute(this.getHtmlElement(), 'bind');
-        let bindSplit = bind.split('.');
-        if(bindSplit.length > 1) {
-            context[bindSplit[0]] = findVariable(context, bindSplit[0]);
-        }else{
-            context[bind] = this.getBindData();
-        }
-        return runIfCode(this.htmlElement, context);
-    }
-
-    /**
-     * Executes script in attribute
-     */
-    executeScript(): boolean {
-        let context = Object.assign({}, this.getContext());
-        let bind = getElementAttribute(this.getHtmlElement(), 'bind');
-        let bindSplit = bind.split('.');
-        if(bindSplit.length > 1) {
-            context[bindSplit[0]] = findVariable(context, bindSplit[0]);
-        }else{
-            context[bind] = this.getBindData();
-        }
-        return runExecuteCode(this.htmlElement, context);
+            // let disable = objectProxyHandler.isDisable(this.property);
+            // this.setDisable(disable);
+            // todo disabled
+            let disabled = objectProxyHandler.isDisabled(this.property);
+            this.setDisable(disabled);
+            // run execute code
+            runExecuteCode(this.htmlElement, context).then();
+        });
     }
 
     /**
@@ -108,24 +91,10 @@ export class ObjectElement<T extends HTMLElement> extends Element<T, object> {
      * @param event event
      */
     override update(observable: Observable, event: Event): void {
-        console.trace('ObjectElement.update', observable, event);
+        trace('ObjectElement.update', observable, event);
         // ObjectHandler
         if(observable instanceof ObjectProxyHandler) {
-            // check if
-            if (!this.checkIf()) {
-                return;
-            }
-            // property
-            if(this.property){
-                // set value
-                this.setValue(observable.getValue(this.property));
-                // set readonly
-                this.setReadonly(observable.isReadonly(this.property));
-                // set disable
-                this.setDisable(observable.isDisable(this.property));
-            }
-            // executes script
-            this.executeScript();
+            this.render();
         }
     }
 

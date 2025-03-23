@@ -1,6 +1,10 @@
 import {Observable} from "./Observable";
 import {Observer} from "./Observer";
 import {Event} from "./event/Event";
+import {EventDispatcher} from "./event/EventDispatcher";
+import {EventType} from "./event/EventType";
+import {DisabledAttribute} from "./attribute/DisabledAttribute";
+import {ReadonlyAttribute} from "./attribute/ReadonlyAttribute";
 
 /**
  * Proxy Handler
@@ -8,6 +12,8 @@ import {Event} from "./event/Event";
 export abstract class ProxyHandler<T> extends Observable implements Observer {
 
     target: T;
+
+    parent: ProxyHandler<any>;
 
     readonlyAll: boolean = false;
 
@@ -17,14 +23,24 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
 
     disable: Set<string> = new Set<string>();
 
-    listenerEnabled: boolean = true;
+    disabledAttribute: DisabledAttribute;
+
+    readonlyAttribute: ReadonlyAttribute;
+
+    eventEnabled: boolean = true;
+
+    eventDispatcher: EventDispatcher = new EventDispatcher();
 
     /**
      * Constructor
      * @protected
      */
-    protected constructor() {
+    protected constructor(target: T, parent?: ProxyHandler<any>) {
         super();
+        this.target = target;
+        this.parent = parent;
+        this.disabledAttribute = new DisabledAttribute(parent?.disabledAttribute??null);
+        this.readonlyAttribute = new ReadonlyAttribute(parent?.readonlyAttribute??null);
     }
 
     /**
@@ -54,18 +70,21 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
      * @param readonly readonly all
      */
     setReadonlyAll(readonly: boolean): void {
-        this.readonlyAll = readonly;
-        if(!readonly){
-            this.readonly.clear();
-        }
-        this.notifyObservers(new Event(this));
+        this.readonlyAttribute.setReadonlyAll(readonly);
+        this.notifyObservers();
+        // this.readonlyAll = readonly;
+        // if(!readonly){
+        //     this.readonly.clear();
+        // }
+        // this.notifyObservers(null);
     }
 
     /**
      * Returns readonly all
      */
     isReadonlyAll(): boolean {
-        return this.readonlyAll;
+        return this.readonlyAttribute.isReadonlyAll();
+        // return this.readonlyAll;
     }
 
     /**
@@ -74,12 +93,14 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
      * @param readonly readonly or not
      */
     setReadonly(property: string, readonly: boolean): void {
-        if(readonly){
-            this.readonly.add(property);
-        }else{
-            this.readonly.delete(property);
-        }
-        this.notifyObservers(new Event(this));
+        this.readonlyAttribute.setReadonly(property, readonly);
+        this.notifyObservers();
+        // if(readonly){
+        //     this.readonly.add(property);
+        // }else{
+        //     this.readonly.delete(property);
+        // }
+        // this.notifyObservers(null);
     }
 
     /**
@@ -87,7 +108,8 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
      * @param property property
      */
     isReadonly(property: string): boolean {
-        return this.readonlyAll || this.readonly.has(property);
+        return this.readonlyAttribute.isReadonly(property);
+        // return this.readonlyAll || this.readonly.has(property);
     }
 
     /**
@@ -99,7 +121,7 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
         if(!disable) {
             this.disable.clear();
         }
-        this.notifyObservers(new Event(this));
+        this.notifyObservers(null);
     }
 
     /**
@@ -120,7 +142,7 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
         }else{
             this.disable.delete(property);
         }
-        this.notifyObservers(new Event(this));
+        this.notifyObservers(null);
     }
 
     /**
@@ -131,33 +153,79 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
         return this.disableAll || this.disable.has(property);
     }
 
-    /**
-     * Subscribes to property changing
-     */
-    suspendListener(): void {
-        this.listenerEnabled = false;
+    setDisabledAll(disabledAll: boolean): void {
+        this.disabledAttribute.setDisabledAll(disabledAll);
+        this.notifyObservers();
+    }
+
+    isDisabledAll(): boolean {
+        return this.disabledAttribute.isDisabledAll();
+    }
+
+    setDisabled(property: string, disabled: boolean): void {
+        this.disabledAttribute.setDisabled(property, disabled);
+        this.notifyObservers();
+    }
+
+    isDisabled(property: string): boolean {
+        return this.disabledAttribute.isDisabled(property);
     }
 
     /**
-     * Resumes to property changing
+     * Adds event listener
+     * @param eventType event type
+     * @param eventListener event listener
      */
-    resumeListener(): void {
-        this.listenerEnabled = true;
+    addEventListener(eventType: EventType, eventListener: Function): void {
+        this.eventDispatcher.addEventListener(eventType, eventListener);
     }
 
     /**
-     * Checks listener
-     * @param listener listener
-     * @param event event
+     * Removes event listener
+     * @param eventType event type
+     * @param eventListener event listener
      */
-    checkListener(listener: Function, event: Event): boolean {
-        if(this.listenerEnabled && listener){
-            let result = listener.call(this.getTarget(), event);
-            if(result == false){
-                return false;
-            }
+    removeEventListener(eventType: EventType, eventListener: Function): void {
+        this.eventDispatcher.removeEventListener(eventType, eventListener);
+    }
+
+    /**
+     * Clears event listeners
+     * @param eventType event type
+     */
+    clearEventListeners(eventType: EventType): void {
+        this.eventDispatcher.clearEventListeners(eventType);
+    }
+
+    /**
+     * Suspends event
+     */
+    suspendEvent(): void {
+        this.eventEnabled = false;
+    }
+
+    /**
+     * Resumes event listener
+     */
+    resumeEvent(): void {
+        this.eventEnabled = true;
+    }
+
+    /**
+     * Calls event listeners
+     * @param event
+     */
+    async dispatchEventListeners(event: Event): Promise<boolean> {
+        if (!this.eventEnabled) {
+            return null;
         }
-        return true;
+        return this.eventDispatcher.dispatchEventListeners(event).then(results => {
+            if (results != null && results.length > 0) {
+                return !results.some(result => result === false);
+            } else {
+                return null;
+            }
+        });
     }
 
 }

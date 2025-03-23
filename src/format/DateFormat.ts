@@ -1,5 +1,8 @@
 import {Format} from "./Format";
 
+/**
+ * Date Format
+ */
 export class DateFormat implements Format {
 
     pattern:string;

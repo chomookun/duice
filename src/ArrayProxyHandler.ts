@@ -2,41 +2,25 @@ import {ProxyHandler} from "./ProxyHandler";
 import {ArrayProxy} from "./ArrayProxy";
 import {Observable} from "./Observable";
 import {ArrayElement} from "./ArrayElement";
-import {ItemDeleteEvent} from "./event/ItemDeleteEvent";
-import {ItemSelectEvent} from "./event/ItemSelectEvent";
+import {ItemSelectingEvent} from "./event/ItemSelectingEvent";
 import {Event} from "./event/Event";
-import {ItemMoveEvent} from "./event/ItemMoveEvent";
+import {ItemMovingEvent} from "./event/ItemMovingEvent";
 import {ObjectProxy} from "./ObjectProxy";
-import {ItemInsertEvent} from "./event/ItemInsertEvent";
+import {getProxyHandler, getProxyTarget} from "./common";
+import {ObjectProxyHandler} from "./ObjectProxyHandler";
 
 /**
  * Array Proxy Handler
  */
 export class ArrayProxyHandler extends ProxyHandler<object[]> {
 
-    propertyChangingListener: Function;
-
-    propertyChangedListener: Function;
-
-    itemInsertingListener: Function;
-
-    itemInsertedListener: Function;
-
-    itemDeletingListener: Function;
-
-    itemDeletedListener: Function;
-
-    itemMovingListener: Function;
-
-    itemMovedListener: Function;
-
     selectedItemIndex: number;
 
     /**
      * Constructor
      */
-    constructor() {
-        super();
+    constructor(array: object[], parent?: ProxyHandler<any>) {
+        super(array, parent);
     }
 
     /**
@@ -122,7 +106,7 @@ export class ArrayProxyHandler extends ProxyHandler<object[]> {
     set(target: ArrayProxy, property: string, value: any): boolean {
         Reflect.set(target, property, value);
         if (property === 'length') {
-            this.notifyObservers(new Event(this));
+            this.notifyObservers(null);
         }
         return true;
     }
@@ -136,17 +120,14 @@ export class ArrayProxyHandler extends ProxyHandler<object[]> {
         // instance is array component
         if(observable instanceof ArrayElement) {
             // row select event
-            if(event instanceof ItemSelectEvent) {
+            if(event instanceof ItemSelectingEvent) {
                 this.selectedItemIndex = event.getIndex();
                 return;
             }
             // row move event
-            if (event instanceof ItemMoveEvent) {
-                if (this.checkListener(this.itemMovingListener, event)) {
-                    let object = this.getTarget().splice(event.getFromIndex(), 1)[0];
-                    this.getTarget().splice(event.getToIndex(), 0, object);
-                    this.checkListener(this.itemMovedListener, event);
-                }
+            if (event instanceof ItemMovingEvent) {
+                let object = this.getTarget().splice(event.getFromIndex(), 1)[0];
+                this.getTarget().splice(event.getToIndex(), 0, object);
             }
         }
         // notify observers
@@ -160,23 +141,17 @@ export class ArrayProxyHandler extends ProxyHandler<object[]> {
      * @param items items
      */
     insertItem(arrayProxy: object[], index: number, ...items: object[]): void {
-        let arrayHandler = ArrayProxy.getProxyHandler(arrayProxy);
-        let proxyTarget = ArrayProxy.getTarget(arrayProxy);
+        let arrayHandler = getProxyHandler<ArrayProxyHandler>(arrayProxy);
+        let proxyTarget = getProxyTarget(arrayProxy);
         items.forEach((object, index) => {
             if (typeof object === 'object') {
                 let objectProxy = new ObjectProxy(object);
-                let objectHandler = ObjectProxy.getProxyHandler(objectProxy);
-                objectHandler.propertyChangingListener = this.propertyChangingListener;
-                objectHandler.propertyChangedListener = this.propertyChangedListener;
+                let objectHandler = getProxyHandler<ObjectProxyHandler>(objectProxy);
                 items[index] = objectProxy;
             }
         });
-        let event = new ItemInsertEvent(this, index, items);
-        if (arrayHandler.checkListener(arrayHandler.itemInsertingListener, event)) {
-            proxyTarget.splice(index, 0, ...items);
-            arrayHandler.checkListener(arrayHandler.itemInsertedListener, event);
-            arrayHandler.notifyObservers(event);
-        }
+        proxyTarget.splice(index, 0, ...items);
+        arrayHandler.notifyObservers();
     }
 
     /**
@@ -186,19 +161,15 @@ export class ArrayProxyHandler extends ProxyHandler<object[]> {
      * @param size size for delete
      */
     deleteItem(arrayProxy: object[], index: number, size?: number): void {
-        let arrayHandler = ArrayProxy.getProxyHandler(arrayProxy);
-        let proxyTarget = ArrayProxy.getTarget(arrayProxy);
+        let arrayHandler = getProxyHandler<ArrayProxyHandler>(arrayProxy);
+        let proxyTarget = getProxyTarget(arrayProxy);
         let sliceBegin = index;
         let sliceEnd = (size ? index + size : index + 1);
         let rows = proxyTarget.slice(sliceBegin, sliceEnd);
-        let event = new ItemDeleteEvent(this, index, rows);
-        if (arrayHandler.checkListener(arrayHandler.itemDeletingListener, event)) {
-            let spliceStart = index;
-            let spliceDeleteCount = (size ? size : 1);
-            proxyTarget.splice(spliceStart, spliceDeleteCount);
-            arrayHandler.checkListener(arrayHandler.itemDeletedListener, event);
-            arrayHandler.notifyObservers(event);
-        }
+        let spliceStart = index;
+        let spliceDeleteCount = (size ? size : 1);
+        proxyTarget.splice(spliceStart, spliceDeleteCount);
+        arrayHandler.notifyObservers();
     }
 
     /**
@@ -208,8 +179,7 @@ export class ArrayProxyHandler extends ProxyHandler<object[]> {
     selectItem(index: number): void {
         this.selectedItemIndex = index;
         // notify row select event
-        let rowSelectEvent = new ItemSelectEvent(this, this.selectedItemIndex);
-        this.notifyObservers(rowSelectEvent);
+        this.notifyObservers();
     }
 
     /**

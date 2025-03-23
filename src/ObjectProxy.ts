@@ -1,7 +1,19 @@
 import {ObjectProxyHandler} from "./ObjectProxyHandler";
 import {ArrayProxy} from "./ArrayProxy";
-import {assert} from "./common";
+import {
+    assert,
+    isArray,
+    isObject,
+    isPrimitive,
+    setProxyTarget,
+    getProxyTarget,
+    setProxyHandler,
+    getProxyHandler,
+    isProxy
+} from "./common";
 import {Event} from "./event/Event";
+import {PropertyChangingEvent} from "./event/PropertyChangingEvent";
+import {PropertyChangedEvent} from "./event/PropertyChangedEvent";
 
 /**
  * Object Proxy
@@ -11,93 +23,26 @@ export class ObjectProxy extends globalThis.Object {
     /**
      * Constructor
      * @param object
+     * @param parent (optional)
      */
-    public constructor(object: object) {
+    public constructor(object: object, parent?: ObjectProxy|ArrayProxy) {
         super();
         // is already object proxy
         if (object instanceof ObjectProxy) {
             return object;
         }
         // object handler
-        let objectHandler = new ObjectProxyHandler();
-        // copy property
-        for (let name in object) {
-            let value = object[name];
-            // value is array
-            if(Array.isArray(value)){
-                let arrayProxy = new ArrayProxy(value);
-                ArrayProxy.getProxyHandler(arrayProxy as object[]).addObserver(objectHandler);
-                object[name] = arrayProxy;
-                continue;
-            }
-            // value is object
-            if(value != null && typeof value === 'object'){
-                let objectProxy = new ObjectProxy(value);
-                ObjectProxy.getProxyHandler(objectProxy).addObserver(objectHandler);
-                object[name] = objectProxy;
-                continue;
-            }
-            // value is primitive
-            object[name] = value;
-        }
-        // delete not exists property
-        for(let name in object){
-            if(!Object.keys(object).includes(name)){
-                delete this[name];
-            }
-        }
-        // creates proxy
-        let objectProxy = new Proxy<object>(object, objectHandler);
-        objectHandler.setTarget(object);
-        // set property
-        ObjectProxy.setProxyHandler(objectProxy, objectHandler);
-        ObjectProxy.setTarget(objectProxy, object);
+        let objectProxyHandler = new ObjectProxyHandler(object, parent ? getProxyHandler(parent) : null);
+        let objectProxy = new Proxy<object>(object, objectProxyHandler);
+        setProxyTarget(objectProxy, object);
+        setProxyHandler(objectProxy, objectProxyHandler);
+        // assign
+        let initialObject = JSON.parse(JSON.stringify(object));
+        ObjectProxy.assign(objectProxy, initialObject);
         // save
         ObjectProxy.save(objectProxy);
         // returns
         return objectProxy;
-    }
-
-    /**
-     * Gets target
-     * @param objectProxy
-     * @param target
-     */
-    static setTarget(objectProxy: object, target: object): void {
-        globalThis.Object.defineProperty(objectProxy, '_target_', {
-            value: target,
-            writable: true
-        });
-    }
-
-    /**
-     * Sets target
-     * @param objectProxy
-     */
-    static getTarget(objectProxy: object): any {
-        return globalThis.Object.getOwnPropertyDescriptor(objectProxy, '_target_').value;
-    }
-
-    /**
-     * Sets proxy handler
-     * @param objectProxy object proxy
-     * @param objectProxyHandler object proxy handler
-     */
-    static setProxyHandler(objectProxy: object, objectProxyHandler: ObjectProxyHandler): void {
-        globalThis.Object.defineProperty(objectProxy, '_proxy_handler_', {
-            value: objectProxyHandler,
-            writable: true
-        });
-    }
-
-    /**
-     * Gets proxy handler
-     * @param objectProxy object proxy handler
-     */
-    static getProxyHandler(objectProxy: object): ObjectProxyHandler {
-        let handler = globalThis.Object.getOwnPropertyDescriptor(objectProxy, '_proxy_handler_').value;
-        assert(handler, 'handler is not found');
-        return handler;
     }
 
     /**
@@ -106,44 +51,46 @@ export class ObjectProxy extends globalThis.Object {
      * @param object
      */
     static override assign(objectProxy: object, object: object): void {
-        let objectHandler = this.getProxyHandler(objectProxy);
+        let objectProxyHandler = getProxyHandler<ObjectProxyHandler>(objectProxy);
         try {
             // suspend
-            objectHandler.suspendListener()
-            objectHandler.suspendNotify();
+            objectProxyHandler.suspendEvent()
+            objectProxyHandler.suspendNotify();
             // loop object properties
             for(let name in object) {
                 let value = object[name];
                 // source value is array
-                if(Array.isArray(value)){
-                    if(Array.isArray(objectProxy[name])){
+                if (isArray(value)) {
+                    if (isProxy(objectProxy[name])) {
                         ArrayProxy.assign(objectProxy[name], value);
                     }else{
-                        objectProxy[name] = new ArrayProxy(value);
+                        objectProxy[name] = new ArrayProxy(value, objectProxy);
+                        getProxyHandler(objectProxy[name]).addObserver(objectProxyHandler);
                     }
                     continue;
                 }
                 // source value is object
-                if(value != null && typeof value === 'object'){
-                    if(objectProxy[name] != null && typeof objectProxy[name] === 'object'){
+                if (isObject(value)) {
+                    if (isProxy(objectProxy[name])) {
                         ObjectProxy.assign(objectProxy[name], value);
                     }else{
-                        let objectProxy = new ObjectProxy(value);
-                        ObjectProxy.getProxyHandler(objectProxy).addObserver(objectHandler);
-                        objectProxy[name] = objectProxy;
+                        objectProxy[name] = new ObjectProxy(value, objectProxy);
+                        getProxyHandler(objectProxy[name]).addObserver(objectProxyHandler);
                     }
                     continue;
                 }
                 // source value is primitive
-                objectProxy[name] = value;
+                if (isPrimitive(value)) {
+                    objectProxy[name] = value;
+                }
             }
         } finally {
             // resume
-            objectHandler.resumeListener();
-            objectHandler.resumeNotify();
+            objectProxyHandler.resumeEvent();
+            objectProxyHandler.resumeNotify();
         }
         // notify observers
-        objectHandler.notifyObservers(new Event(this));
+        objectProxyHandler.notifyObservers(null);
     }
 
     /**
@@ -151,10 +98,10 @@ export class ObjectProxy extends globalThis.Object {
      * @param objectProxy
      */
     static clear(objectProxy: object): void {
-        let objectHandler = this.getProxyHandler(objectProxy);
+        let objectHandler = getProxyHandler(objectProxy);
         try {
             // suspend
-            objectHandler.suspendListener();
+            objectHandler.suspendEvent();
             objectHandler.suspendNotify();
             // clear properties
             for(let name in objectProxy) {
@@ -171,11 +118,11 @@ export class ObjectProxy extends globalThis.Object {
             }
         } finally {
             // resume
-            objectHandler.resumeListener();
+            objectHandler.resumeEvent();
             objectHandler.resumeNotify();
         }
         // notify observers
-        objectHandler.notifyObservers(new Event(this));
+        objectHandler.notifyObservers(null);
     }
 
     /**
@@ -206,7 +153,7 @@ export class ObjectProxy extends globalThis.Object {
      * @param readonly
      */
     static setReadonly(objectProxy: object, property: string, readonly: boolean): void {
-        this.getProxyHandler(objectProxy).setReadonly(property, readonly);
+        getProxyHandler(objectProxy).setReadonly(property, readonly);
     }
 
     /**
@@ -215,7 +162,7 @@ export class ObjectProxy extends globalThis.Object {
      * @param property
      */
     static isReadonly(objectProxy: object, property: string): boolean {
-        return this.getProxyHandler(objectProxy).isReadonly(property);
+        return getProxyHandler(objectProxy).isReadonly(property);
     }
 
     /**
@@ -224,7 +171,7 @@ export class ObjectProxy extends globalThis.Object {
      * @param readonly
      */
     static setReadonlyAll(objectProxy: object, readonly: boolean): void {
-        this.getProxyHandler(objectProxy).setReadonlyAll(readonly);
+        getProxyHandler(objectProxy).setReadonlyAll(readonly);
     }
 
     /**
@@ -232,7 +179,7 @@ export class ObjectProxy extends globalThis.Object {
      * @param objectProxy
      */
     static isReadonlyAll(objectProxy: object): boolean {
-        return this.getProxyHandler(objectProxy).isReadonlyAll();
+        return getProxyHandler(objectProxy).isReadonlyAll();
     }
 
     /**
@@ -242,7 +189,7 @@ export class ObjectProxy extends globalThis.Object {
      * @param disable
      */
     static setDisable(objectProxy: object, property: string, disable: boolean): void {
-        this.getProxyHandler(objectProxy).setDisable(property, disable);
+        getProxyHandler(objectProxy).setDisable(property, disable);
     }
 
     /**
@@ -251,7 +198,7 @@ export class ObjectProxy extends globalThis.Object {
      * @param property
      */
     static isDisable(objectProxy: object, property: string): boolean {
-        return this.getProxyHandler(objectProxy).isDisable(property);
+        return getProxyHandler(objectProxy).isDisable(property);
     }
 
     /**
@@ -260,7 +207,7 @@ export class ObjectProxy extends globalThis.Object {
      * @param disable
      */
     static setDisableAll(objectProxy: object, disable: boolean): void {
-        this.getProxyHandler(objectProxy).setDisableAll(disable);
+        getProxyHandler(objectProxy).setDisableAll(disable);
     }
 
     /**
@@ -268,8 +215,29 @@ export class ObjectProxy extends globalThis.Object {
      * @param objectProxy
      */
     static isDisableAll(objectProxy: object): boolean {
-        return this.getProxyHandler(objectProxy).isDisableAll();
+        return getProxyHandler(objectProxy).isDisableAll();
     }
+
+
+
+    static setDisabledAll(objectProxy: ObjectProxy, disabledAll: boolean): void {
+        getProxyHandler(objectProxy).setDisabledAll(disabledAll);
+    }
+
+    static isDisabledAll(objectProxy: ObjectProxy): boolean {
+        return getProxyHandler(objectProxy).isDisabledAll();
+    }
+
+    static setDisabled(objectProxy: ObjectProxy, property: string, disabled: boolean): void {
+        getProxyHandler(objectProxy).setDisabled(property, disabled);
+    }
+
+    static isDisabled(objectProxy: ObjectProxy, property: string): boolean {
+        return getProxyHandler(objectProxy).isDisabled(property);
+    }
+
+
+
 
     /**
      * Set property to be focused
@@ -277,25 +245,29 @@ export class ObjectProxy extends globalThis.Object {
      * @param property
      */
     static focus(objectProxy: object, property: string): void {
-        this.getProxyHandler(objectProxy).focus(property);
+        getProxyHandler<ObjectProxyHandler>(objectProxy).focus(property);
     }
 
     /**
-     * Set readonly before changing event listener
-     * @param objectProxy
-     * @param listener
+     * On property changing
+     * @param objectProxy object proxy
+     * @param eventListener event listener
      */
-    static onPropertyChanging(objectProxy: object, listener: Function): void {
-        this.getProxyHandler(objectProxy).propertyChangingListener = listener;
+    static onPropertyChanging(objectProxy : ObjectProxy, eventListener: Function): void {
+        let proxyHandler = getProxyHandler(objectProxy);
+        proxyHandler.clearEventListeners(PropertyChangingEvent);
+        proxyHandler.addEventListener(PropertyChangingEvent, eventListener);
     }
 
     /**
-     * Set property after changed event listener
-     * @param objectProxy
-     * @param listener
+     * On property changed
+     * @param objectProxy object proxy
+     * @param eventListener event listener
      */
-    static onPropertyChanged(objectProxy: object, listener: Function): void {
-        this.getProxyHandler(objectProxy).propertyChangedListener = listener;
+    static onPropertyChanged(objectProxy : ObjectProxy, eventListener: Function): void {
+        let proxyHandler = getProxyHandler(objectProxy);
+        proxyHandler.clearEventListeners(PropertyChangedEvent);
+        proxyHandler.addEventListener(PropertyChangedEvent, eventListener);
     }
 
 }

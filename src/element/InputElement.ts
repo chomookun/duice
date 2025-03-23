@@ -1,5 +1,6 @@
 import {ObjectElement} from "../ObjectElement";
-import {PropertyChangeEvent} from "../event/PropertyChangeEvent";
+import {PropertyChangingEvent} from "../event/PropertyChangingEvent";
+import {getProxyHandler, getProxyTarget} from "../common";
 
 /**
  * Input Element
@@ -14,10 +15,12 @@ export class InputElement extends ObjectElement<HTMLInputElement> {
      */
     constructor(htmlElement: HTMLInputElement, bindData: object, context: object) {
         super(htmlElement, bindData, context);
-        // adds change listener
+        // Adds change event listener
         this.getHtmlElement().addEventListener('change', e => {
-            let event = new PropertyChangeEvent(this, this.getProperty(), this.getValue(), this.getIndex());
-            this.notifyObservers(event);
+            let element = this.getHtmlElement();
+            let data = getProxyTarget(this.getBindData());
+            let propertyChangingEvent = new PropertyChangingEvent(element, data, this.getProperty(), this.getValue(), this.getIndex());
+            this.notifyObservers(propertyChangingEvent);
         }, true);
         // turn off autocomplete
         this.getHtmlElement().setAttribute('autocomplete','off');

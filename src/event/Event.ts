@@ -3,14 +3,21 @@
  */
 export class Event {
 
-    source: any;
+    element: HTMLElement;
 
-    /**
-     * Constructor
-     * @param source source
-     */
-    constructor(source: any){
-        this.source = source;
+    data: object | object[];
+
+    constructor(element: HTMLElement, data: object | object[]) {
+        this.element = element;
+        this.data = data;
+    }
+
+    getElement(): HTMLElement {
+        return this.element;
+    }
+
+    getData(): object | object[] {
+        return this.data;
     }
 
 }
