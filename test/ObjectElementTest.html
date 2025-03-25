@@ -445,8 +445,8 @@
                     <!-- type -->
                     <tbody>
                     <tr>
-                        <td rowspan="2">type</td>
-                        <td rowspan="2" data-duice-bind="myObject" data-duice-property="type"></td>
+                        <td rowspan="3">type</td>
+                        <td rowspan="3" data-duice-bind="myObject" data-duice-property="type"></td>
                         <td>
                             <span data-duice-bind="myObject" data-duice-property="type"></span>
                         </td>
@@ -465,6 +465,21 @@
                         </td>
                         <td>
                             &lt;select data-duice-bind="myObject" data-duice-property="type"/&gt; ... &lt;/select&gt;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>
+                                <select data-duice-bind="myObject" data-duice-property="type">
+                                    <option value>- Select Type -</option>
+                                    <option value="human">Human</option>
+                                    <option value="fruit">Fruit</option>
+                                    <option value="animal">Animal</option>
+                                </select>
+                            </label>
+                        </td>
+                        <td>
+                            &lt;select data-duice-bind="myObject" data-duice-property="type" data-duice-option="myTypes" data-duice-option-value-property="type" data-duice-option-text-property="name"/&gt; ... &lt;/select&gt;
                         </td>
                     </tr>
                     </tbody>

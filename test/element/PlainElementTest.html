@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PlainElement</title>
+    <script src="../../dist/duice.js"></script>
+    <script>
+        const user = new duice.ObjectProxy({
+            name: 'Apple',
+            status: 'active'
+        });
+        const users = new duice.ArrayProxy([
+            { name: 'Apple', status: 'active' },
+            { name: 'Orange', status: 'lock' }
+        ]);
+    </script>
+</head>
+<body>
+    <span data-duice-bind="user"
+          data-duice-property="name">
+    </span>
+    <input type="text" data-duice-bind="user" data-duice-property="name"/>
+    <select data-duice-bind="user" data-duice-property="status">
+        <option value>-</option>
+        <option value="active">Active</option>
+        <option value="lock">Lock</option>
+    </select>
+    <hr/>
+    <table border="1">
+        <tr>
+            <th>User</th>
+            <th>Status</th>
+        </tr>
+        <tr data-duice-bind="users" data-duice-loop="user,status">
+            <td>
+                <input type="text" data-duice-bind="user" data-duice-property="name"/>
+            </td>
+            <td>
+                <select data-duice-bind="user" data-duice-property="status">
+                    <option value>-</option>
+                    <option value="active">Active</option>
+                    <option value="lock">Lock</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

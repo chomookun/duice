@@ -1,5 +1,7 @@
 # DUICE (Data-binding UI Component Element)
 
+[![Preview](https://img.youtube.com/vi/Dke_mQblaMk/0.jpg)](https://www.youtube.com/watch?v=Dke_mQblaMk)
+
 ## Conception
 
 ### 1. MVC Auto-Binding (between Data Structure and HTML DOM Element)
