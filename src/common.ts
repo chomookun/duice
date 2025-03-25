@@ -24,6 +24,17 @@ export function isPrimitive(value: any): boolean {
 }
 
 /**
+ * Checks object is proxy
+ * @param object
+ */
+export function isProxy(object: any): boolean {
+    if (object == null) {
+        return false;
+    }
+    return globalThis.Object.getOwnPropertyDescriptor(object, '_proxy_target_') != null;
+}
+
+/**
  * Sets proxy target
  * @param proxy
  * @param target
@@ -64,14 +75,6 @@ export function getProxyHandler<T extends ProxyHandler<any>>(proxy: object): T {
 }
 
 /**
- * Checks object is proxy
- * @param object
- */
-export function isProxy(object: any): boolean {
-    return globalThis.Object.getOwnPropertyDescriptor(object, '_proxy_target_') != null;
-}
-
-/**
  * Gets element query selector
  */
 export function getElementQuerySelector(): string {
@@ -109,8 +112,7 @@ export function findVariable(context: object, name: string): any {
             return object;
         }
     }catch(ignore){}
-    // throw error
-    console.warn(`Object[${name}] is not found`);
+    // return default
     return undefined;
 }
 
@@ -199,10 +201,10 @@ export function setElementAttribute(htmlElement: HTMLElement, name: string, valu
 }
 
 /**
- * Prints trace message
+ * Prints debug message
  */
-export function trace(...args: any[]): void {
-    if(Configuration.isTraceEnabled()){
+export function debug(...args: any[]): void {
+    if(Configuration.isDebugEnabled()){
         console.trace(args);
     }
 }

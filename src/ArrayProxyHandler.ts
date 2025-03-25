@@ -6,8 +6,10 @@ import {ItemSelectingEvent} from "./event/ItemSelectingEvent";
 import {Event} from "./event/Event";
 import {ItemMovingEvent} from "./event/ItemMovingEvent";
 import {ObjectProxy} from "./ObjectProxy";
-import {getProxyHandler, getProxyTarget} from "./common";
+import {debug, getProxyHandler, getProxyTarget} from "./common";
 import {ObjectProxyHandler} from "./ObjectProxyHandler";
+import {ItemSelectedEvent} from "./event/ItemSelectedEvent";
+import {ItemMovedEvent} from "./event/ItemMovedEvent";
 
 /**
  * Array Proxy Handler
@@ -19,8 +21,8 @@ export class ArrayProxyHandler extends ProxyHandler<object[]> {
     /**
      * Constructor
      */
-    constructor(array: object[], parent?: ProxyHandler<any>) {
-        super(array, parent);
+    constructor(array: object[]) {
+        super(array);
     }
 
     /**
@@ -116,22 +118,38 @@ export class ArrayProxyHandler extends ProxyHandler<object[]> {
      * @param observable observable
      * @param event event
      */
-    update(observable: Observable, event: Event): Promise<void> {
+    update(observable: Observable, event: Event): void {
+        debug('ArrayProxyHandler.update', observable, event);
         // instance is array component
         if(observable instanceof ArrayElement) {
-            // row select event
+            // item selecting event
             if(event instanceof ItemSelectingEvent) {
-                this.selectedItemIndex = event.getIndex();
-                return;
+                this.dispatchEventListeners(event).then(result => {
+                    if (result === false) {
+                        return;
+                    }
+                    this.selectedItemIndex = event.getIndex();
+                    // fires item selected event
+                    let itemSelectedEvent = new ItemSelectedEvent(event.getElement(), event.getData(), this.selectedItemIndex);
+                    this.notifyObservers(itemSelectedEvent);
+                    this.dispatchEventListeners(itemSelectedEvent).then();
+                });
             }
-            // row move event
+            // item moving event
             if (event instanceof ItemMovingEvent) {
-                let object = this.getTarget().splice(event.getFromIndex(), 1)[0];
-                this.getTarget().splice(event.getToIndex(), 0, object);
+                this.dispatchEventListeners(event).then(result => {
+                    if (result === false) {
+                        return;
+                    }
+                    let object = this.getTarget().splice(event.getFromIndex(), 1)[0];
+                    this.getTarget().splice(event.getToIndex(), 0, object);
+                    // fires item moved event
+                    let itemMovedEvent = new ItemMovedEvent(event.getElement(), event.getData(), event.getFromIndex(), event.getToIndex());
+                    this.notifyObservers(itemMovedEvent);
+                    this.dispatchEventListeners(itemMovedEvent).then();
+                });
             }
         }
-        // notify observers
-        this.notifyObservers(event);
     }
 
     /**

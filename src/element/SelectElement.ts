@@ -32,7 +32,8 @@ export class SelectElement extends ObjectElement<HTMLSelectElement> {
         this.optionValueProperty = getElementAttribute(this.getHtmlElement(), 'option-value-property');
         this.optionTextProperty = getElementAttribute(this.getHtmlElement(), 'option-text-property');
         // adds event listener
-        this.getHtmlElement().addEventListener('change', () => {
+        this.getHtmlElement().addEventListener('change', e => {
+            e.stopPropagation();
             let element = this.getHtmlElement();
             let data = getProxyTarget(this.getBindData());
             let propertyChangingEvent = new PropertyChangingEvent(element, data, this.getProperty(), this.getValue(), this.getIndex());
@@ -44,14 +45,14 @@ export class SelectElement extends ObjectElement<HTMLSelectElement> {
      * Overrides render
      */
     override render(): void {
+        this.createOptions();
         super.render();
-        this.updateOptions();
     }
 
     /**
      * Updates options
      */
-    updateOptions(): void {
+    createOptions(): void {
         let value = this.getHtmlElement().value;
         this.getHtmlElement().innerHTML = '';
         this.defaultOptions.forEach(defaultOption => {
@@ -59,12 +60,14 @@ export class SelectElement extends ObjectElement<HTMLSelectElement> {
         });
         if (this.option) {
             let optionArray = findVariable(this.getContext(), this.option);
-            optionArray.forEach(it => {
-                let option = document.createElement('option');
-                option.value = it[this.optionValueProperty];
-                option.appendChild(document.createTextNode(it[this.optionTextProperty]));
-                this.getHtmlElement().appendChild(option);
-            });
+            if (optionArray) {
+                optionArray.forEach(it => {
+                    let option = document.createElement('option');
+                    option.value = it[this.optionValueProperty];
+                    option.appendChild(document.createTextNode(it[this.optionTextProperty]));
+                    this.getHtmlElement().appendChild(option);
+                });
+            }
         }
         this.getHtmlElement().value = value;
     }

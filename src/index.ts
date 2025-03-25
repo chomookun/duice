@@ -42,11 +42,15 @@ export * from "./event/ItemMovedEvent";
     }
     // listen history event and forward to DOMContentLoaded event
     if (globalThis.window) {
-        ['popstate', 'pageshow'].forEach(event => {
-            window.addEventListener(event, (e) => {
-                if (event === 'pageshow' && !(e as PageTransitionEvent).persisted) return;
+        // popstate
+        window.addEventListener('popstate', e => {
+            document.dispatchEvent(new CustomEvent('DOMContentLoaded'));
+        });
+        // pageshow
+        window.addEventListener('pageshow', (e) => {
+            if (e.persisted) {
                 document.dispatchEvent(new CustomEvent('DOMContentLoaded'));
-            });
+            }
         });
     }
 })();

@@ -1,4 +1,4 @@
-import {findVariable, getElementAttribute, getProxyHandler, runExecuteCode, runIfCode, trace} from "./common";
+import {findVariable, getElementAttribute, getProxyHandler, runExecuteCode, runIfCode, debug} from "./common";
 import {Element} from "./Element";
 import {ObjectProxy} from "./ObjectProxy";
 import {Observable} from "./Observable";
@@ -7,6 +7,8 @@ import {Format} from "./format/Format";
 import {FormatFactory} from "./format/FormatFactory";
 import {Event} from "./event/Event";
 import {Configuration} from "./Configuration";
+import {PropertyChangingEvent} from "./event/PropertyChangingEvent";
+import {PropertyChangedEvent} from "./event/PropertyChangedEvent";
 
 /**
  * Object Element
@@ -62,7 +64,8 @@ export class ObjectElement<T extends HTMLElement> extends Element<T, object> {
         }
         // run if code
         runIfCode(this.htmlElement, context).then(result => {
-            if (result == false) {
+            // checks result
+            if (result === false) {
                 return;
             }
             let objectProxyHandler = getProxyHandler<ObjectProxyHandler>(this.getBindData());
@@ -71,13 +74,10 @@ export class ObjectElement<T extends HTMLElement> extends Element<T, object> {
                 let value = objectProxyHandler.getValue(this.property);
                 this.setValue(value);
             }
-            // set readonly
+            // sets readonly
             let readonly = objectProxyHandler.isReadonly(this.property);
             this.setReadonly(readonly);
-            // set disable
-            // let disable = objectProxyHandler.isDisable(this.property);
-            // this.setDisable(disable);
-            // todo disabled
+            // sets disabled
             let disabled = objectProxyHandler.isDisabled(this.property);
             this.setDisable(disabled);
             // run execute code
@@ -91,11 +91,17 @@ export class ObjectElement<T extends HTMLElement> extends Element<T, object> {
      * @param event event
      */
     override update(observable: Observable, event: Event): void {
-        trace('ObjectElement.update', observable, event);
+        debug('ObjectElement.update', observable, event);
         // ObjectHandler
         if(observable instanceof ObjectProxyHandler) {
-            this.render();
+            // property changed event
+            if (event instanceof PropertyChangedEvent) {
+                this.render();
+                return;
+            }
         }
+        // default
+        this.render();
     }
 
     /**

@@ -3,7 +3,7 @@ import {
     isObject,
     getProxyHandler,
     setProxyTarget,
-    setProxyHandler
+    setProxyHandler, isPrimitive
 } from "./common";
 import {ObjectProxy} from "./ObjectProxy";
 import {PropertyChangingEvent} from "./event/PropertyChangingEvent";
@@ -12,6 +12,7 @@ import {ItemSelectingEvent} from "./event/ItemSelectingEvent";
 import {EventType} from "./event/EventType";
 import {ItemMovingEvent} from "./event/ItemMovingEvent";
 import {ItemMovedEvent} from "./event/ItemMovedEvent";
+import {ItemSelectedEvent} from "./event/ItemSelectedEvent";
 
 /**
  * Array Proxy
@@ -21,16 +22,15 @@ export class ArrayProxy extends globalThis.Array {
     /**
      * Constructor
      * @param array
-     * @param parent
      */
-    constructor(array: object[], parent?: ObjectProxy|ArrayProxy) {
+    constructor(array: object[]) {
         super();
         // is already proxy
         if(array instanceof ArrayProxy) {
             return array;
         }
         // create proxy
-        let arrayHandler = new ArrayProxyHandler(array, parent ? getProxyHandler(parent) : null);
+        let arrayHandler = new ArrayProxyHandler(array);
         let arrayProxy = new Proxy<object[]>(array, arrayHandler);
         setProxyTarget(arrayProxy, array);
         setProxyHandler(arrayProxy, arrayHandler);
@@ -58,23 +58,16 @@ export class ArrayProxy extends globalThis.Array {
             arrayProxy.length = 0;
             // creates elements
             for (let index = 0; index < array.length; index ++) {
-                let object = array[index];
-                if (isObject(object)) {
-                    let objectProxy = new ObjectProxy(object, arrayProxy);
+                let value = array[index];
+                // source value is object
+                if (isObject(value)) {
+                    let objectProxy = new ObjectProxy(value);
+                    getProxyHandler(objectProxy).setParent(arrayProxyHandler);
                     arrayProxy[index] = objectProxy;
-                    // event listener
-                    getProxyHandler(objectProxy).eventDispatcher = arrayProxyHandler.eventDispatcher;
-                    // readonly
-                    ObjectProxy.setReadonlyAll(objectProxy, arrayProxyHandler.isReadonlyAll());
-                    arrayProxyHandler.readonly.forEach(property => {
-                        ObjectProxy.setReadonly(objectProxy, property, true);
-                    });
-                    // disable
-                    ObjectProxy.setDisableAll(objectProxy, arrayProxyHandler.isDisableAll());
-                    arrayProxyHandler.disable.forEach(property => {
-                        ObjectProxy.setDisable(objectProxy, property, true);
-                    })
+                    continue;
                 }
+                // default
+                arrayProxy[index] = value;
             }
         } finally {
             // resume
@@ -128,6 +121,23 @@ export class ArrayProxy extends globalThis.Array {
     }
 
     /**
+     * Checks if all properties are readonly
+     * @param arrayProxy array proxy
+     * @param readonly readonly
+     */
+    static setReadonlyAll(arrayProxy: object[], readonly: boolean): void {
+        getProxyHandler(arrayProxy).setReadonlyAll(readonly);
+    }
+
+    /**
+     * Checks if all properties are readonly
+     * @param arrayProxy array proxy
+     */
+    static isReadonlyAll(arrayProxy: object[]): boolean {
+        return getProxyHandler(arrayProxy).isReadonlyAll();
+    }
+
+    /**
      * Sets readonly
      * @param arrayProxy array proxy
      * @param property property
@@ -135,9 +145,6 @@ export class ArrayProxy extends globalThis.Array {
      */
     static setReadonly(arrayProxy: object[], property: string, readonly: boolean): void {
         getProxyHandler(arrayProxy).setReadonly(property, readonly);
-        arrayProxy.forEach(objectProxy => {
-            ObjectProxy.setReadonly(objectProxy, property, readonly);
-        });
     }
 
     /**
@@ -150,23 +157,20 @@ export class ArrayProxy extends globalThis.Array {
     }
 
     /**
-     * Checks if all properties are readonly
+     * Sets all properties to be disabled
      * @param arrayProxy array proxy
-     * @param readonly readonly
+     * @param disable disabled
      */
-    static setReadonlyAll(arrayProxy: object[], readonly: boolean): void {
-        getProxyHandler(arrayProxy).setReadonlyAll(readonly);
-        arrayProxy.forEach(objectProxy => {
-            ObjectProxy.setReadonlyAll(objectProxy, readonly);
-        });
+    static setDisabledAll(arrayProxy: object[], disable: boolean): void {
+        getProxyHandler(arrayProxy).setDisabledAll(disable);
     }
 
     /**
-     * Checks if all properties are readonly
+     * Checks if all properties are disabled
      * @param arrayProxy array proxy
      */
-    static isReadonlyAll(arrayProxy: object[]): boolean {
-        return getProxyHandler(arrayProxy).isReadonlyAll();
+    static isDisabledAll(arrayProxy: object[]): boolean {
+        return getProxyHandler(arrayProxy).isDisabledAll();
     }
 
     /**
@@ -175,11 +179,8 @@ export class ArrayProxy extends globalThis.Array {
      * @param property property
      * @param disable disable
      */
-    static setDisable(arrayProxy: object[], property: string, disable: boolean): void {
-        getProxyHandler(arrayProxy).setDisable(property, disable);
-        arrayProxy.forEach(objectProxy => {
-            ObjectProxy.setDisable(objectProxy, property, disable);
-        });
+    static setDisabled(arrayProxy: object[], property: string, disable: boolean): void {
+        getProxyHandler(arrayProxy).setDisabled(property, disable);
     }
 
     /**
@@ -187,28 +188,8 @@ export class ArrayProxy extends globalThis.Array {
      * @param arrayProxy array proxy
      * @param property property
      */
-    static isDisable(arrayProxy: object[], property): boolean {
-        return getProxyHandler(arrayProxy).isDisable(property);
-    }
-
-    /**
-     * Sets all properties to be disabled
-     * @param arrayProxy array proxy
-     * @param disable disabled
-     */
-    static setDisableAll(arrayProxy: object[], disable: boolean): void {
-        getProxyHandler(arrayProxy).setDisableAll(disable);
-        arrayProxy.forEach(objectProxy => {
-            ObjectProxy.setDisableAll(objectProxy, disable);
-        });
-    }
-
-    /**
-     * Checks if all properties are disabled
-     * @param arrayProxy array proxy
-     */
-    static isDisableAll(arrayProxy: object[]): boolean {
-        return getProxyHandler(arrayProxy).isDisableAll();
+    static isDisabled(arrayProxy: object[], property): boolean {
+        return getProxyHandler(arrayProxy).isDisabled(property);
     }
 
     /**
@@ -247,7 +228,7 @@ export class ArrayProxy extends globalThis.Array {
      */
     static onItemSelected(arrayProxy : ArrayProxy, eventListener: Function): void {
         let proxyHandler = getProxyHandler(arrayProxy);
-        let eventType: EventType = ItemSelectingEvent;
+        let eventType: EventType = ItemSelectedEvent;
         proxyHandler.clearEventListeners(eventType);
         proxyHandler.addEventListener(eventType, eventListener);
     }

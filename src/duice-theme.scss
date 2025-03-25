@@ -149,6 +149,10 @@ input:focus {
   border: var(--duice-form-element-focus-border);
   transition: var(--duice-form-element-focus-transition);
 }
+input:disabled {
+  background-color: rgba(128, 128, 128, 0.1);
+  color: rgba(128, 128, 128, 0.9);
+}
 
 /* input-checkbox */
 input[type='checkbox'] {
@@ -210,6 +214,10 @@ select:focus {
 option {
     background: var(--duice-background);
 }
+select:disabled {
+  background-color: rgba(128, 128, 128, 0.1);
+  color: rgba(128, 128, 128, 0.9);
+}
 
 /* button */
 button {
@@ -229,7 +237,6 @@ button {
   background: var(--duice-button-background);
 }
 button:disabled {
-  pointer-events: none;
   cursor: not-allowed;
   opacity: 0.5;
 }
@@ -256,6 +263,10 @@ textarea:focus {
   outline: none;
   border: var(--duice-form-element-focus-border);
   transition: var(--duice-form-element-focus-transition);
+}
+textarea:disabled {
+  background-color: rgba(128, 128, 128, 0.1);
+  color: rgba(128, 128, 128, 0.9);
 }
 
 /* table */

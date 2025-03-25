@@ -1,5 +1,5 @@
 import {
-    trace,
+    debug,
     getElementAttribute,
     markInitialized,
     runExecuteCode,
@@ -15,6 +15,8 @@ import {ArrayProxyHandler} from "./ArrayProxyHandler";
 import {ItemSelectingEvent} from "./event/ItemSelectingEvent";
 import {ItemMovingEvent} from "./event/ItemMovingEvent";
 import {Event} from "./event/Event";
+import {ItemSelectedEvent} from "./event/ItemSelectedEvent";
+import {ItemMovedEvent} from "./event/ItemMovedEvent";
 
 /**
  * Array Element
@@ -132,9 +134,12 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
             // append to slot
             this.slot.parentNode.insertBefore(itemHtmlElement, this.slot);
             // check if
-            runIfCode(itemHtmlElement, context);
-            // execute script
-            runExecuteCode(itemHtmlElement, context);
+            runIfCode(itemHtmlElement, context).then(result => {
+                if (result === false) {
+                    return;
+                }
+                runExecuteCode(itemHtmlElement, context).then();
+            });
         }
     }
 
@@ -162,13 +167,8 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
                 e.stopPropagation();
             });
             itemHtmlElement.addEventListener('drop', e => {
-                // Prevent default
                 e.preventDefault();
                 e.stopPropagation();
-                // Checks item moving listener
-                // if (runOnEventCode(itemHtmlElement, context, 'item-moving') === false) {
-                //     return;
-                // }
                 // Notifies item move event
                 let element = this.getHtmlElement();
                 let data = getProxyTarget(this.getBindData());
@@ -176,8 +176,6 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
                 let toIndex = parseInt(getElementAttribute(e.currentTarget as HTMLElement, 'index'));
                 let itemMoveEvent = new ItemMovingEvent(element, data, fromIndex, toIndex);
                 _this.notifyObservers(itemMoveEvent);
-                // Calls item moved listener
-                // runOnEventCode(itemHtmlElement, context, 'item-moved');
             });
         }
         // initializes row element
@@ -185,31 +183,20 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
         this.itemHtmlElements.push(itemHtmlElement);
         // insert into slot
         this.slot.parentNode.insertBefore(itemHtmlElement, this.slot);
-        // check if code
-        runIfCode(itemHtmlElement, context).then();
-        // execute script
-        runExecuteCode(itemHtmlElement, context).then();
-        // selectable
+        // trigger item selecting event
         itemHtmlElement.addEventListener('click', e => {
-            // // on item selecting
-            // if (runOnEventCode(itemHtmlElement, context, 'item-selecting') === false) {
-            //     return;
-            // }
-            // selected class
-            if(this.selectedItemClass) {
-                this.itemHtmlElements.forEach(element => {
-                    element.classList.remove(this.selectedItemClass);
-                });
-                (e.currentTarget as HTMLElement).classList.add(this.selectedItemClass);
-                e.stopPropagation();
-            }
-            // trigger row select event
+            e.stopPropagation();
             let element = this.getHtmlElement();
             let data = getProxyTarget(this.getBindData());
-            let rowSelectingEvent = new ItemSelectingEvent(element, data, index);
-            this.notifyObservers(rowSelectingEvent);
-            // on item selected
-            // runOnEventCode(itemHtmlElement, context, 'item-selected');
+            let itemSelectingEvent = new ItemSelectingEvent(element, data, index);
+            this.notifyObservers(itemSelectingEvent);
+        });
+        // check if code
+        runIfCode(itemHtmlElement, context).then(result => {
+            if (result === false) {
+                return;
+            }
+            runExecuteCode(itemHtmlElement, context).then();
         });
     }
 
@@ -219,10 +206,10 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
      * @param event event
      */
     override update(observable: Observable, event: Event): void {
-        trace('ArrayElement.update', observable, event);
+        debug('ArrayElement.update', observable, event);
         if(observable instanceof ArrayProxyHandler){
-            // row select event
-            if(event instanceof ItemSelectingEvent) {
+            // item selected event
+            if(event instanceof ItemSelectedEvent) {
                 if(this.selectedItemClass) {
                     this.itemHtmlElements.forEach(el => el.classList.remove(this.selectedItemClass));
                     let index = event.getIndex();
@@ -234,11 +221,17 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
                         });
                     }
                 }
+                // no render
                 return;
             }
-            // render
-            this.render();
+            // item moved event
+            if (event instanceof ItemMovedEvent) {
+                this.render();
+                return;
+            }
         }
+        // default
+        this.render();
     }
 
 }

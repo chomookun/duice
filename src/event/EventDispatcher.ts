@@ -6,7 +6,24 @@ import {EventType} from "./EventType";
  */
 export class EventDispatcher {
 
+    parent: EventDispatcher;
+
     eventListeners: Map<EventType, Function[]> = new Map();
+
+    /**
+     * Sets parent
+     * @param parent parent
+     */
+    setParent(parent: EventDispatcher): void {
+        this.parent = parent;
+    }
+
+    /**
+     * Gets parent
+     */
+    getParent(): EventDispatcher {
+        return this.parent;
+    }
 
     /**
      * Adds event listener
@@ -49,12 +66,21 @@ export class EventDispatcher {
      * Dispatches event listeners
      * @param event event
      */
-    dispatchEventListeners(event: Event): Promise<any> {
+    async dispatchEventListeners(event: Event): Promise<any> {
         let listeners = this.eventListeners.get(event.constructor as EventType);
+        let results = [];
         if (listeners) {
-            return Promise.all(listeners.map(listener => listener.call(this, event)));
+            for (let listener of listeners) {
+                results.push(await listener.call(this, event));
+            }
         }
-        return Promise.resolve();
+        // calls parent
+        if (this.parent) {
+            let parentResults = await this.parent.dispatchEventListeners(event);
+            results = results.concat(parentResults);
+        }
+        // returns results
+        return results;
     }
 
 }

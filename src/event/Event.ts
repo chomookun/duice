@@ -5,18 +5,29 @@ export class Event {
 
     element: HTMLElement;
 
-    data: object | object[];
+    data: any;
 
-    constructor(element: HTMLElement, data: object | object[]) {
+    /**
+     * Constructor
+     * @param element html element
+     * @param data data
+     */
+    constructor(element: HTMLElement, data: any) {
         this.element = element;
         this.data = data;
     }
 
+    /**
+     * Gets element
+     */
     getElement(): HTMLElement {
         return this.element;
     }
 
-    getData(): object | object[] {
+    /**
+     * Gets data
+     */
+    getData(): any {
         return this.data;
     }
 

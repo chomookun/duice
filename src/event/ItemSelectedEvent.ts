@@ -13,7 +13,7 @@ export class ItemSelectedEvent extends Event {
      * @param data data
      * @param index index (optional)
      */
-    constructor(element: HTMLElement, data: object[], index: number){
+    constructor(element: HTMLElement, data: any, index: number){
         super(element, data);
         this.index = index;
     }

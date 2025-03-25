@@ -24,15 +24,15 @@ export class Configuration {
      * Sets debug enabled
      * @param value
      */
-    static setTraceEnabled(value: boolean): void {
+    static setDebugEnabled(value: boolean): void {
         sessionStorage.setItem(`${this.namespace}.traceEnabled`, JSON.stringify(value));
     }
 
     /**
      * Checks if debug is enabled
      */
-    static isTraceEnabled(): boolean {
-        const value = sessionStorage.getItem(`${this.namespace}.traceEnabled`);
+    static isDebugEnabled(): boolean {
+        const value = sessionStorage.getItem(`${this.namespace}.debugEnabled`);
         return value ? JSON.parse(value) : false;
     }
 
