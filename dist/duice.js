@@ -1,5 +1,5 @@
 /*!
- * duice - v0.3.0
+ * duice - v0.3.1
  * git: https://gitbub.com/chomookun/duice
  * website: https://duice.chomookun.com
  * Released under the LGPL(GNU Lesser General Public License version 3) License
@@ -1472,8 +1472,9 @@ var duice = (function (exports) {
          */
         selectItem(index) {
             this.selectedItemIndex = index;
-            // notify row select event
-            this.notifyObservers();
+            // notify item selected event
+            const itemSelectedEvent = new ItemSelectedEvent(null, this.getTarget(), index);
+            this.notifyObservers(itemSelectedEvent);
         }
         /**
          * Gets selected item index

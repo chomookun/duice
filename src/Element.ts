@@ -2,8 +2,6 @@ import {assert, getProxyHandler, setElementAttribute} from "./common";
 import {Observable} from "./Observable";
 import {Observer} from "./Observer";
 import {Event} from "./event/Event";
-import {ObjectProxy} from "./ObjectProxy";
-import {ObjectProxyHandler} from "./ObjectProxyHandler";
 
 /**
  * Element

@@ -54,12 +54,13 @@ const user = new duice.ObjectProxy({
 
 ### HTML
 
-| attribute                                  | description                                          |
-|:-------------------------------------------|:-----------------------------------------------------|
-| data-duice-bind="[object]"               | Object name to bind                                  |
-| data-duice-property="[property of object]" | Object Property name to bind                         |
-| data-duice-script="[script code]"          | javascript code to execute when element is updated   |
-| data-duice-format="[data format clause]"   | ex) string('###-###'), number(2), date('yyyy-MM-dd') |
+| attribute                                  | description                                                         |
+|:-------------------------------------------|:--------------------------------------------------------------------|
+| data-duice-bind="[object]"                 | Object name to bind                                                 |
+| data-duice-property="[property of object]" | Object Property name to bind                                        |
+| data-duice-format="[data format clause]"   | ex) string('###-###'), number(2), date('yyyy-MM-dd')                |
+| data-duice-if="[reutrn false to hiddne]"   | javascript code for decide to hidden or not |
+| data-duice-execute="[code to execute]"     | javascript code to execute when element is updated                  |
 
 ```html
 <span data-duice-bind="user" data-duice-property="id"></span>
@@ -87,11 +88,14 @@ const users = new duice.ArrayProxy([
 
 ### HTML
 
-| attribute                                      | description                              |
-|:-----------------------------------------------|:-----------------------------------------|
-| data-duice-bind="[array]"                     | Object name to bind                      |
-| data-duice-loop="[element name],[status name]" | element object and status variable name  |
-| data-duice-script="[script code]"              | javascript code to execute when element is updated   |
+| attribute                                         | description                             |
+|:--------------------------------------------------|:----------------------------------------|
+| data-duice-bind="[array]"                         | Object name to bind                     |
+| data-duice-foreach="[element name],[status name]" | element object and status variable name |
+| data-duice-recursive="[id name],[parent id name]" | if recursive, id and parent id name     |
+| data-duice-if="[reutrn false to hiddne]"   | javascript code for decide to hidden or not |
+| data-duice-execute="[code to execute]"     | javascript code to execute when element is updated                  |
+
 
 ```html
 <table>
@@ -100,7 +104,7 @@ const users = new duice.ArrayProxy([
         <th>name</th>
         <th>name</th>
     </tr>
-    <tr data-duice-bind="users" data-duice-loop="user,status">
+    <tr data-duice-bind="users" data-duice-foreach="user,status">
         <td data-duice-bind="status" data-duice-property="count"></td>
         <td data-duice-bind="user" data-duice-property="id"></td>
         <td><input type="text" data-duice-bind="user" data-duice-property="name"/></td>

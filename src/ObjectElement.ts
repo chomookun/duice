@@ -1,13 +1,10 @@
 import {findVariable, getElementAttribute, getProxyHandler, runExecuteCode, runIfCode, debug} from "./common";
 import {Element} from "./Element";
-import {ObjectProxy} from "./ObjectProxy";
 import {Observable} from "./Observable";
 import {ObjectProxyHandler} from "./ObjectProxyHandler";
 import {Format} from "./format/Format";
 import {FormatFactory} from "./format/FormatFactory";
 import {Event} from "./event/Event";
-import {Configuration} from "./Configuration";
-import {PropertyChangingEvent} from "./event/PropertyChangingEvent";
 import {PropertyChangedEvent} from "./event/PropertyChangedEvent";
 
 /**

@@ -1,6 +1,5 @@
 import {Configuration} from "./Configuration";
 import {ProxyHandler} from "./ProxyHandler";
-import {Event} from "./event/Event";
 
 /**
  * Checks value is Array

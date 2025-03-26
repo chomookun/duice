@@ -10,7 +10,6 @@ import {debug, getProxyHandler, getProxyTarget} from "./common";
 import {ObjectProxyHandler} from "./ObjectProxyHandler";
 import {ItemSelectedEvent} from "./event/ItemSelectedEvent";
 import {ItemMovedEvent} from "./event/ItemMovedEvent";
-import {PropertyChangingEvent} from "./event/PropertyChangingEvent";
 import {PropertyChangedEvent} from "./event/PropertyChangedEvent";
 
 /**
@@ -204,8 +203,9 @@ export class ArrayProxyHandler extends ProxyHandler<object[]> {
      */
     selectItem(index: number): void {
         this.selectedItemIndex = index;
-        // notify row select event
-        this.notifyObservers();
+        // notify item selected event
+        const itemSelectedEvent = new ItemSelectedEvent(null, this.getTarget(), index);
+        this.notifyObservers(itemSelectedEvent);
     }
 
     /**
