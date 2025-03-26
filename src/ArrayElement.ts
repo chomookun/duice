@@ -17,15 +17,16 @@ import {ItemMovingEvent} from "./event/ItemMovingEvent";
 import {Event} from "./event/Event";
 import {ItemSelectedEvent} from "./event/ItemSelectedEvent";
 import {ItemMovedEvent} from "./event/ItemMovedEvent";
+import {PropertyChangedEvent} from "./event/PropertyChangedEvent";
 
 /**
  * Array Element
  */
 export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
 
-    loop: string;
+    foreach: string;
 
-    hierarchy: string;
+    recursive: string;
 
     editable: boolean = false;
 
@@ -44,8 +45,8 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
     constructor(htmlElement: T, bindData: object[], context: object) {
         super(htmlElement.cloneNode(true) as T, bindData, context);
         // attributes
-        this.loop = getElementAttribute(htmlElement, 'loop');
-        this.hierarchy = getElementAttribute(htmlElement, 'hierarchy');
+        this.foreach = getElementAttribute(htmlElement, 'foreach');
+        this.recursive = getElementAttribute(htmlElement, 'recursive');
         this.editable = (getElementAttribute(htmlElement, 'editable') === 'true');
         this.selectedItemClass = getElementAttribute(htmlElement, 'selected-item-class');
         // replace with slot for position
@@ -64,17 +65,16 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
             rowElement.parentNode.removeChild(rowElement);
         });
         this.itemHtmlElements.length = 0;
-        // loop
-        if(this.loop){
-            let loopArgs = this.loop.split(',');
-            let itemName = loopArgs[0].trim();
-            let statusName = loopArgs[1]?.trim();
-            // hierarchy loop
-            if(this.hierarchy) {
-                let hierarchyArray = this.hierarchy.split(',');
-                let idName = hierarchyArray[0];
-                let parentIdName = hierarchyArray[1];
-                //let index = -1;
+        // foreach
+        if(this.foreach){
+            let foreachArgs = this.foreach.split(',');
+            let itemName = foreachArgs[0].trim();
+            let statusName = foreachArgs[1]?.trim();
+            // recursive loop
+            if(this.recursive) {
+                let recursiveArgs = this.recursive.split(',');
+                let idName = recursiveArgs[0].trim();
+                let parentIdName = recursiveArgs[1]?.trim();
                 const _this = this;
                 // visit function
                 let visit = function(array: object[], parentId: object, depth: number) {
@@ -103,7 +103,7 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
                 // start visit
                 visit(arrayProxy, null, 0);
             }
-            // default loop
+            // default foreach
             else{
                 // normal
                 for (let index = 0; index < arrayProxy.length; index++) {
@@ -124,7 +124,7 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
                 }
             }
         }
-        // not loop
+        // not foreach
         else {
             // initialize
             let itemHtmlElement = this.getHtmlElement().cloneNode(true) as HTMLElement;
@@ -207,6 +207,7 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
      */
     override update(observable: Observable, event: Event): void {
         debug('ArrayElement.update', observable, event);
+        // if observable is array proxy handler
         if(observable instanceof ArrayProxyHandler){
             // item selected event
             if(event instanceof ItemSelectedEvent) {
@@ -228,6 +229,21 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
             if (event instanceof ItemMovedEvent) {
                 this.render();
                 return;
+            }
+            // property change event
+            if (event instanceof PropertyChangedEvent) {
+                // if recursive and parent is changed, render array element
+                if (this.recursive) {
+                    let parentId = this.recursive.split(',')[1]?.trim();
+                    if (event.getProperty() === parentId) {
+                        this.render();
+                        return;
+                    }
+                }
+                // default is no-op
+                else {
+                    return;
+                }
             }
         }
         // default

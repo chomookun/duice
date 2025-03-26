@@ -653,7 +653,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr data-duice-bind="myObject.items" data-duice-loop="item,status">
+                                <tr data-duice-bind="myObject.items" data-duice-foreach="item,status">
                                     <td>
                                         <input type="text" data-duice-bind="item" data-duice-property="id">
                                     </td>
@@ -665,7 +665,7 @@
                             </table>
                         </td>
                         <td class="fw-light ta-left" style="white-space:pre;">
-                            &lt;tr data-duice-bind="myObject.items" data-duice-loop="item,status"&gt;
+                            &lt;tr data-duice-bind="myObject.items" data-duice-foreach="item,status"&gt;
                             &lt;td&gt;
                             &lt;input type="text" data-duice-bind="item" data-duice-property="id"&gt;
                             &lt;/td&gt;

@@ -10,6 +10,8 @@ import {debug, getProxyHandler, getProxyTarget} from "./common";
 import {ObjectProxyHandler} from "./ObjectProxyHandler";
 import {ItemSelectedEvent} from "./event/ItemSelectedEvent";
 import {ItemMovedEvent} from "./event/ItemMovedEvent";
+import {PropertyChangingEvent} from "./event/PropertyChangingEvent";
+import {PropertyChangedEvent} from "./event/PropertyChangedEvent";
 
 /**
  * Array Proxy Handler
@@ -120,7 +122,7 @@ export class ArrayProxyHandler extends ProxyHandler<object[]> {
      */
     update(observable: Observable, event: Event): void {
         debug('ArrayProxyHandler.update', observable, event);
-        // instance is array component
+        // observable is array element
         if(observable instanceof ArrayElement) {
             // item selecting event
             if(event instanceof ItemSelectingEvent) {
@@ -148,6 +150,12 @@ export class ArrayProxyHandler extends ProxyHandler<object[]> {
                     this.notifyObservers(itemMovedEvent);
                     this.dispatchEventListeners(itemMovedEvent).then();
                 });
+            }
+        }
+        // observable is object proxy handler
+        if (observable instanceof ObjectProxyHandler) {
+            if (event instanceof PropertyChangedEvent) {
+                this.notifyObservers(event);
             }
         }
     }

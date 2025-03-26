@@ -490,6 +490,7 @@ var duice = (function (exports) {
          */
         setParent(parent) {
             this.parent = parent;
+            this.addObserver(parent);
             parent.addObserver(this);
             this.eventDispatcher.setParent(parent.eventDispatcher);
         }
@@ -1392,7 +1393,7 @@ var duice = (function (exports) {
          */
         update(observable, event) {
             debug('ArrayProxyHandler.update', observable, event);
-            // instance is array component
+            // observable is array element
             if (observable instanceof ArrayElement) {
                 // item selecting event
                 if (event instanceof ItemSelectingEvent) {
@@ -1420,6 +1421,12 @@ var duice = (function (exports) {
                         this.notifyObservers(itemMovedEvent);
                         this.dispatchEventListeners(itemMovedEvent).then();
                     });
+                }
+            }
+            // observable is object proxy handler
+            if (observable instanceof ObjectProxyHandler) {
+                if (event instanceof PropertyChangedEvent) {
+                    this.notifyObservers(event);
                 }
             }
         }
@@ -2104,8 +2111,8 @@ var duice = (function (exports) {
             this.slot = document.createElement('slot');
             this.itemHtmlElements = [];
             // attributes
-            this.loop = getElementAttribute(htmlElement, 'loop');
-            this.hierarchy = getElementAttribute(htmlElement, 'hierarchy');
+            this.foreach = getElementAttribute(htmlElement, 'foreach');
+            this.recursive = getElementAttribute(htmlElement, 'recursive');
             this.editable = (getElementAttribute(htmlElement, 'editable') === 'true');
             this.selectedItemClass = getElementAttribute(htmlElement, 'selected-item-class');
             // replace with slot for position
@@ -2117,24 +2124,23 @@ var duice = (function (exports) {
          * Renders
          */
         render() {
-            var _a;
+            var _a, _b;
             let arrayProxy = this.getBindData();
             // reset row elements
             this.itemHtmlElements.forEach(rowElement => {
                 rowElement.parentNode.removeChild(rowElement);
             });
             this.itemHtmlElements.length = 0;
-            // loop
-            if (this.loop) {
-                let loopArgs = this.loop.split(',');
-                let itemName = loopArgs[0].trim();
-                let statusName = (_a = loopArgs[1]) === null || _a === void 0 ? void 0 : _a.trim();
-                // hierarchy loop
-                if (this.hierarchy) {
-                    let hierarchyArray = this.hierarchy.split(',');
-                    let idName = hierarchyArray[0];
-                    let parentIdName = hierarchyArray[1];
-                    //let index = -1;
+            // foreach
+            if (this.foreach) {
+                let foreachArgs = this.foreach.split(',');
+                let itemName = foreachArgs[0].trim();
+                let statusName = (_a = foreachArgs[1]) === null || _a === void 0 ? void 0 : _a.trim();
+                // recursive loop
+                if (this.recursive) {
+                    let recursiveArgs = this.recursive.split(',');
+                    let idName = recursiveArgs[0].trim();
+                    let parentIdName = (_b = recursiveArgs[1]) === null || _b === void 0 ? void 0 : _b.trim();
                     const _this = this;
                     // visit function
                     let visit = function (array, parentId, depth) {
@@ -2163,7 +2169,7 @@ var duice = (function (exports) {
                     // start visit
                     visit(arrayProxy, null, 0);
                 }
-                // default loop
+                // default foreach
                 else {
                     // normal
                     for (let index = 0; index < arrayProxy.length; index++) {
@@ -2184,7 +2190,7 @@ var duice = (function (exports) {
                     }
                 }
             }
-            // not loop
+            // not foreach
             else {
                 // initialize
                 let itemHtmlElement = this.getHtmlElement().cloneNode(true);
@@ -2264,7 +2270,9 @@ var duice = (function (exports) {
          * @param event event
          */
         update(observable, event) {
+            var _a;
             debug('ArrayElement.update', observable, event);
+            // if observable is array proxy handler
             if (observable instanceof ArrayProxyHandler) {
                 // item selected event
                 if (event instanceof ItemSelectedEvent) {
@@ -2286,6 +2294,21 @@ var duice = (function (exports) {
                 if (event instanceof ItemMovedEvent) {
                     this.render();
                     return;
+                }
+                // property change event
+                if (event instanceof PropertyChangedEvent) {
+                    // if recursive and parent is changed, render array element
+                    if (this.recursive) {
+                        let parentId = (_a = this.recursive.split(',')[1]) === null || _a === void 0 ? void 0 : _a.trim();
+                        if (event.getProperty() === parentId) {
+                            this.render();
+                            return;
+                        }
+                    }
+                    // default is no-op
+                    else {
+                        return;
+                    }
                 }
             }
             // default
@@ -2424,7 +2447,8 @@ var duice = (function (exports) {
                             }
                         }
                         catch (e) {
-                            console.error(e, htmlElement, container, JSON.stringify(context));
+                            console.error(e, htmlElement.outerHTML, context);
+                            // console.error(e, htmlElement, container, JSON.stringify(context));
                         }
                     }
                 }

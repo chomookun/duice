@@ -46,8 +46,24 @@
         'use strict';
         let myArray = new duice.ArrayProxy([
             {
+                id: 'nobody',
+                parentId: null,
+                icon: null,
+                name: 'Nobody',
+                phoneNo: null,
+                cardNo: null,
+                balanceAmount: null,
+                type: null,
+                enabled: null,
+                enabledYn: null,
+                description: null,
+                address: {},
+                items: []
+            },
+            {
                 id: 'apple',
                 parentId: 'tom',
+                icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEHklEQVR4nO2XX2gcRRzHp6C+WfFBUZCCiD55M7u3O3NNckm43ZPb5Na7TdNVxD7kxYJV6INNucuDilLQPlhBFBX8g/hiTfaivlYtiChFlOxt72KbJk2NSdO0NbnbtCltb2TuLt72aJPu/dsK94Xfwy47zPczv9/8ZhaAttpqq+kajsXuTejKbuCloqM7Ho8a2l7V0Aw1Fc+ohnaRRTQVz0YN7Yv+sQEFULDlZmMTeuSDpK7QpB55CXilaCq+qKY0ulFEU/Gj6rfqNue4kcE+MbEzcj2pR9YSz/Y94SXA95sBFCEM7W/F0B5bH5fUlXG2+gldeRt4KdXQDtwOQBnC0g/r9+zT+x9aX/1XBp560FOA2HiMv12AUsT3JfW+F0q1r3wD7gSphvazC4Dl/c9HviyWz05lD7gT9OJHsdD7r4ev/zLUTRfU7TQXJnSpL0CzehdN7Q3R195RaHysArF7pH+WAYw8o2xn46kg3L0qES0v4U9sCWfyElmzZUJtiSzbEv5pJSQOzwe5B5piPicHBm2ZLBUn3CBOax30w1fDdMdonD733tNrDOCw3v2oLZNhW8ZnNxu/2C1emMH8wYaat2WS3Gzi6jg10EnfeCtS+FyTaU7Cf7kZezrAF6YEbrQx5iU85NZ8vZGTMLU4RCcFtL8u85fCwjZbxrlWA9jFLPiphdC1CZ/vkZoB8hL52Avzdmkv0DRCNMNxX9VkfjkYvP+/LuFBrIRwESCN0NXfBOG+/0Xt21VxnCsCUBOhXa4B8jL5zGuALM+VsgDhp+4zIOMJrwEm/SUAE8JjNQBsfmg1OzKVDCy5BshL5IrXANb6HoAwVwvAqpfmVypdiG3ifC0AZ7wEOFc+B8oZOOkawJbIUS8B5jr8ToAf3API+JCXANOYdwIccg2Ql4julfm84xArd6FB1wDnFbI1L+PLXgAs9TjqH6HLJwjZ6hqglAU87gXAbKBS/2kIDVCr7DCOtNp8TmLlw1UywHHhmgEoAFtsCZutBJjrFJzl8zvzUDNAKQsk2trVR87V7weN0HKIHGkFwAxxtE6EvgON0mIn5ha7hKZeLc4GK50nDeE/df1K3kyzhHuTrRD74W60+XM9YuXihlDB8vlioBmaJtwRdsVd6BKKh81GtcxaYZZHxTv9XIdA87cAn+8SqOXsOhAmQDM1hblf2UTZsrELvZjmHDfIhaBYucc7gr1jZtm3DP58j0inxErNl1f/AGiFpol/zKoyeLzqmYXFoYKFUOGG9xx7fyOgidAVE6GXQSs1G/APTfLoUrVpp/kZkduThjBiIbh6q+9MCI9N+Hx+4IV+7O29aybAH/xT5OYzHLrGspLh0dUpkf/jjCg+uf5dRhAeNhF614TwRBqhiyaEsyZCX6chVOs+qNpqq6222gJ16F+W3FlCfvUoAAAAAABJRU5ErkJggg==",
                 name: 'Apple',
                 phoneNo: '01012345678',
                 cardNo: '0000111122223333',
@@ -69,6 +85,7 @@
             {
                 id: 'monkey',
                 parentId: null,
+                icon: "data:image/png;base64,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",
                 name: 'Monkey',
                 phoneNo: '01098765432',
                 cardNo: '9999888877776666',
@@ -90,6 +107,7 @@
             {
                 id: 'tom',
                 parentId: null,
+                icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEV0lEQVR4nO2YW0wcVRiA12prwMTGRB9ImpY5oJUab7F90Gpf1KAJiTFx5yyg1dZLira1tkaJmuwWIzQqpJTWQBpYaig2tBVmQJQQY2NTNLDYYqOF1TLT1lhvMZpUq5j2MzMLS4FdWPYy7EP/5E82mTPnfN/8/zmzuy7X5bgc6RGo2auQohSpvI6qFCOX5OFyXTF+XVmBFJ8glQ/scWr27a50ClRlO1IwIVXxE1LZgSfnFtyLMpDKD5PG9CLFw650CIqyl6CKC1MkQiIXUBU/Unkt8nXFj3vZgtRDel3zcIt7keJVpLIHVXQhRTeq0FCVbajCiAg4LvLjNNebUgf+3F3zUXM2oCpnpgVMNN05dycf3u5d0Z1ScBlupSNIZbPVjkkUyL0BqTQiRYu96VRx3gGREVRRhVssTJ5I8eIsVGULUhxzpBrSFgniFosTrMCyBaOnx1+OgcsJedTag/HBF2Rlhl4+cwLOeCpPxycglea5hxeHUJWyOODF/WkAT9zvB6Q4kAbwIMVFPGL57AVU5dcZJ/fkwEv3wfbV4N8AjRuh5ikofQAKc6eOf3wpvPEQ7HoG9myChvVQVQwb75lJYlccJ4+9ef6LOGHRjVD9JAQawNQj5zfNUL8eVufB2ttg78sw2BJ9/Je18LYn9FAmr6eKb2cp4LrS/srrFuumTLZpJXxRFx0kksh04OakPFQN65ZPElBGLv1qHruIKrwTJtq8Ck7six0m3hx4H0pWTJQoyMqcvYD142Rsgiduhn5/6uHN0Ty8c3wfxV0BKUrCArtLnIM3R/OdwjGB07OGtwU8uXeGT5tjjc4LHK4Z28T74xKwJVQxwIsrnYc3dTA0WHOrVYHnExDIzqfisbkRMHXrnTJC4U3Xxy8Q8GZyYMsf0RY40f4W5TKPCs8yBjvKYwaL+b6GZ3+npzIjEYEyjldHXcACKM3PstP6HKtAzPcNVEKf15eIwPcMvDt3AkfLoc/3XfwCfb5/6S8LbagIC1jltwCsHPqoImaBmO4b/hACPqsC/yRWAWuSYJPzG3jIPyYQTKQCW+1Jjtc4LzBQFRII+LzxC/RUZtDn7aH/TTAjt1FK0miFwFYL/khCp9AlEj6CTeccExj0/2k9+YThJ4gYepFjAqe0B5MGHhYIdl6Nqf+c+vbRguCdl3QBW8LUyx2owAspgbcFznQuwtTOpw5eO8vZrmtSJmBLGPq21LVP29qUwtsCJ1sWYmq/RATo3Qv7q6fPrjowIvZ+IGW9P0XCaH806lPsbYKDOyLDd++Gk22R4M9hdOQ5Ah+WMPX6qBKDB+HTemjdGZL5uBa+ap6mdfQ1jsLbAqdbMjC0z5PQ++WOw4clTnVch6F/ncCpUwvM/h+HpEoEO6/F0Ntnd9poFzE035zDjwV8dhWm7sXQ/54ZXh9muD3flY6B0ZqNqb+Hof8WoV2GMLVXrL3jSvcgUDcfo+MOhrVHMLUChtuWpk27uNIo/gdF75dCsOqqAQAAAABJRU5ErkJggg==",
                 name: 'Tom',
                 phoneNo: '01098765432',
                 cardNo: '9999888877776666',
@@ -111,6 +129,7 @@
             {
                 id: 'orange',
                 parentId: null,
+                icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEEElEQVR4nO2XS2wbVRiFDxQEFMQC8ZSATTcgHlEa1SZuk6Z20jxmYg9IkUBVAIkN6qKwADZVFKAUaJOUQtPSJKRpUyUm99ozLSAhWqksKCyQYFFUAd0hVSIgqKCATGM7B409OLHraTzT8WPhK53FzDj3ft9//9yxgfqoj/qoD7vR3+anmWLPenTtQVXXXlaNyKeKrp1VdO2iomv/KLr2k2JEPlN1bXv4WLgRNSVAXKMakV5V175UDY2lRDEiX/cakWf7RN+qqgp06doaVddOmlA9sTDbj3Sx9WCQgXdb6NsdYNNOP9fu8C3lDT99uwIM7G1l6/tBbprsOB+c6niuKgKKrj3TNacmNo6HuO7tZjYMNPHRgbWXpWGwKQO/blczm/e0cMNoG9vG2xk63MnOqMLuaO+rnkNSopESL1EgRokzlPidEguUYP8mP8Pbg/SPrM9BN+7w0TcU4Pp9Wbj2I53cPNvDbhG+UhulVCOy1TvoadxMgRco8YMJmskcmD4EpvaDqb3gwjC4eaCVjw1vyLRKx3Q3lZg9pGqbyK+qEQl5By/wNCXm88DHwOQImBxeiilwYux+PhlTXEBr/8NHO+OP3+MN+FHcarVJFlyCi9Ng8h0wuScrYV4zCqZGsxLpcfAPeQMn4o/wKaOnNGhdW8wcrUakxRPwDLzAHRT4djl8etIC/wCkKLhvwk8t3TNzSa7iqdh9HIk3caseYp+u8gm9l/1GF583QtwZ9/NYfA3n5eokBbZ4CX8LBb4phE+9By7O5kOa7ZSRmiy4b5PFo2BqX34BrKQo0eeNgIQsbJvUgSxsIVBG7EBp8Msl0sWF/2IMD1xt9bfkTfohmD5oD2OeQMXEVkr6UHbuIs/O8COsdn9USpy/bCFhU8lo6a1jtxMs/uxNdwIS2/IWmLGtUvb5YXu5lZJ4Kxub678Zx53OBQS+z1soukIFZ9xXP3FlATO7ncHH0eAYxGX1WVou8HNc56T6rzheZM77yieWXwtsdCKQ98YtVxLOBIacCHxXCQE6yxelC5g9VyuVl7n87ERgoeYEBP51InCpBlqG7gUEfqkEVMLZTsw72YGvak5A4LQTgf012EKjTgQiNVN5mYtauoDATeU8Sh0LCPzGKdxYsoAlMVT1tpEu3sI5gRncTok/y1nZRGnn/0XO4i7HAtYuvFh1AYltruAzAoO4lgInq9g+J0wG1wLWLtxGgXPlrHSieOV/NNe+KvicRBz3Lpcou4DAOXNNT+Dz/qkFTlXgxDlNgbs9hc9JjOF6Crxu923VZavQijnna+YaZYHPE4njYUp84pmAwMeUeKjs4DY//idcvrXNv5kw56g4eNHWkghRYJASxylx1gJcsHLBunc88xmBYEVapT7qoz5Q8+M/au6sXFDhogMAAAAASUVORK5CYII=",
                 name: 'Orange',
                 phoneNo: '01098765432',
                 cardNo: '9999888877776666',
@@ -168,9 +187,12 @@
          * Deletes my array element
          * @param index index
          */
-        function deleteMyArrayElement(index) {
-            myArray.splice(Number(index),1);
-            viewMyArray();
+        async function deleteMyArrayElement(index) {
+            let result = await new duice.ConfirmDialog(`Do you want to delete item?\n- index:[${index}]`).open();
+            if (result) {
+                myArray.splice(Number(index),1);
+                viewMyArray();
+            }
         }
 
         /**
@@ -231,6 +253,9 @@
         </div>
     </header>
     <main>
+        <!-- ====================================== -->
+        <!-- start: ArrayProxy                      -->
+        <!-- ====================================== -->
         <section id="json">
             <h2>ArrayProxy</h2>
             <label>
@@ -247,19 +272,29 @@
                 <button type="button" onclick="setReadonlyMyArray('name', false)">setReadonlyMyArray('name', false);</button>
             </div>
         </section>
+        <!-- ====================================== -->
+        <!-- end: ArrayProx                         -->
+        <!-- ====================================== -->
+        <!-- ====================================== -->
+        <!-- start: ArrayElement                    -->
+        <!-- ====================================== -->
         <section id="element" class="display--flex flex-direction--column row-gap--2rem">
-            <!-- simple table -->
+            <!-- ====================================== -->
+            <!-- start: Simple Table                    -->
+            <!-- ====================================== -->
             <div>
                 <h3>
                     Simple Table
-                    <small>&lt;tr data-duice-bind="myArray" data-duice-loop="myObject,status" data-duice-selected-item-class="selected"&gt;</small>
+                    <small>&lt;tr data-duice-bind="myArray" data-duice-foreach="myObject,status" data-duice-selected-item-class="selected"&gt;</small>
                 </h3>
                 <div class="overflow-x--auto">
-                    <table>
+                    <table class="width--100">
                         <thead>
                         <tr>
-                            <th>index</th>
-                            <th>count</th>
+                            <th>[index] count</th>
+                            <th>id</th>
+                            <th>parentId</th>
+                            <th>icon</th>
                             <th>name</th>
                             <th>phoneNo</th>
                             <th>cardNo</th>
@@ -274,35 +309,47 @@
                         </thead>
                         <tbody>
                         <tr data-duice-bind="myArray"
-                            data-duice-loop="myObject,status"
+                            data-duice-foreach="myObject, status"
                             data-duice-selected-item-class="selected"
                             data-duice-execute="this.dataset.name=myObject.name;">
-                            <td data-duice-bind="status" data-duice-property="index"></td>
-                            <td data-duice-bind="status" data-duice-property="count"></td>
-                            <td data-duice-bind="myObject" data-duice-property="name"></td>
-                            <td data-duice-bind="myObject" data-duice-property="phoneNo" data-duice-format="string('###-####-####')"></td>
-                            <td data-duice-bind="myObject" data-duice-property="cardNo" data-duice-format="string('####-####-####-####')"></td>
-                            <td data-duice-bind="myObject" data-duice-property="balanceAmount" data-duice-format="number(2)"></td>
-                            <td data-duice-bind="myObject" data-duice-property="type"></td>
-                            <td data-duice-bind="myObject" data-duice-property="enabled"></td>
-                            <td data-duice-bind="myObject" data-duice-property="enabledYn"></td>
-                            <td data-duice-bind="myObject" data-duice-property="address.country"></td>
-                            <td data-duice-bind="myObject" data-duice-property="address.city"></td>
                             <td>
-                                <table>
+                                [<span data-duice-bind="status" data-duice-property="index"></span>]
+                                <span data-duice-bind="status" data-duice-property="count"></span>
+                            </td>
+                            <td><span data-duice-bind="myObject" data-duice-property="id"></span></td>
+                            <td><span data-duice-bind="myObject" data-duice-property="parentId"></span></td>
+                            <td>
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA00lEQVR4nO2VMQrCQBBFnyTYLjYaPIpaBLEQ9QLxEKKFTfASscqRLCxFvYK3kMAUEuJmdiMExV/u7L6BP39Y+HVFwKrivAMkQLcp/AZsK+BH4ASEpdoYmLvAUwvclGox8JAmVvWBC3CogGfAGeiVahOBT1uFD4Crpy0xCi1rBmqU8ECbLh+4kftrDdzVcyPwXN7/4W62IIPxGWimgSPRCj4A3wELTUMfeCrLWiytVT5R3AN3YNgqfNTAlgiFZtLkVaEFvnGB29KVvIli8XvVDvS79QTLokobCL3+PAAAAABJRU5ErkJggg==" alt=""
+                                     data-duice-bind="myObject"
+                                     data-duice-property="icon"
+                                     class="height--2rem vertical-align--middle"/>
+                            </td>
+                            <td>
+                                <span data-duice-bind="myObject" data-duice-property="name"></span>
+                            </td>
+                            <td><span data-duice-bind="myObject" data-duice-property="phoneNo" data-duice-format="string('###-####-####')"></span></td>
+                            <td><span data-duice-bind="myObject" data-duice-property="cardNo" data-duice-format="string('####-####-####-####')"></span></td>
+                            <td><span data-duice-bind="myObject" data-duice-property="balanceAmount" data-duice-format="number(2)"></span></td>
+                            <td><span data-duice-bind="myObject" data-duice-property="type"></span></td>
+                            <td><span data-duice-bind="myObject" data-duice-property="enabled"></span></td>
+                            <td><span data-duice-bind="myObject" data-duice-property="enabledYn"></span></td>
+                            <td><span data-duice-bind="myObject" data-duice-property="address.country"></span></td>
+                            <td><span data-duice-bind="myObject" data-duice-property="address.city"></span></td>
+                            <td>
+                                <table class="width--100">
                                     <tr>
                                         <th>index</th>
                                         <th>id</th>
                                         <th>name</th>
                                     </tr>
-                                    <tr data-duice-bind="myObject.items" data-duice-loop="item,status">
+                                    <tr data-duice-bind="myObject.items" data-duice-foreach="item,status">
                                         <td data-duice-bind="status" data-duice-property="index"></td>
                                         <td data-duice-bind="item" data-duice-property="id"></td>
                                         <td data-duice-bind="item" data-duice-property="name"></td>
                                     </tr>
                                     <tr data-duice-bind="myObject.items"
                                         data-duice-execute="if(myObject.items.length > 0) this.hidden=true;">
-                                        <td colspan="100%">Data Not Found</td>
+                                        <td colspan="100%" class="text-align--center">Data Not Found</td>
                                     </tr>
                                 </table>
                             </td>
@@ -315,22 +362,28 @@
                     </table>
                 </div>
             </div>
-            <!-- end of simple table -->
-            <!-- start of nested table -->
+            <!-- ====================================== -->
+            <!-- end: Simple Table                      -->
+            <!-- ====================================== -->
+            <!-- ====================================== -->
+            <!-- start: Editable Table                  -->
+            <!-- ====================================== -->
             <div>
                 <h3>
-                    Nested Table
-                    <small>&lt;tr data-duice-bind="myArray" data-duice-loop="item,status" data-duice-selected-item-class="selected" data-duice-editable="true" &gt;</small>
+                    Editable Table
+                    <small>&lt;tr data-duice-bind="myArray" data-duice-foreach="item,status" data-duice-selected-item-class="selected" data-duice-editable="true" &gt;</small>
                 </h3>
                 <div class="overflow-x--auto">
-                    <table>
+                    <table class="width--100">
                         <colgroup>
                             <col/>
                         </colgroup>
                         <thead>
                         <tr>
-                            <th>index</th>
-                            <th>count</th>
+                            <th>[index] count</th>
+                            <th>id</th>
+                            <th>parentId</th>
+                            <th>icon</th>
                             <th>name</th>
                             <th>phoneNo</th>
                             <th>cardNo</th>
@@ -346,18 +399,39 @@
                         </thead>
                         <tbody>
                         <tr data-duice-bind="myArray"
-                            data-duice-loop="myObject,status"
+                            data-duice-foreach="myObject,status"
                             data-duice-selected-item-class="selected"
                             data-duice-editable="true"
                             data-duice-on-item-moving="console.log('item moving'); return false;"
                             data-duice-on-item-moved="console.log('item moved');">
-                            <td><span data-duice-bind="status" data-duice-property="index"></span></td>
-                            <td><span data-duice-bind="status" data-duice-property="count"></span></td>
+                            <td>
+                                [<span data-duice-bind="status" data-duice-property="index"></span>]
+                                <span data-duice-bind="status" data-duice-property="count"></span>
+                            </td>
+                            <td>
+                                <span data-duice-bind="myObject" data-duice-property="id"></span>
+                            </td>
+                            <td>
+                                <label>
+                                    <select data-duice-bind="myObject"
+                                            data-duice-property="parentId"
+                                            data-duice-option="myArray"
+                                            data-duice-option-value-property="id"
+                                            data-duice-option-text-property="name">>
+                                        <option value>-</option>
+                                    </select>
+                                </label>
+                            </td>
+                            <td>
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA00lEQVR4nO2VMQrCQBBFnyTYLjYaPIpaBLEQ9QLxEKKFTfASscqRLCxFvYK3kMAUEuJmdiMExV/u7L6BP39Y+HVFwKrivAMkQLcp/AZsK+BH4ASEpdoYmLvAUwvclGox8JAmVvWBC3CogGfAGeiVahOBT1uFD4Crpy0xCi1rBmqU8ECbLh+4kftrDdzVcyPwXN7/4W62IIPxGWimgSPRCj4A3wELTUMfeCrLWiytVT5R3AN3YNgqfNTAlgiFZtLkVaEFvnGB29KVvIli8XvVDvS79QTLokobCL3+PAAAAABJRU5ErkJggg==" alt=""
+                                     data-duice-bind="myObject"
+                                     data-duice-property="icon"
+                                     class="height--2rem vertical-align--middle"/>
+                            </td>
                             <td>
                                 <label>
                                     <input type="text"
                                            data-duice-bind="myObject"
-                                           data-duice-if="return myObject.name == 'ok';"
                                            data-duice-property="name"/>
                                 </label>
                             </td>
@@ -377,46 +451,87 @@
                                            data-duice-format="string('####-####-####-####')"/>
                                 </label>
                             </td>
-
-                            <td><input type="number" data-duice-bind="myObject" data-duice-property="balanceAmount"
-                                       dc:mask="number(2)"/></td>
                             <td>
-                                <select data-duice-bind="myObject" data-duice-property="type">
-                                    <option value>- type -</option>
-                                    <option value="human">Human</option>
-                                    <option value="fruit">Fruit</option>
-                                    <option value="animal">Animal</option>
-                                </select>
+                                <label>
+                                    <input type="number"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="balanceAmount"
+                                           data-duice-format="number(2)"/>
+                                </label>
                             </td>
-                            <td><input type="checkbox" data-duice-bind="myObject" data-duice-property="enabled"/></td>
-                            <td><input type="checkbox" data-duice-bind="myObject" data-duice-property="enabledYn"
-                                       data-duice-true-value="Y" data-duice-false-value="N"/></td>
-                            <td><input type="text" data-duice-bind="myObject" data-duice-property="address.country"/></td>
-                            <td><input type="text" data-duice-bind="myObject" data-duice-property="address.city"/></td>
                             <td>
-                                <table>
+                                <label>
+                                    <select data-duice-bind="myObject" data-duice-property="type">
+                                        <option value>- type -</option>
+                                        <option value="human">Human</option>
+                                        <option value="fruit">Fruit</option>
+                                        <option value="animal">Animal</option>
+                                    </select>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="checkbox"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="enabled"/>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="checkbox"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="enabledYn"
+                                           data-duice-true-value="Y" data-duice-false-value="N"/>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="text"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="address.country"/>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="text"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="address.city"/>
+                                </label>
+                            </td>
+                            <td>
+                                <table class="width--100">
                                     <tr>
                                         <th>index</th>
                                         <th>id</th>
                                         <th>name</th>
                                     </tr>
-                                    <tr data-duice-bind="myObject.items" data-duice-loop="item,status">
-                                        <td data-duice-bind="status" data-duice-property="index"></td>
+                                    <tr data-duice-bind="myObject.items" data-duice-foreach="item,status">
                                         <td>
-                                            <input data-duice-bind="item" data-duice-property="id"/>
+                                            <span data-duice-bind="status"
+                                                  data-duice-property="index"></span>
                                         </td>
                                         <td>
-                                            <input data-duice-bind="item" data-duice-property="name"/>
+                                            <label>
+                                                <input data-duice-bind="item"
+                                                       data-duice-property="id"/>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input data-duice-bind="item"
+                                                       data-duice-property="name"/>
+                                            </label>
                                         </td>
                                     </tr>
                                     <tr data-duice-bind="myObject.items"
                                         data-duice-if="return myObject.items.length < 1;">
-                                        <td colspan="100%">Data Not Found</td>
+                                        <td colspan="100%" class="text-align--center">Data Not Found</td>
                                     </tr>
                                 </table>
                             </td>
                             <td>
-                                <button data-duice-bind="status"
+                                <button type="button"
+                                        data-duice-bind="status"
                                         data-duice-execute="this.dataset.index=status.index;"
                                         onclick="deleteMyArrayElement(this.dataset.index);">
                                     Delete
@@ -439,53 +554,150 @@
                     </table>
                 </div>
             </div>
-            <!-- end of nested table -->
-            <!-- start of hierarchy -->
+            <!-- ====================================== -->
+            <!-- end: Editable Table                    -->
+            <!-- ====================================== -->
+            <!-- ====================================== -->
+            <!-- start: Recursive Table                 -->
+            <!-- ====================================== -->
             <div>
                 <h3>
-                    Hierarchy Tree
-                    <small>&lt;tr data-duice-bind="myArray" data-duice-loop="item,status" data-duice-selected-item-class="selected" data-duice-hierarchy="id,parentId"&gt;</small>
+                    Recursive Table
+                    <small>&lt;tr data-duice-bind="myArray" data-duice-foreach="item,status" data-duice-selected-item-class="selected" data-duice-recursive="id,parentId"&gt;</small>
                 </h3>
-                <div>
-                    <div data-duice-bind="myArray" data-duice-loop="item,status" data-duice-hierarchy="id,parentId" data-duice-selected-item-class="selected"
-                        data-duice-execute="this.style.paddingLeft = (status.depth * 1) + 'rem';">
-                        <span data-duice-bind="item" data-duice-property="name" tabIndex="0"></span>
-                    </div>
+                <div class="overflow-x--auto">
+                    <table class="width--100">
+                        <colgroup>
+                            <col style="width:50%;"/>
+                            <col/>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>name</th>
+                            <th>parent</th>
+                            <th>phoneNumber</th>
+                            <th>cardNo</th>
+                            <th>balanceAmount</th>
+                            <th>type</th>
+                            <th>enabled</th>
+                            <th>enabledYn</th>
+                            <th>address.country</th>
+                            <th>address.city</th>
+                            <th>-</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr data-duice-bind="myArray" data-duice-foreach="myObject,status" data-duice-recursive="id,parentId" data-duice-selected-item-class="selected"
+                            data-duice-execute="this.style.paddingLeft = (status.depth * 1) + 'rem';">
+                            <td>
+                            <span data-duice-bind="myObject" data-duice-execute="
+                                this.style.marginLeft = (status.depth * 1) + 'rem';
+                                if (status.depth > 0) {
+                                    this.innerHTML = '+';
+                                }
+                                "></span>
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA00lEQVR4nO2VMQrCQBBFnyTYLjYaPIpaBLEQ9QLxEKKFTfASscqRLCxFvYK3kMAUEuJmdiMExV/u7L6BP39Y+HVFwKrivAMkQLcp/AZsK+BH4ASEpdoYmLvAUwvclGox8JAmVvWBC3CogGfAGeiVahOBT1uFD4Crpy0xCi1rBmqU8ECbLh+4kftrDdzVcyPwXN7/4W62IIPxGWimgSPRCj4A3wELTUMfeCrLWiytVT5R3AN3YNgqfNTAlgiFZtLkVaEFvnGB29KVvIli8XvVDvS79QTLokobCL3+PAAAAABJRU5ErkJggg==" alt=""
+                                     data-duice-bind="myObject"
+                                     data-duice-property="icon"
+                                     class="height--2rem vertical-align--middle"/>
+                                <span data-duice-bind="myObject"
+                                      data-duice-property="name"></span>
+                                <small>
+                                    [index:<span data-duice-bind="status" data-duice-property="index"></span>,
+                                    count:<span data-duice-bind="status" data-duice-property="count"></span>,
+                                    depth:<span data-duice-bind="status" data-duice-property="depth"></span>]
+                                </small>
+                            </td>
+                            <td>
+                                <label>
+                                    <select data-duice-bind="myObject"
+                                            data-duice-property="parentId"
+                                            data-duice-option="myArray"
+                                            data-duice-option-value-property="id"
+                                            data-duice-option-text-property="name">
+                                        <option value>-</option>
+                                    </select>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="text"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="phoneNo"
+                                           data-duice-format="string('###-####-####')"/>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="text"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="cardNo"
+                                           data-duice-format="string('####-####-####-####')"/>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="number"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="balanceAmount"
+                                           data-duice-format="number(2)"/>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <select data-duice-bind="myObject" data-duice-property="type">
+                                        <option value>-</option>
+                                        <option value="human">Human</option>
+                                        <option value="fruit">Fruit</option>
+                                        <option value="animal">Animal</option>
+                                    </select>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="checkbox"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="enabled"/>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="checkbox"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="enabledYn"
+                                           data-duice-true-value="Y" data-duice-false-value="N"/>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="text"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="address.country"/>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="text"
+                                           data-duice-bind="myObject"
+                                           data-duice-property="address.city"/>
+                                </label>
+                            </td>
+                            <td>
+                                <button type="button"
+                                        data-duice-bind="status"
+                                        data-duice-execute="this.dataset.index=status.index;"
+                                        onclick="deleteMyArrayElement(this.dataset.index);">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <!-- end of hierarchy -->
-            <!-- start of blend table -->
-            <div>
-                <h3>Blend</h3>
-                <table>
-                    <tbody data-duice-bind="myArray" data-duice-loop="myObject,status" data-duice-selected-item-class="selected" data-duice-editable="true" >
-                    <tr data-duice-bind="myObject" data-duice-if="return myObject.type!=='human';">
-                        <td>
-                           <span data-duice-bind="myObject" data-duice-property="id"></span>
-                        </td>
-                        <td>
-                            <span data-duice-bind="myObject" data-duice-property="name"></span>
-                        </td>
-                        <td>
-                            <span data-duice-bind="myObject" data-duice-property="phoneNo"></span>
-                        </td>
-                    </tr>
-                    <tr data-duice-bind="myObject" data-duice-if="return myObject.type==='human';">
-                        <td>
-                            <span data-duice-bind="myObject" data-duice-property="id"></span>
-                        </td>
-                        <td colspan="100%">
-                            <span data-duice-bind="myObject" data-duice-execute="this.innerHTML=JSON.stringify(myObject) + 'test';"></span>
-                        </td>
-                    </tr>
-                    <tr data-duice-bind="myObject" data-duice-if="return !myObject.type;">
-                        <td data-duice-bind="myObject"></td>
-                        <td>TEST</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!-- end of blend table -->
+            <!-- ====================================== -->
+            <!-- end: Recursive Table                   -->
+            <!-- ====================================== -->
         </section>
     </main>
     <footer>

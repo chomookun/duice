@@ -40,6 +40,7 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
      */
     setParent(parent: ProxyHandler<any>): void {
         this.parent = parent;
+        this.addObserver(parent);
         parent.addObserver(this);
         this.eventDispatcher.setParent(parent.eventDispatcher);
     }

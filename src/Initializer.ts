@@ -35,7 +35,8 @@ export class Initializer {
                             setElementAttribute(htmlElement, "index", index.toString());
                         }
                     }catch(e){
-                        console.error(e, htmlElement, container, JSON.stringify(context));
+                        console.error(e, htmlElement.outerHTML, context);
+                        // console.error(e, htmlElement, container, JSON.stringify(context));
                     }
                 }
             }
