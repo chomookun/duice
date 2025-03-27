@@ -109,12 +109,11 @@ ul, ol {
 
 /* anchor */
 a {
-  color: inherit;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 a:hover {
-  text-decoration: underline;
+  text-shadow: 0 0 0.5px var(--duice-color);
 }
 
 /* h1~6 */
@@ -310,6 +309,13 @@ table {
   border: var(--duice-table-border);
 }
 
+@media screen and (max-width: 1023px) {
+  table {
+    display: inline-block;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
 table > thead {
   position: sticky;
   top: 0;
