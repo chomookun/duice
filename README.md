@@ -70,6 +70,8 @@ const user = new duice.ObjectProxy({
 <input type="text" data-duice-bind="user" data-duice-property="name"/>
 ```
 
+### Attribute
+
 | attribute                                  | description                                                         |
 |:-------------------------------------------|:--------------------------------------------------------------------|
 | data-duice-bind="[object]"                 | Object name to bind                                                 |
@@ -77,6 +79,19 @@ const user = new duice.ObjectProxy({
 | data-duice-format="[data format clause]"   | ex) string('###-###'), number(2), date('yyyy-MM-dd')                |
 | data-duice-if="[reutrn false to hiddne]"   | javascript code for decide to hidden or not |
 | data-duice-execute="[code to execute]"     | javascript code to execute when element is updated                  |
+
+### Event
+
+```javascript
+// Fires before property is changing.
+duice.ObjectProxy.onPropertyChanging(myObject, event => {
+    console.log(event);
+});
+// Fires after property is changed.
+duice.ObjectProxy.onPropertyChanged(myObject, event => {
+    console.log(event);
+});
+```
 
 ### Test Case
 [Object Element Test](test/ObjectElementTest.html)
@@ -114,6 +129,8 @@ const users = new duice.ArrayProxy([
 </table>
 ```
 
+### Attribute
+
 | attribute                                         | description                             |
 |:--------------------------------------------------|:----------------------------------------|
 | data-duice-bind="[array]"                         | Object name to bind                     |
@@ -121,6 +138,35 @@ const users = new duice.ArrayProxy([
 | data-duice-recursive="[id name],[parent id name]" | if recursive, id and parent id name     |
 | data-duice-if="[reutrn false to hiddne]"   | javascript code for decide to hidden or not |
 | data-duice-execute="[code to execute]"     | javascript code to execute when element is updated                  |
+
+### Event
+
+```javascript
+// Fires before property is changing.
+duice.ObjectProxy.onPropertyChanging(myObject, event => {
+    console.log(event);
+});
+// Fires after property is changed.
+duice.ObjectProxy.onPropertyChanged(myObject, event => {
+    console.log(event);
+});
+// Fires before item is selecting.
+duice.ArrayProxy.onItemSelecting(myArray, event => {
+    console.log(event);
+});
+// Fires after item is selected.
+duice.ArrayProxy.onItemSelected(myArray, event => {
+    console.log(event);
+});
+// Fires before item is moving.
+duice.ArrayProxy.onItemMoving(myArray, event => {
+    console.log(event);
+});
+// Fires after item is moved.
+duice.ArrayProxy.onItemMoved(myArray, event => {
+    console.log(event);
+});
+```
 
 ### Test Case 
 
