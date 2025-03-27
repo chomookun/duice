@@ -65,6 +65,11 @@ const user = new duice.ObjectProxy({
 
 ### HTML
 
+```html
+<span data-duice-bind="user" data-duice-property="id"></span>
+<input type="text" data-duice-bind="user" data-duice-property="name"/>
+```
+
 | attribute                                  | description                                                         |
 |:-------------------------------------------|:--------------------------------------------------------------------|
 | data-duice-bind="[object]"                 | Object name to bind                                                 |
@@ -72,11 +77,6 @@ const user = new duice.ObjectProxy({
 | data-duice-format="[data format clause]"   | ex) string('###-###'), number(2), date('yyyy-MM-dd')                |
 | data-duice-if="[reutrn false to hiddne]"   | javascript code for decide to hidden or not |
 | data-duice-execute="[code to execute]"     | javascript code to execute when element is updated                  |
-
-```html
-<span data-duice-bind="user" data-duice-property="id"></span>
-<input type="text" data-duice-bind="user" data-duice-property="name"/>
-```
 
 ### Test Case
 [Object Element Test](test/ObjectElementTest.html)
@@ -99,15 +99,6 @@ const users = new duice.ArrayProxy([
 
 ### HTML
 
-| attribute                                         | description                             |
-|:--------------------------------------------------|:----------------------------------------|
-| data-duice-bind="[array]"                         | Object name to bind                     |
-| data-duice-foreach="[element name],[status name]" | element object and status variable name |
-| data-duice-recursive="[id name],[parent id name]" | if recursive, id and parent id name     |
-| data-duice-if="[reutrn false to hiddne]"   | javascript code for decide to hidden or not |
-| data-duice-execute="[code to execute]"     | javascript code to execute when element is updated                  |
-
-
 ```html
 <table>
     <tr>
@@ -122,6 +113,14 @@ const users = new duice.ArrayProxy([
     </tr>
 </table>
 ```
+
+| attribute                                         | description                             |
+|:--------------------------------------------------|:----------------------------------------|
+| data-duice-bind="[array]"                         | Object name to bind                     |
+| data-duice-foreach="[element name],[status name]" | element object and status variable name |
+| data-duice-recursive="[id name],[parent id name]" | if recursive, id and parent id name     |
+| data-duice-if="[reutrn false to hiddne]"   | javascript code for decide to hidden or not |
+| data-duice-execute="[code to execute]"     | javascript code to execute when element is updated                  |
 
 ### Test Case 
 
