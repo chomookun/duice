@@ -62,11 +62,11 @@ export class InputElement extends ObjectElement<HTMLInputElement> {
     }
 
     /**
-     * Sets disable
-     * @param disable disable or not
+     * Sets disabled
+     * @param disabled disabled or not
      */
-    override setDisable(disable: boolean): void {
-        if(disable) {
+    override setDisabled(disabled: boolean): void {
+        if(disabled) {
             this.getHtmlElement().setAttribute('disabled', 'disabled');
         }else{
             this.getHtmlElement().removeAttribute('disabled');

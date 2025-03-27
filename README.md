@@ -2,6 +2,10 @@
 
 [![Preview](https://img.youtube.com/vi/Dke_mQblaMk/0.jpg)](https://www.youtube.com/watch?v=Dke_mQblaMk)
 
+
+-----------------------------------------------------------
+
+
 ## Conception
 
 ### 1. MVC Auto-Binding (between Data Structure and HTML DOM Element)
@@ -22,26 +26,33 @@ This library is developted by just pure javascript.
 It is oriented towards minimal code, no-dependency and no-conflict.
 Therefore you can use it with another javascript library together.
 
+
 -----------------------------------------------------------
 
-## Git and Website
-
-* Git Repository: [https://github.com/chomookun/duice](https://github.com/chomookun/duice)
-* Website: [https://duice.chomookun.org](https://duice.chomookun.org)
-
-## Demo Site
-
-* Arch4j: [https://arch4j-web.chomookun.org/admin](https://arch4j-web.chomookun.org/admin)
-* Test Account: **developer/developer**
 
 ## References
 
-* Plugins: [https://duice-plugin.chomookun.org](https://duice-plugin.chomookun.org)
+### Git Repository
+
+[https://github.com/chomookun/duice](https://github.com/chomookun/duice)
+
+### Website
+
+[https://duice.chomookun.org](https://duice.chomookun.org)
+
+### Plugins
+
+[https://duice-plugin.chomookun.org](https://duice-plugin.chomookun.org)
+
+### Example (Plain HTML + Integrated with Vue/React)
+
+[https://duice-example.chomookun.org](https://duice-example.chomookun.org)
+
 
 -----------------------------------------------------------
 
-## Object Element 
 
+## Object Element 
 
 ### Javascript
 
@@ -175,6 +186,6 @@ async function openDialog() {
 
 
 ## Contact
-* email: [chomookun@gmailcom](mailto:chomookun@gmail.com)
+* email: [chomookun@gmail.com](mailto:chomookun@gmail.com)
 * linkedin: [https://www.linkedin.com/in/chomookun](https://www.linkedin.com/in/chomookun)
 

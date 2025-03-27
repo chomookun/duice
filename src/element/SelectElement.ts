@@ -114,11 +114,11 @@ export class SelectElement extends ObjectElement<HTMLSelectElement> {
     }
 
     /**
-     * Sets disable
-     * @param disable disable or not
+     * Sets disabled
+     * @param disabled disable or not
      */
-    override setDisable(disable: boolean): void {
-        if(disable) {
+    override setDisabled(disabled: boolean): void {
+        if(disabled) {
             this.getHtmlElement().setAttribute('disabled', 'disabled');
         }else{
             this.getHtmlElement().removeAttribute('disabled');

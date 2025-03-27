@@ -76,7 +76,7 @@ export class ObjectElement<T extends HTMLElement> extends Element<T, object> {
             this.setReadonly(readonly);
             // sets disabled
             let disabled = objectProxyHandler.isDisabled(this.property);
-            this.setDisable(disabled);
+            this.setDisabled(disabled);
             // run execute code
             runExecuteCode(this.htmlElement, context).then();
         });
@@ -136,10 +136,10 @@ export class ObjectElement<T extends HTMLElement> extends Element<T, object> {
     }
 
     /**
-     * Sets disable
-     * @param disable disable or not
+     * Sets disabled
+     * @param disabled disabled or not
      */
-    setDisable(disable: boolean): void {
+    setDisabled(disabled: boolean): void {
         // no-op
     }
 

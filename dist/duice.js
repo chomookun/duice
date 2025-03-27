@@ -1,5 +1,5 @@
 /*!
- * duice - v0.3.1
+ * duice - v0.3.2
  * git: https://gitbub.com/chomookun/duice
  * website: https://duice.chomookun.com
  * Released under the LGPL(GNU Lesser General Public License version 3) License
@@ -1068,7 +1068,7 @@ var duice = (function (exports) {
                 this.setReadonly(readonly);
                 // sets disabled
                 let disabled = objectProxyHandler.isDisabled(this.property);
-                this.setDisable(disabled);
+                this.setDisabled(disabled);
                 // run execute code
                 runExecuteCode(this.htmlElement, context).then();
             });
@@ -1125,10 +1125,10 @@ var duice = (function (exports) {
             // no-op
         }
         /**
-         * Sets disable
-         * @param disable disable or not
+         * Sets disabled
+         * @param disabled disabled or not
          */
-        setDisable(disable) {
+        setDisabled(disabled) {
             // no-op
         }
         /**
@@ -2160,7 +2160,7 @@ var duice = (function (exports) {
                                     depth: depth
                                 });
                                 // create row element
-                                _this.createItemHtmlElement(index, object, context);
+                                _this.createItemHtmlElement(index, context);
                                 // visit child elements
                                 let id = object[idName];
                                 visit(array, id, depth + 1);
@@ -2187,7 +2187,7 @@ var duice = (function (exports) {
                             last: (arrayProxy.length == index + 1)
                         });
                         // create row element
-                        this.createItemHtmlElement(index, object, context);
+                        this.createItemHtmlElement(index, context);
                     }
                 }
             }
@@ -2212,10 +2212,9 @@ var duice = (function (exports) {
         /**
          * Creates item html element
          * @param index index
-         * @param object object
          * @param context context
          */
-        createItemHtmlElement(index, object, context) {
+        createItemHtmlElement(index, context) {
             // clones row elements
             let itemHtmlElement = this.getHtmlElement().cloneNode(true);
             // adds embedded attribute
@@ -2519,7 +2518,9 @@ var duice = (function (exports) {
         constructor(htmlElement, bindData, context) {
             super(htmlElement, bindData, context);
             this.editable = false;
-            this.closeButtonImg = 'data:image/svg+xml;base64,' + window.btoa('<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.4" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="#292D32"></path> <path d="M13.0594 12.0001L15.3594 9.70011C15.6494 9.41011 15.6494 8.93011 15.3594 8.64011C15.0694 8.35011 14.5894 8.35011 14.2994 8.64011L11.9994 10.9401L9.69937 8.64011C9.40937 8.35011 8.92937 8.35011 8.63938 8.64011C8.34938 8.93011 8.34938 9.41011 8.63938 9.70011L10.9394 12.0001L8.63938 14.3001C8.34938 14.5901 8.34938 15.0701 8.63938 15.3601C8.78938 15.5101 8.97937 15.5801 9.16937 15.5801C9.35937 15.5801 9.54937 15.5101 9.69937 15.3601L11.9994 13.0601L14.2994 15.3601C14.4494 15.5101 14.6394 15.5801 14.8294 15.5801C15.0194 15.5801 15.2094 15.5101 15.3594 15.3601C15.6494 15.0701 15.6494 14.5901 15.3594 14.3001L13.0594 12.0001Z" fill="#292D32"></path> </g></svg>');
+            this.clearButtonImg = 'data:image/svg+xml;base64,' + window.btoa('<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.4" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="#292D32"></path> <path d="M13.0594 12.0001L15.3594 9.70011C15.6494 9.41011 15.6494 8.93011 15.3594 8.64011C15.0694 8.35011 14.5894 8.35011 14.2994 8.64011L11.9994 10.9401L9.69937 8.64011C9.40937 8.35011 8.92937 8.35011 8.63938 8.64011C8.34938 8.93011 8.34938 9.41011 8.63938 9.70011L10.9394 12.0001L8.63938 14.3001C8.34938 14.5901 8.34938 15.0701 8.63938 15.3601C8.78938 15.5101 8.97937 15.5801 9.16937 15.5801C9.35937 15.5801 9.54937 15.5101 9.69937 15.3601L11.9994 13.0601L14.2994 15.3601C14.4494 15.5101 14.6394 15.5801 14.8294 15.5801C15.0194 15.5801 15.2094 15.5101 15.3594 15.3601C15.6494 15.0701 15.6494 14.5901 15.3594 14.3001L13.0594 12.0001Z" fill="#292D32"></path> </g></svg>');
+            this.readonly = false;
+            this.disabled = false;
             this.originSrc = String(this.getHtmlElement().src);
             // editable
             this.editable = (getElementAttribute(this.getHtmlElement(), 'editable') === 'true');
@@ -2531,7 +2532,7 @@ var duice = (function (exports) {
                 });
                 // create clear button
                 this.clearButton = document.createElement('img');
-                this.clearButton.src = this.closeButtonImg;
+                this.clearButton.src = this.clearButtonImg;
                 this.clearButton.style.cursor = 'pointer';
                 this.clearButton.style.width = '16px';
                 this.clearButton.style.height = '16px';
@@ -2598,7 +2599,7 @@ var duice = (function (exports) {
         changeImage() {
             let input = document.createElement('input');
             input.setAttribute("type", "file");
-            input.setAttribute("accept", "image/gif, image/jpeg, image/png");
+            input.setAttribute("accept", "image/gif, image/jpeg, image/png, image/svg+xml");
             let _this = this;
             input.addEventListener('change', function (e) {
                 let fileReader = new FileReader();
@@ -2688,14 +2689,16 @@ var duice = (function (exports) {
          * @param readonly readonly or not
          */
         setReadonly(readonly) {
-            this.getHtmlElement().style.pointerEvents = (readonly ? 'none' : 'unset');
+            this.readonly = readonly;
+            this.getHtmlElement().style.pointerEvents = (this.readonly || this.disabled ? 'none' : 'unset');
         }
         /**
-         * Sets disable
-         * @param disable disable or not
+         * Sets disabled
+         * @param disabled disabled or not
          */
-        setDisable(disable) {
-            this.getHtmlElement().style.pointerEvents = (disable ? 'none' : 'unset');
+        setDisabled(disabled) {
+            this.disabled = disabled;
+            this.getHtmlElement().style.pointerEvents = (this.disabled || this.readonly ? 'none' : 'unset');
         }
     }
 
@@ -2778,11 +2781,11 @@ var duice = (function (exports) {
             this.getHtmlElement().readOnly = readonly;
         }
         /**
-         * Sets disable
-         * @param disable disable or not
+         * Sets disabled
+         * @param disabled disabled or not
          */
-        setDisable(disable) {
-            if (disable) {
+        setDisabled(disabled) {
+            if (disabled) {
                 this.getHtmlElement().setAttribute('disabled', 'disabled');
             }
             else {
@@ -2884,6 +2887,7 @@ var duice = (function (exports) {
          * @param readonly readonly or not
          */
         setReadonly(readonly) {
+            debug('InputCheckboxElement.setReadonly', readonly);
             if (readonly) {
                 this.getHtmlElement().addEventListener('click', this.disableClick);
             }
@@ -2974,6 +2978,47 @@ var duice = (function (exports) {
     }
 
     /**
+     * Input Range Element
+     */
+    class InputRangeElement extends InputElement {
+        /**
+         * Constructor
+         * @param htmlElement html element
+         * @param bindData bind data
+         * @param context context
+         */
+        constructor(htmlElement, bindData, context) {
+            super(htmlElement, bindData, context);
+            this.trueValue = true;
+            this.falseValue = false;
+        }
+        /**
+         * Sets readonly
+         * @param readonly readonly or not
+         */
+        setReadonly(readonly) {
+            debug('InputRangeElement.setReadonly', readonly);
+            this.getHtmlElement().readOnly = readonly;
+            if (readonly) {
+                this.getHtmlElement().addEventListener('mousedown', this.disableEvent);
+                this.getHtmlElement().addEventListener('touchstart', this.disableEvent);
+            }
+            else {
+                this.getHtmlElement().removeEventListener('mousedown', this.disableEvent);
+                this.getHtmlElement().removeEventListener('touchstart', this.disableEvent);
+            }
+        }
+        /**
+         * Disable event
+         * @param event event
+         */
+        disableEvent(event) {
+            event.preventDefault();
+            return false;
+        }
+    }
+
+    /**
      * Input Element Factory
      */
     class InputElementFactory extends ObjectElementFactory {
@@ -2994,6 +3039,8 @@ var duice = (function (exports) {
                     return new InputRadioElement(htmlElement, bindData, context);
                 case 'datetime-local':
                     return new InputDatetimeLocalElement(htmlElement, bindData, context);
+                case 'range':
+                    return new InputRangeElement(htmlElement, bindData, context);
                 default:
                     return new InputElement(htmlElement, bindData, context);
             }
@@ -3106,11 +3153,11 @@ var duice = (function (exports) {
             }
         }
         /**
-         * Sets disable
-         * @param disable disable or not
+         * Sets disabled
+         * @param disabled disable or not
          */
-        setDisable(disable) {
-            if (disable) {
+        setDisabled(disabled) {
+            if (disabled) {
                 this.getHtmlElement().setAttribute('disabled', 'disabled');
             }
             else {
@@ -3199,11 +3246,11 @@ var duice = (function (exports) {
             }
         }
         /**
-         * Sets disable
-         * @param disable disable or not
+         * Sets disabled
+         * @param disabled disabled or not
          */
-        setDisable(disable) {
-            if (disable) {
+        setDisabled(disabled) {
+            if (disabled) {
                 this.getHtmlElement().setAttribute('disabled', 'disabled');
             }
             else {

@@ -93,7 +93,7 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
                                 depth: depth
                             });
                             // create row element
-                            _this.createItemHtmlElement(index, object, context);
+                            _this.createItemHtmlElement(index, context);
                             // visit child elements
                             let id = object[idName];
                             visit(array, id, depth + 1);
@@ -120,7 +120,7 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
                         last: (arrayProxy.length == index + 1)
                     });
                     // create row element
-                    this.createItemHtmlElement(index, object, context);
+                    this.createItemHtmlElement(index, context);
                 }
             }
         }
@@ -146,10 +146,9 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
     /**
      * Creates item html element
      * @param index index
-     * @param object object
      * @param context context
      */
-    createItemHtmlElement(index: number, object: object, context: object): void {
+    createItemHtmlElement(index: number, context: object): void {
         // clones row elements
         let itemHtmlElement = this.getHtmlElement().cloneNode(true) as HTMLElement;
         // adds embedded attribute

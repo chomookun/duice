@@ -5,6 +5,7 @@ import {InputCheckboxElement} from "./InputCheckboxElement";
 import {InputDatetimeLocalElement} from "./InputDatetimeLocalElement";
 import {ElementRegistry} from "../ElementRegistry";
 import {InputRadioElement} from "./InputRadioElement";
+import {InputRangeElement} from "./InputRangeElement";
 
 /**
  * Input Element Factory
@@ -36,6 +37,8 @@ export class InputElementFactory extends ObjectElementFactory<HTMLInputElement> 
                 return new InputRadioElement(htmlElement, bindData, context);
             case 'datetime-local':
                 return new InputDatetimeLocalElement(htmlElement, bindData, context);
+            case 'range':
+                return new InputRangeElement(htmlElement, bindData, context);
             default:
                 return new InputElement(htmlElement, bindData, context);
         }
