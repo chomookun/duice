@@ -84,11 +84,11 @@ const user = new duice.ObjectProxy({
 
 ```javascript
 // Fires before property is changing.
-duice.ObjectProxy.onPropertyChanging(myObject, event => {
+duice.ObjectProxy.onPropertyChanging(user, event => {
     console.log(event);
 });
 // Fires after property is changed.
-duice.ObjectProxy.onPropertyChanged(myObject, event => {
+duice.ObjectProxy.onPropertyChanged(user, event => {
     console.log(event);
 });
 ```
@@ -143,27 +143,27 @@ const users = new duice.ArrayProxy([
 
 ```javascript
 // Fires before property is changing.
-duice.ObjectProxy.onPropertyChanging(myObject, event => {
+duice.ObjectProxy.onPropertyChanging(users, event => {
     console.log(event);
 });
 // Fires after property is changed.
-duice.ObjectProxy.onPropertyChanged(myObject, event => {
+duice.ObjectProxy.onPropertyChanged(users, event => {
     console.log(event);
 });
 // Fires before item is selecting.
-duice.ArrayProxy.onItemSelecting(myArray, event => {
+duice.ArrayProxy.onItemSelecting(users, event => {
     console.log(event);
 });
 // Fires after item is selected.
-duice.ArrayProxy.onItemSelected(myArray, event => {
+duice.ArrayProxy.onItemSelected(users, event => {
     console.log(event);
 });
 // Fires before item is moving.
-duice.ArrayProxy.onItemMoving(myArray, event => {
+duice.ArrayProxy.onItemMoving(users, event => {
     console.log(event);
 });
 // Fires after item is moved.
-duice.ArrayProxy.onItemMoved(myArray, event => {
+duice.ArrayProxy.onItemMoved(users, event => {
     console.log(event);
 });
 ```
