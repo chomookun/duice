@@ -36,6 +36,10 @@ Therefore you can use it with another javascript library together.
 
 [https://github.com/chomookun/duice](https://github.com/chomookun/duice)
 
+### NPM Package
+
+[https://www.npmjs.com/package/duice](https://www.npmjs.com/package/duice)
+
 ### Website
 
 [https://duice.chomookun.org](https://duice.chomookun.org)
