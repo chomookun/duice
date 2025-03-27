@@ -1,6 +1,77 @@
 import {Configuration} from "./Configuration";
-import {ObjectProxyHandler} from "./ObjectProxyHandler";
-import {ArrayProxyHandler} from "./ArrayProxyHandler";
+import {ProxyHandler} from "./ProxyHandler";
+
+/**
+ * Checks value is Array
+ */
+export function isArray(value: any): boolean {
+    return Array.isArray(value);
+}
+
+/**
+ * Checks value is Object
+ */
+export function isObject(value: any): boolean {
+    return value != null && typeof value === 'object' && !Array.isArray(value);
+}
+
+/**
+ * Checks value is primitive
+ */
+export function isPrimitive(value: any): boolean {
+    return value !== Object(value);
+}
+
+/**
+ * Checks object is proxy
+ * @param object
+ */
+export function isProxy(object: any): boolean {
+    if (object == null) {
+        return false;
+    }
+    return globalThis.Object.getOwnPropertyDescriptor(object, '_proxy_target_') != null;
+}
+
+/**
+ * Sets proxy target
+ * @param proxy
+ * @param target
+ */
+export function setProxyTarget(proxy: object, target: object): void {
+    globalThis.Object.defineProperty(proxy, '_proxy_target_', {
+        value: target,
+        writable: true
+    });
+}
+
+/**
+ * Gets proxy target
+ * @param proxy
+ */
+export function getProxyTarget(proxy: object): any {
+    return globalThis.Object.getOwnPropertyDescriptor(proxy, '_proxy_target_').value;
+}
+
+/**
+ * Sets proxy handler
+ * @param proxy proxy
+ * @param proxyHandler proxy handler
+ */
+export function setProxyHandler(proxy: object, proxyHandler: ProxyHandler<any>): void {
+    globalThis.Object.defineProperty(proxy, '_proxy_handler_', {
+        value: proxyHandler,
+        writable: true
+    });
+}
+
+/**
+ * Gets proxy handler
+ * @param proxy proxy
+ */
+export function getProxyHandler<T extends ProxyHandler<any>>(proxy: object): T {
+    return globalThis.Object.getOwnPropertyDescriptor(proxy, '_proxy_handler_').value;
+}
 
 /**
  * Gets element query selector
@@ -40,8 +111,7 @@ export function findVariable(context: object, name: string): any {
             return object;
         }
     }catch(ignore){}
-    // throw error
-    console.warn(`Object[${name}] is not found`);
+    // return default
     return undefined;
 }
 
@@ -51,7 +121,7 @@ export function findVariable(context: object, name: string): any {
  * @param htmlElement
  * @param context
  */
-export function runCode(code: string, htmlElement: HTMLElement, context: object): boolean {
+export async function runCode(code: string, htmlElement: HTMLElement, context: object): Promise<boolean> {
     try {
         let args = [];
         let values = [];
@@ -59,7 +129,7 @@ export function runCode(code: string, htmlElement: HTMLElement, context: object)
             args.push(property);
             values.push(context[property]);
         }
-        return Function(...args, code).call(htmlElement, ...values);
+        return await Function(...args, code).call(htmlElement, ...values);
     }catch(e){
         console.error(code, e);
         throw e;
@@ -71,11 +141,11 @@ export function runCode(code: string, htmlElement: HTMLElement, context: object)
  * @param htmlElement html element
  * @param context current context
  */
-export function runIfCode(htmlElement: HTMLElement, context: object): boolean {
+export async function runIfCode(htmlElement: HTMLElement, context: object): Promise<boolean> {
     let ifClause = getElementAttribute(htmlElement, 'if');
     if(ifClause) {
-        let result = runCode(ifClause, htmlElement, context);
-        if(!result) {
+        let result = await runCode(ifClause, htmlElement, context);
+        if (!result) {
             htmlElement.hidden = true;
         }else{
             htmlElement.hidden = false;
@@ -90,10 +160,10 @@ export function runIfCode(htmlElement: HTMLElement, context: object): boolean {
  * @param htmlElement html element
  * @param context current context
  */
-export function runExecuteCode(htmlElement: HTMLElement, context: object): boolean {
+export async function runExecuteCode(htmlElement: HTMLElement, context: object): Promise<boolean> {
     let script = getElementAttribute(htmlElement,'execute');
     if(script) {
-        return runCode(script, htmlElement, context);
+        return await runCode(script, htmlElement, context);
     }
     return null;
 }
@@ -127,6 +197,15 @@ export function getElementAttribute(htmlElement: HTMLElement, name: string): str
 export function setElementAttribute(htmlElement: HTMLElement, name: string, value: string): void {
     let namespace = Configuration.getNamespace();
     htmlElement.setAttribute(`data-${namespace}-${name}`, value);
+}
+
+/**
+ * Prints debug message
+ */
+export function debug(...args: any[]): void {
+    if(Configuration.isDebugEnabled()){
+        console.trace(args);
+    }
 }
 
 /**

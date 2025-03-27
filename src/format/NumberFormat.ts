@@ -1,5 +1,8 @@
 import {Format} from "./Format";
 
+/**
+ * Number Format
+ */
 export class NumberFormat implements Format {
 
     scale?:number = 0;

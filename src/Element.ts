@@ -1,13 +1,12 @@
-import {assert, setElementAttribute} from "./common";
+import {assert, getProxyHandler, setElementAttribute} from "./common";
 import {Observable} from "./Observable";
 import {Observer} from "./Observer";
 import {Event} from "./event/Event";
-import {ObjectProxy} from "./ObjectProxy";
 
 /**
  * Element
  */
-export abstract class Element<T extends HTMLElement, V> extends Observable implements Observer {
+export abstract class Element<T extends HTMLElement, V extends object> extends Observable implements Observer {
 
     htmlElement: T;
 
@@ -29,10 +28,10 @@ export abstract class Element<T extends HTMLElement, V> extends Observable imple
         this.context = context;
         setElementAttribute(this.htmlElement, 'id', this.generateId());
         // bind data
-        let dataHandler = globalThis.Object.getOwnPropertyDescriptor(this.bindData, '_proxy_handler_')?.value;
-        assert(dataHandler, 'DataHandler is not found');
-        this.addObserver(dataHandler);
-        dataHandler.addObserver(this);
+        let proxyHandler = getProxyHandler(bindData);
+        assert(proxyHandler, 'ProxyHandler is not found');
+        this.addObserver(proxyHandler);
+        proxyHandler.addObserver(this);
     }
 
     /**

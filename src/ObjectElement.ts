@@ -1,12 +1,11 @@
-import {findVariable, getElementAttribute, runExecuteCode, runIfCode} from "./common";
+import {findVariable, getElementAttribute, getProxyHandler, runExecuteCode, runIfCode, debug} from "./common";
 import {Element} from "./Element";
-import {ObjectProxy} from "./ObjectProxy";
 import {Observable} from "./Observable";
 import {ObjectProxyHandler} from "./ObjectProxyHandler";
 import {Format} from "./format/Format";
 import {FormatFactory} from "./format/FormatFactory";
 import {Event} from "./event/Event";
-import {Configuration} from "./Configuration";
+import {PropertyChangedEvent} from "./event/PropertyChangedEvent";
 
 /**
  * Object Element
@@ -51,55 +50,36 @@ export class ObjectElement<T extends HTMLElement> extends Element<T, object> {
      * Overrides render
      */
     override render(): void {
-        // check if
-        if (!this.checkIf()) {
-            return;
+        // context
+        let context = Object.assign({}, this.getContext());
+        let bind = getElementAttribute(this.getHtmlElement(), 'bind');
+        let bindSplit = bind.split('.');
+        if(bindSplit.length > 1) {
+            context[bindSplit[0]] = findVariable(context, bindSplit[0]);
+        }else{
+            context[bind] = this.getBindData();
         }
-        // property
-        if(this.property){
-            let objectHandler = ObjectProxy.getProxyHandler(this.getBindData());
+        // run if code
+        runIfCode(this.htmlElement, context).then(result => {
+            // checks result
+            if (result === false) {
+                return;
+            }
+            let objectProxyHandler = getProxyHandler<ObjectProxyHandler>(this.getBindData());
             // set value
-            let value = objectHandler.getValue(this.property);
-            this.setValue(value);
-            // set readonly
-            let readonly = objectHandler.isReadonly(this.property);
+            if (this.property) {
+                let value = objectProxyHandler.getValue(this.property);
+                this.setValue(value);
+            }
+            // sets readonly
+            let readonly = objectProxyHandler.isReadonly(this.property);
             this.setReadonly(readonly);
-            // set disable
-            let disable = objectHandler.isDisable(this.property);
-            this.setDisable(disable);
-        }
-        // executes script
-        this.executeScript();
-    }
-
-    /**
-     * Check if condition in attribute
-     */
-    checkIf(): boolean {
-        let context = Object.assign({}, this.getContext());
-        let bind = getElementAttribute(this.getHtmlElement(), 'bind');
-        let bindSplit = bind.split('.');
-        if(bindSplit.length > 1) {
-            context[bindSplit[0]] = findVariable(context, bindSplit[0]);
-        }else{
-            context[bind] = this.getBindData();
-        }
-        return runIfCode(this.htmlElement, context);
-    }
-
-    /**
-     * Executes script in attribute
-     */
-    executeScript(): boolean {
-        let context = Object.assign({}, this.getContext());
-        let bind = getElementAttribute(this.getHtmlElement(), 'bind');
-        let bindSplit = bind.split('.');
-        if(bindSplit.length > 1) {
-            context[bindSplit[0]] = findVariable(context, bindSplit[0]);
-        }else{
-            context[bind] = this.getBindData();
-        }
-        return runExecuteCode(this.htmlElement, context);
+            // sets disabled
+            let disabled = objectProxyHandler.isDisabled(this.property);
+            this.setDisabled(disabled);
+            // run execute code
+            runExecuteCode(this.htmlElement, context).then();
+        });
     }
 
     /**
@@ -108,25 +88,17 @@ export class ObjectElement<T extends HTMLElement> extends Element<T, object> {
      * @param event event
      */
     override update(observable: Observable, event: Event): void {
-        console.trace('ObjectElement.update', observable, event);
+        debug('ObjectElement.update', observable, event);
         // ObjectHandler
         if(observable instanceof ObjectProxyHandler) {
-            // check if
-            if (!this.checkIf()) {
+            // property changed event
+            if (event instanceof PropertyChangedEvent) {
+                this.render();
                 return;
             }
-            // property
-            if(this.property){
-                // set value
-                this.setValue(observable.getValue(this.property));
-                // set readonly
-                this.setReadonly(observable.isReadonly(this.property));
-                // set disable
-                this.setDisable(observable.isDisable(this.property));
-            }
-            // executes script
-            this.executeScript();
         }
+        // default
+        this.render();
     }
 
     /**
@@ -164,10 +136,10 @@ export class ObjectElement<T extends HTMLElement> extends Element<T, object> {
     }
 
     /**
-     * Sets disable
-     * @param disable disable or not
+     * Sets disabled
+     * @param disabled disabled or not
      */
-    setDisable(disable: boolean): void {
+    setDisabled(disabled: boolean): void {
         // no-op
     }
 

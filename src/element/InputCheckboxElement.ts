@@ -1,4 +1,4 @@
-import {getElementAttribute} from "../common";
+import {debug, getElementAttribute} from "../common";
 import {InputElement} from "./InputElement";
 
 /**
@@ -61,9 +61,10 @@ export class InputCheckboxElement extends InputElement {
      * @param readonly readonly or not
      */
     override setReadonly(readonly: boolean): void {
-        if(readonly){
+        debug('InputCheckboxElement.setReadonly', readonly);
+        if (readonly){
             this.getHtmlElement().addEventListener('click', this.disableClick);
-        }else{
+        } else {
             this.getHtmlElement().removeEventListener('click', this.disableClick);
         }
     }

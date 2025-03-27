@@ -4,7 +4,7 @@ import {CustomElement} from "./CustomElement";
 /**
  * Custom Element Factory
  */
-export abstract class CustomElementFactory<V> extends ElementFactory<HTMLElement, V> {
+export abstract class CustomElementFactory<V extends object> extends ElementFactory<HTMLElement, V> {
 
     /**
      * Creates element

@@ -1,5 +1,6 @@
 import {ObjectElement} from "../ObjectElement";
-import {PropertyChangeEvent} from "../event/PropertyChangeEvent";
+import {PropertyChangingEvent} from "../event/PropertyChangingEvent";
+import {getProxyHandler, getProxyTarget} from "../common";
 
 /**
  * Input Element
@@ -14,10 +15,13 @@ export class InputElement extends ObjectElement<HTMLInputElement> {
      */
     constructor(htmlElement: HTMLInputElement, bindData: object, context: object) {
         super(htmlElement, bindData, context);
-        // adds change listener
+        // Adds change event listener
         this.getHtmlElement().addEventListener('change', e => {
-            let event = new PropertyChangeEvent(this, this.getProperty(), this.getValue(), this.getIndex());
-            this.notifyObservers(event);
+            e.stopPropagation();
+            let element = this.getHtmlElement();
+            let data = getProxyTarget(this.getBindData());
+            let propertyChangingEvent = new PropertyChangingEvent(element, data, this.getProperty(), this.getValue(), this.getIndex());
+            this.notifyObservers(propertyChangingEvent);
         }, true);
         // turn off autocomplete
         this.getHtmlElement().setAttribute('autocomplete','off');
@@ -58,11 +62,11 @@ export class InputElement extends ObjectElement<HTMLInputElement> {
     }
 
     /**
-     * Sets disable
-     * @param disable disable or not
+     * Sets disabled
+     * @param disabled disabled or not
      */
-    override setDisable(disable: boolean): void {
-        if(disable) {
+    override setDisabled(disabled: boolean): void {
+        if(disabled) {
             this.getHtmlElement().setAttribute('disabled', 'disabled');
         }else{
             this.getHtmlElement().removeAttribute('disabled');

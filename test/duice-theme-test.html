@@ -258,12 +258,45 @@
             </ul>
         </section>
         <section>
+            <label>
+                <input type="text" value="Text"/>
+            </label>
+            <label>
+                <input type="text" value="text(disabled)" disabled="disabled"/>
+            </label>
+        </section>
+        <section>
+            <label>
+                <select>
+                    <option>-</option>
+                    <option>Option 1</option>
+                </select>
+            </label>
+            <label>
+                <select disabled="disabled">
+                    <option>- (Disabled)</option>
+                    <option>Option 1</option>
+                </select>
+            </label>
+        </section>
+        <section>
+            <label>
+                <textarea>Textarea</textarea>
+            </label>
+            <label>
+                <textarea disabled="disabled">Textarea (Disabled)</textarea>
+            </label>
+        </section>
+        <section>
             <button type="button">
                 Button
             </button>
             <button type="button">
                 <span>&#11035;</span>
                 Button
+            </button>
+            <button type="button" disabled="disabled">
+                Button (Disabled)
             </button>
         </section>
     </main>

@@ -1,23 +1,22 @@
 import {ProxyHandler} from "./ProxyHandler";
 import {ObjectElement} from "./ObjectElement";
 import {Observable} from "./Observable";
-import {PropertyChangeEvent} from "./event/PropertyChangeEvent";
 import {Event} from "./event/Event";
+import {PropertyChangedEvent} from "./event/PropertyChangedEvent";
+import {debug} from "./common";
+import {PropertyChangingEvent} from "./event/PropertyChangingEvent";
+import {ArrayProxyHandler} from "./ArrayProxyHandler";
 
 /**
  * Object Proxy Handler
  */
 export class ObjectProxyHandler extends ProxyHandler<object> {
 
-    propertyChangingListener: Function;
-
-    propertyChangedListener: Function;
-
     /**
      * Constructor
      */
-    constructor() {
-        super();
+    constructor(object: object) {
+        super(object);
     }
 
     /**
@@ -40,8 +39,7 @@ export class ObjectProxyHandler extends ProxyHandler<object> {
         // change value
         Reflect.set(target, property, value);
         // notify
-        let event = new PropertyChangeEvent(this, property, value);
-        this.notifyObservers(event);
+        this.notifyObservers();
         // returns
         return true;
     }
@@ -52,17 +50,28 @@ export class ObjectProxyHandler extends ProxyHandler<object> {
      * @param event event
      */
     update(observable: Observable, event: Event): void {
+        debug('ObjectProxyHandler.update', observable, event);
         // element
         if (observable instanceof ObjectElement) {
-            let property = observable.getProperty();
-            let value = observable.getValue();
-            if(this.checkListener(this.propertyChangingListener, event)){
-                this.setValue(property, value);
-                this.checkListener(this.propertyChangedListener, event);
+            if (event instanceof PropertyChangingEvent) {
+                this.dispatchEventListeners(event).then(result => {
+                    // result is false
+                    if (result === false) {
+                        // rollback and return
+                        observable.update(this, event);
+                        return;
+                    }
+                    // updates property value
+                    let property = observable.getProperty();
+                    let value = observable.getValue();
+                    this.setValue(property, value);
+                    // property changed event
+                    let propertyChangedEvent = new PropertyChangedEvent(event.getElement(), event.getData(), event.getProperty(), event.getValue(), event.getIndex());
+                    this.notifyObservers(propertyChangedEvent);
+                    this.dispatchEventListeners(propertyChangedEvent).then();
+                });
             }
         }
-        // notify
-        this.notifyObservers(event);
     }
 
     /**
@@ -70,7 +79,7 @@ export class ObjectProxyHandler extends ProxyHandler<object> {
      * @param property property
      */
     getValue(property: string): any {
-        property = property.replace('.','?.');
+        property = property.replace(/\./g,'?.');
         return new Function(`return this.${property};`).call(this.getTarget());
     }
 
@@ -97,6 +106,42 @@ export class ObjectProxyHandler extends ProxyHandler<object> {
                 }
             }
         });
+    }
+
+    /**
+     * Overrides is readonly by property
+     * @param property property
+     */
+    override isReadonly(property: string): boolean {
+        let readonly = super.isReadonly(property);
+        // parent is ArrayProxyHandler
+        if (this.parent && this.parent instanceof ArrayProxyHandler) {
+            if (this.parent.isReadonly(property) === true) {
+                readonly = true;
+            }
+            if (this.parent.isReadonly(property) === false) {
+                readonly = false;
+            }
+        }
+        return readonly;
+    }
+
+    /**
+     * Overrides is disabled by property
+     * @param property property
+     */
+    override isDisabled(property: string): boolean {
+        let disabled = super.isDisabled(property);
+        // parent is ArrayProxyHandler
+        if (this.parent && this.parent instanceof ArrayProxyHandler) {
+            if (this.parent.isDisabled(property) === true) {
+                disabled = true;
+            }
+            if (this.parent.isDisabled(property) === false) {
+                disabled = false;
+            }
+        }
+        return disabled;
     }
 
 }

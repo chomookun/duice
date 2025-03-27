@@ -1,27 +1,32 @@
 import {
+    debug,
     getElementAttribute,
     markInitialized,
     runExecuteCode,
     runIfCode,
-    setElementAttribute
+    setElementAttribute,
+    getProxyTarget
 } from "./common";
 import {Element} from "./Element";
 import {ObjectProxy} from "./ObjectProxy";
 import {Initializer} from "./Initializer";
 import {Observable} from "./Observable";
 import {ArrayProxyHandler} from "./ArrayProxyHandler";
-import {ItemSelectEvent} from "./event/ItemSelectEvent";
-import {ItemMoveEvent} from "./event/ItemMoveEvent";
+import {ItemSelectingEvent} from "./event/ItemSelectingEvent";
+import {ItemMovingEvent} from "./event/ItemMovingEvent";
 import {Event} from "./event/Event";
+import {ItemSelectedEvent} from "./event/ItemSelectedEvent";
+import {ItemMovedEvent} from "./event/ItemMovedEvent";
+import {PropertyChangedEvent} from "./event/PropertyChangedEvent";
 
 /**
  * Array Element
  */
 export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
 
-    loop: string;
+    foreach: string;
 
-    hierarchy: string;
+    recursive: string;
 
     editable: boolean = false;
 
@@ -40,8 +45,8 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
     constructor(htmlElement: T, bindData: object[], context: object) {
         super(htmlElement.cloneNode(true) as T, bindData, context);
         // attributes
-        this.loop = getElementAttribute(htmlElement, 'loop');
-        this.hierarchy = getElementAttribute(htmlElement, 'hierarchy');
+        this.foreach = getElementAttribute(htmlElement, 'foreach');
+        this.recursive = getElementAttribute(htmlElement, 'recursive');
         this.editable = (getElementAttribute(htmlElement, 'editable') === 'true');
         this.selectedItemClass = getElementAttribute(htmlElement, 'selected-item-class');
         // replace with slot for position
@@ -60,17 +65,16 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
             rowElement.parentNode.removeChild(rowElement);
         });
         this.itemHtmlElements.length = 0;
-        // loop
-        if(this.loop){
-            let loopArgs = this.loop.split(',');
-            let itemName = loopArgs[0].trim();
-            let statusName = loopArgs[1]?.trim();
-            // hierarchy loop
-            if(this.hierarchy) {
-                let hierarchyArray = this.hierarchy.split(',');
-                let idName = hierarchyArray[0];
-                let parentIdName = hierarchyArray[1];
-                //let index = -1;
+        // foreach
+        if(this.foreach){
+            let foreachArgs = this.foreach.split(',');
+            let itemName = foreachArgs[0].trim();
+            let statusName = foreachArgs[1]?.trim();
+            // recursive loop
+            if(this.recursive) {
+                let recursiveArgs = this.recursive.split(',');
+                let idName = recursiveArgs[0].trim();
+                let parentIdName = recursiveArgs[1]?.trim();
                 const _this = this;
                 // visit function
                 let visit = function(array: object[], parentId: object, depth: number) {
@@ -89,7 +93,7 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
                                 depth: depth
                             });
                             // create row element
-                            _this.createItemHtmlElement(index, object, context);
+                            _this.createItemHtmlElement(index, context);
                             // visit child elements
                             let id = object[idName];
                             visit(array, id, depth + 1);
@@ -99,7 +103,7 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
                 // start visit
                 visit(arrayProxy, null, 0);
             }
-            // default loop
+            // default foreach
             else{
                 // normal
                 for (let index = 0; index < arrayProxy.length; index++) {
@@ -116,11 +120,11 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
                         last: (arrayProxy.length == index + 1)
                     });
                     // create row element
-                    this.createItemHtmlElement(index, object, context);
+                    this.createItemHtmlElement(index, context);
                 }
             }
         }
-        // not loop
+        // not foreach
         else {
             // initialize
             let itemHtmlElement = this.getHtmlElement().cloneNode(true) as HTMLElement;
@@ -130,19 +134,21 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
             // append to slot
             this.slot.parentNode.insertBefore(itemHtmlElement, this.slot);
             // check if
-            runIfCode(itemHtmlElement, context);
-            // execute script
-            runExecuteCode(itemHtmlElement, context);
+            runIfCode(itemHtmlElement, context).then(result => {
+                if (result === false) {
+                    return;
+                }
+                runExecuteCode(itemHtmlElement, context).then();
+            });
         }
     }
 
     /**
      * Creates item html element
      * @param index index
-     * @param object object
      * @param context context
      */
-    createItemHtmlElement(index: number, object: object, context: object): void {
+    createItemHtmlElement(index: number, context: object): void {
         // clones row elements
         let itemHtmlElement = this.getHtmlElement().cloneNode(true) as HTMLElement;
         // adds embedded attribute
@@ -151,20 +157,23 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
         let _this = this;
         if(this.editable){
             itemHtmlElement.setAttribute('draggable', 'true');
-            itemHtmlElement.addEventListener('dragstart', function(e){
-                let fromIndex = getElementAttribute(this, 'index');
+            itemHtmlElement.addEventListener('dragstart', e => {
+                let fromIndex = getElementAttribute(e.currentTarget as HTMLElement, 'index');
                 e.dataTransfer.setData("text", fromIndex);
             });
-            itemHtmlElement.addEventListener('dragover', function(e){
+            itemHtmlElement.addEventListener('dragover', e => {
                 e.preventDefault();
                 e.stopPropagation();
             });
-            itemHtmlElement.addEventListener('drop', async function(e){
+            itemHtmlElement.addEventListener('drop', e => {
                 e.preventDefault();
                 e.stopPropagation();
+                // Notifies item move event
+                let element = this.getHtmlElement();
+                let data = getProxyTarget(this.getBindData());
                 let fromIndex = parseInt(e.dataTransfer.getData('text'));
-                let toIndex = parseInt(getElementAttribute(this, 'index'));
-                let itemMoveEvent = new ItemMoveEvent(_this, fromIndex, toIndex);
+                let toIndex = parseInt(getElementAttribute(e.currentTarget as HTMLElement, 'index'));
+                let itemMoveEvent = new ItemMovingEvent(element, data, fromIndex, toIndex);
                 _this.notifyObservers(itemMoveEvent);
             });
         }
@@ -173,23 +182,20 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
         this.itemHtmlElements.push(itemHtmlElement);
         // insert into slot
         this.slot.parentNode.insertBefore(itemHtmlElement, this.slot);
-        // check if clause
-        runIfCode(itemHtmlElement, context);
-        // execute script
-        runExecuteCode(itemHtmlElement, context);
-        // selectable
+        // trigger item selecting event
         itemHtmlElement.addEventListener('click', e => {
-            // selected class
-            if(this.selectedItemClass) {
-                this.itemHtmlElements.forEach(element => {
-                    element.classList.remove(this.selectedItemClass);
-                });
-                (e.currentTarget as HTMLElement).classList.add(this.selectedItemClass);
-                e.stopPropagation();
+            e.stopPropagation();
+            let element = this.getHtmlElement();
+            let data = getProxyTarget(this.getBindData());
+            let itemSelectingEvent = new ItemSelectingEvent(element, data, index);
+            this.notifyObservers(itemSelectingEvent);
+        });
+        // check if code
+        runIfCode(itemHtmlElement, context).then(result => {
+            if (result === false) {
+                return;
             }
-            // trigger row select event
-            let rowSelectEvent = new ItemSelectEvent(this, index);
-            this.notifyObservers(rowSelectEvent);
+            runExecuteCode(itemHtmlElement, context).then();
         });
     }
 
@@ -199,10 +205,11 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
      * @param event event
      */
     override update(observable: Observable, event: Event): void {
-        console.trace('ArrayElement.update', observable, event);
+        debug('ArrayElement.update', observable, event);
+        // if observable is array proxy handler
         if(observable instanceof ArrayProxyHandler){
-            // row select event
-            if(event instanceof ItemSelectEvent) {
+            // item selected event
+            if(event instanceof ItemSelectedEvent) {
                 if(this.selectedItemClass) {
                     this.itemHtmlElements.forEach(el => el.classList.remove(this.selectedItemClass));
                     let index = event.getIndex();
@@ -214,11 +221,32 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
                         });
                     }
                 }
+                // no render
                 return;
             }
-            // render
-            this.render();
+            // item moved event
+            if (event instanceof ItemMovedEvent) {
+                this.render();
+                return;
+            }
+            // property change event
+            if (event instanceof PropertyChangedEvent) {
+                // if recursive and parent is changed, render array element
+                if (this.recursive) {
+                    let parentId = this.recursive.split(',')[1]?.trim();
+                    if (event.getProperty() === parentId) {
+                        this.render();
+                        return;
+                    }
+                }
+                // default is no-op
+                else {
+                    return;
+                }
+            }
         }
+        // default
+        this.render();
     }
 
 }

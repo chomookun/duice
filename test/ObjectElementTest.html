@@ -41,6 +41,7 @@
     </style>
     <script>
         'use strict';
+        // my object
         const myObject = new duice.ObjectProxy({
             name: 'Apple',
             phoneNo: '01012345678',
@@ -68,7 +69,16 @@
             ],
             primitives: [1,2,3],
         });
-
+        // adds event listener
+        duice.ObjectProxy.onPropertyChanging(myObject, async event => {
+            console.log(event);
+            return await new duice.ConfirmDialog(`Do you want to change?\n- property:[${event.getProperty()}]\n- value:[${event.getValue()}]`).open();
+        });
+        duice.ObjectProxy.onPropertyChanged(myObject, event => {
+            console.log(event);
+            viewMyObject();
+        });
+        // my types
         const myTypes = new duice.ArrayProxy([
             {type: 'human', name: 'Human'},
             {type: 'fruit', name: 'Fruit'},
@@ -76,9 +86,19 @@
         ]);
 
         /**
+         * Checks confirm
+         * @param event
+         * @returns {Promise<*>}
+         */
+        async function checkConfirm(event) {
+            return await new duice.ConfirmDialog(`Do you want to change?\n- property:[${event.getProperty()}]\n- value:[${event.getValue()}]`).open();
+        }
+
+        /**
          * viewMyObject
          */
         function viewMyObject() {
+            console.log('viewMyObject');
             document.getElementById('myObject').value = JSON.stringify(myObject, null, 4);
         }
 
@@ -86,24 +106,45 @@
          * assignMyObject
          */
         function assignMyObject() {
+            console.log('assignMyObject');
             duice.ObjectProxy.clear(myObject);
             let object = JSON.parse(document.getElementById('myObject').value);
             duice.ObjectProxy.assign(myObject, object);
         }
 
-        // adds before change listener
-        duice.ObjectProxy.onPropertyChanging(myObject, async (event) => {
-            if (await new duice.ConfirmDialog(`Do you want to change [${event.getProperty()}] is [${event.getValue()}]`).open()) {
-                return true;
-            } else {
-                return false;
-            }
-        });
+        /**
+         * Sets disabled all my object
+         * @param disabled
+         */
+        function setDisabledAllMyObject(disabled) {
+            duice.ObjectProxy.setDisabledAll(myObject, disabled);
+        }
 
-        // adds after change listener
-        duice.ObjectProxy.onPropertyChanged(myObject, event => {
-            viewMyObject();
-        });
+        /**
+         * Sets disabled my object
+         * @param property
+         * @param disabled
+         */
+        function setDisabledMyObject(property, disabled) {
+            duice.ObjectProxy.setDisabled(myObject, property, disabled);
+        }
+
+        /**
+         * Sets readonly all my object
+         * @param readonly
+         */
+        function setReadonlyAllMyObject(readonly) {
+            duice.ObjectProxy.setReadonlyAll(myObject, readonly);
+        }
+
+        /**
+         * Sets Readonly my object
+         * @param property
+         * @param readonly
+         */
+        function setReadonlyMyObject(property, readonly) {
+            duice.ObjectProxy.setReadonly(myObject, property, readonly);
+        }
 
         // adds DOMContentLoaded event listener
         document.addEventListener("DOMContentLoaded", event => {
@@ -131,7 +172,19 @@
     <main>
         <section id="json">
             <h2>ObjectProxy</h2>
-            <textarea id="myObject" class="width--100 height--100vh"></textarea>
+            <label>
+                <textarea id="myObject" class="width--100" style="line-height:1rem; height:50rem;"></textarea>
+            </label>
+            <div>
+                <button type="button" onclick="setDisabledAllMyObject(true);">setDisabledAllMyObject(true);</button>
+                <button type="button" onclick="setDisabledAllMyObject(false);">setDisabledAllMyObject(false);</button>
+                <button type="button" onclick="setDisabledMyObject('name', true);">setDisabledMyObject('name', true);</button>
+                <button type="button" onclick="setDisabledMyObject('name', false);">setDisabledMyObject('name', false);</button>
+                <button type="button" onclick="setReadonlyAllMyObject(true)">setReadonlyAllMyObject(true);</button>
+                <button type="button" onclick="setReadonlyAllMyObject(false)">setReadonlyAllMyObject(false);</button>
+                <button type="button" onclick="setReadonlyMyObject('name', true)">setReadonlyMyObject('name', true);</button>
+                <button type="button" onclick="setReadonlyMyObject('name', false)">setReadonlyMyObject('name', false);</button>
+            </div>
         </section> 
         <section id="element">
             <h2>ObjectElement</h2>
@@ -145,13 +198,15 @@
                         <th>HTML Code</th>
                     </tr>
                     </thead>
-                    <!-- name -->
+                    <!-- ====================================== -->
+                    <!-- start: name                            -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">name</td>
                         <td rowspan="2" data-duice-bind="myObject" data-duice-property="name"></td>
                         <td>
-                            <span data-duice-bind="myObject" data-duice-property="name"/></span>
+                            <span data-duice-bind="myObject" data-duice-property="name"></span>
                         </td>
                         <td>
                             &lt;* data-duice-bind="myObject" data-duice-property="name"&gt; &lt;/*&gt;
@@ -159,28 +214,38 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="text" data-duice-bind="myObject" data-duice-property="name"/>
+                            <label>
+                                <input type="text" data-duice-bind="myObject" data-duice-property="name"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="text" data-duice-bind="myObject" data-duice-property="name"/&gt;
                         </td>
                     </tr>
                     </tbody>
-                    <!-- phoneNo -->
+                    <!-- ====================================== -->
+                    <!-- end: name                              -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: phoneNo                         -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="4">phoneNo</td>
                         <td rowspan="4" data-duice-bind="myObject" data-duice-property="phoneNo"></td>
                         <td>
-                            <span data-duice-bind="myObject" data-duice-property="phoneNo"/></span>
+                            <span data-duice-bind="myObject" data-duice-property="phoneNo"></span>
                         </td>
                         <td>
                             &lt;* data-duice-bind="myObject" data-duice-property="phoneNo"&gt; &lt;/*&gt;
                         </td>
                     </tr>
                     <tr>
-                        <td data-duice-bind="myObject" data-duice-property="phoneNo"
-                            data-duice-format="string('###-####-####')"></td>
+                        <td>
+                            <span data-duice-bind="myObject"
+                                  data-duice-property="phoneNo"
+                                  data-duice-format="string('###-####-####')"></span>
+                        </td>
                         <td>
                             &lt;* data-duice-bind="myObject" data-duice-property="phoneNo"
                             data-duice-format="string('###-####-####')"&gt; &lt;/*&gt;
@@ -188,7 +253,9 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="text" data-duice-bind="myObject" data-duice-property="phoneNo"/>
+                            <label>
+                                <input type="text" data-duice-bind="myObject" data-duice-property="phoneNo"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="text" data-duice-bind="myObject" data-duice-property="phoneNo"/&gt;
@@ -196,8 +263,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="text" data-duice-bind="myObject" data-duice-property="phoneNo"
-                                   data-duice-format="string('###-####-####')"/>
+                            <label>
+                                <input type="text" data-duice-bind="myObject" data-duice-property="phoneNo"
+                                       data-duice-format="string('###-####-####')"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="text" data-duice-bind="myObject" data-duice-property="phoneNo"
@@ -205,21 +274,28 @@
                         </td>
                     </tr>
                     </tbody>
-                    <!-- cardNo -->
+                    <!-- ====================================== -->
+                    <!-- end: phoneNo                           -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: cardNo                          -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="4">cardNo</td>
                         <td rowspan="4" data-duice-bind="myObject" data-duice-property="cardNo"></td>
                         <td>
-                            <span data-duice-bind="myObject" data-duice-property="cardNo"/></span>
+                            <span data-duice-bind="myObject" data-duice-property="cardNo"></span>
                         </td>
                         <td>
                             &lt;* data-duice-bind="myObject" data-duice-property="cardNo"&gt; &lt;/*&gt;
                         </td>
                     </tr>
                     <tr>
-                        <td data-duice-bind="myObject" data-duice-property="cardNo"
-                            data-duice-format="string('####-####-####-####')"></td>
+                        <td>
+                            <span data-duice-bind="myObject" data-duice-property="cardNo"
+                                  data-duice-format="string('####-####-####-####')"></span>
+                        </td>
                         <td>
                             &lt;* data-duice-bind="myObject" data-duice-property="cardNo"
                             data-duice-format="string('####-####-####-####')"&gt; &lt;/*&gt;
@@ -227,7 +303,9 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="text" data-duice-bind="myObject" data-duice-property="cardNo"/>
+                            <label>
+                                <input type="text" data-duice-bind="myObject" data-duice-property="cardNo"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="text" data-duice-bind="myObject" data-duice-property="cardNo"/&gt;
@@ -235,8 +313,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="text" data-duice-bind="myObject" data-duice-property="cardNo"
-                                   data-duice-format="string('####-####-####-####')"/>
+                            <label>
+                                <input type="text" data-duice-bind="myObject" data-duice-property="cardNo"
+                                       data-duice-format="string('####-####-####-####')"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="text" data-duice-bind="myObject" data-duice-property="cardNo"
@@ -244,7 +324,12 @@
                         </td>
                     </tr>
                     </tbody>
-                    <!-- balanceAmount -->
+                    <!-- ====================================== -->
+                    <!-- end: cardNo                            -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: balanceAmount                   -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="4">balanceAmount</td>
@@ -257,8 +342,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td data-duice-bind="myObject" data-duice-property="balanceAmount"
-                            data-duice-format="number(2)"></td>
+                        <td>
+                            <span data-duice-bind="myObject" data-duice-property="balanceAmount"
+                                  data-duice-format="number(2)"></span>
+                        </td>
                         <td>
                             &lt;* data-duice-bind="myObject" data-duice-property="balanceAmount"
                             data-duice-format="number(2)"&gt &lt;/*&gt;
@@ -266,7 +353,9 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="number" data-duice-bind="myObject" data-duice-property="balanceAmount"/>
+                            <label>
+                                <input type="number" data-duice-bind="myObject" data-duice-property="balanceAmount"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="number" data-duice-bind="myObject" data-duice-property="balanceAmount"/&gt;
@@ -274,51 +363,71 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="number" data-duice-bind="myObject" data-duice-property="balanceAmount"
-                                   data-duice-format="number(2)"/>
+                            <label>
+                                <input type="number" data-duice-bind="myObject" data-duice-property="balanceAmount"
+                                       data-duice-format="number(2)"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="number" data-duice-bind="myObject" data-duice-property="balanceAmount"
                             data-duice-format="number(2)"/&gt;
                         </td>
                     </tr>
-                    <!-- password -->
+                    <!-- ====================================== -->
+                    <!-- end: balanceAmount                     -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: password                        -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td>password</td>
                         <td data-duice-bind="myObject" data-duice-property="password"></td>
                         <td>
-                            <input type="password" data-duice-bind="myObject" data-duice-property="password"/>
+                            <label>
+                                <input type="password" data-duice-bind="myObject" data-duice-property="password"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="password" data-duice-bind="myObject" data-duice-property="password"&gt; &lt;/*&gt;
                         </td>
                     </tr>
                     </tbody>
-                    <!-- datetime -->
+                    <!-- ====================================== -->
+                    <!-- end: password                          -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: datetime                        -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">datetime</td>
                         <td rowspan="2" data-duice-bind="myObject" data-duice-property="datetime"></td>
                         <td>
-                        <span data-duice-bind="myObject" data-duice-property="datetime"
-                              data-duice-format="date('yyyy-MM-dd HH:mm:ss')"></span>
+                            <span data-duice-bind="myObject" data-duice-property="datetime"
+                                  data-duice-format="date('yyyy-MM-dd HH:mm:ss')"></span>
                         </td>
                         <td>
-                            &lt;* data-duice-bind="myObject" data-duice-property="datetime"
-                            data-duice-format="date('yyyy-MM-dd HH:mm:ss')"&gt; &lt;/*&gt;
+                            &lt;* data-duice-bind="myObject" data-duice-property="datetime" data-duice-format="date('yyyy-MM-dd HH:mm:ss')"&gt; &lt;/*&gt;
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <input type="datetime-local" data-duice-bind="myObject" data-duice-property="datetime"/>
+                            <label>
+                                <input type="datetime-local" data-duice-bind="myObject" data-duice-property="datetime"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="datetime-local" data-duice-bind="myObject" data-duice-property="datetime"/&gt;
                         </td>
                     </tr>
+                    <!-- ====================================== -->
+                    <!-- end: datetime                          -->
+                    <!-- ====================================== -->
                     </tbody>
-                    <!-- date -->
+                    <!-- ====================================== -->
+                    <!-- start: date                            -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">date</td>
@@ -328,20 +437,26 @@
                               data-duice-format="date('yyyy-MM-dd')"></span>
                         </td>
                         <td>
-                            &lt;* data-duice-bind="myObject" data-duice-property="date" data-duice-format="date('yyyy-MM-dd
-                            HH:mm:ss')"&gt; &lt;/*&gt;
+                            &lt;* data-duice-bind="myObject" data-duice-property="date" data-duice-format="date('yyyy-MM-dd HH:mm:ss')"&gt; &lt;/*&gt;
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <input type="date" data-duice-bind="myObject" data-duice-property="date"/>
+                            <label>
+                                <input type="date" data-duice-bind="myObject" data-duice-property="date"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="date" data-duice-bind="myObject" data-duice-property="date"/&gt;
                         </td>
                     </tr>
                     </tbody>
-                    <!-- time -->
+                    <!-- ====================================== -->
+                    <!-- end: date                              -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: time                            -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">time</td>
@@ -355,14 +470,21 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="time" data-duice-bind="myObject" data-duice-property="time"/>
+                            <label>
+                                <input type="time" data-duice-bind="myObject" data-duice-property="time"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="time" data-duice-bind="myObject" data-duice-property="time"/&gt;
                         </td>
                     </tr>
                     </tbody>
-                    <!-- range -->
+                    <!-- ====================================== -->
+                    <!-- end: time                              -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: range                           -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">range</td>
@@ -376,18 +498,25 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="range" data-duice-bind="myObject" data-duice-property="range"/>
+                            <label>
+                                <input type="range" data-duice-bind="myObject" data-duice-property="range"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="range" data-duice-bind="myObject" data-duice-property="range"/&gt;
                         </td>
                     </tr>
                     </tbody>
-                    <!-- type -->
+                    <!-- ====================================== -->
+                    <!-- end: range                             -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: type                            -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
-                        <td rowspan="2">type</td>
-                        <td rowspan="2" data-duice-bind="myObject" data-duice-property="type"></td>
+                        <td rowspan="3">type</td>
+                        <td rowspan="3" data-duice-bind="myObject" data-duice-property="type"></td>
                         <td>
                             <span data-duice-bind="myObject" data-duice-property="type"></span>
                         </td>
@@ -397,17 +526,39 @@
                     </tr>
                     <tr>
                         <td>
-                            <select data-duice-bind="myObject" data-duice-property="type"
-                                    data-duice-option="myTypes" data-duice-option-value-property="type" data-duice-option-text-property="name">
-                                <option value>- Select Type -</option>
-                            </select>
+                            <label>
+                                <select data-duice-bind="myObject" data-duice-property="type"
+                                        data-duice-option="myTypes" data-duice-option-value-property="type" data-duice-option-text-property="name">
+                                    <option value>- Select Type -</option>
+                                </select>
+                            </label>
                         </td>
                         <td>
                             &lt;select data-duice-bind="myObject" data-duice-property="type"/&gt; ... &lt;/select&gt;
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <label>
+                                <select data-duice-bind="myObject" data-duice-property="type">
+                                    <option value>- Select Type -</option>
+                                    <option value="human">Human</option>
+                                    <option value="fruit">Fruit</option>
+                                    <option value="animal">Animal</option>
+                                </select>
+                            </label>
+                        </td>
+                        <td>
+                            &lt;select data-duice-bind="myObject" data-duice-property="type" data-duice-option="myTypes" data-duice-option-value-property="type" data-duice-option-text-property="name"/&gt; ... &lt;/select&gt;
+                        </td>
+                    </tr>
                     </tbody>
-                    <!-- enabled -->
+                    <!-- ====================================== -->
+                    <!-- end: type                              -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: enabled                         -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">enable</td>
@@ -421,14 +572,21 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="checkbox" data-duice-bind="myObject" data-duice-property="enabled"/>
+                            <label>
+                                <input type="checkbox" data-duice-bind="myObject" data-duice-property="enabled"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="checkbox" data-duice-bind="myObject" data-duice-property="enabled"/&gt;
                         </td>
                     </tr>
                     </tbody>
-                    <!-- enabledYn -->
+                    <!-- ====================================== -->
+                    <!-- end: enabled                           -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: enabledYn                       -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">enableYn</td>
@@ -442,8 +600,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="checkbox" data-duice-bind="myObject" data-duice-property="enabledYn"
-                                   data-duice-true-value="Y" data-duice-false-value="N"/>
+                            <label>
+                                <input type="checkbox" data-duice-bind="myObject" data-duice-property="enabledYn"
+                                       data-duice-true-value="Y" data-duice-false-value="N"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="checkbox" data-duice-bind="myObject" data-duice-property="enabled"
@@ -451,7 +611,12 @@
                         </td>
                     </tr>
                     </tbody>
-                    <!-- gender -->
+                    <!-- ====================================== -->
+                    <!-- end: enabled                           -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: gender                          -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">gender</td>
@@ -465,8 +630,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="radio" data-duice-bind="myObject" data-duice-property="gender" value="male"/>
-                            <input type="radio" data-duice-bind="myObject" data-duice-property="gender" value="female"/>
+                            <label>
+                                <input type="radio" data-duice-bind="myObject" data-duice-property="gender" value="male"/>
+                                <input type="radio" data-duice-bind="myObject" data-duice-property="gender" value="female"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="radio" data-duice-bind="myObject" data-duice-property="gender" value="male"/&gt;
@@ -475,7 +642,12 @@
                         </td>
                     </tr>
                     </tbody>
-                    <!-- description -->
+                    <!-- ====================================== -->
+                    <!-- end: gender                            -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: description                     -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">description</td>
@@ -490,36 +662,49 @@
                     </tr>
                     <tr>
                         <td class="display--flex">
-                            <textarea class="height--100" data-duice-bind="myObject" data-duice-property="description"/></textarea>
+                            <label>
+                                <textarea class="height--100" data-duice-bind="myObject" data-duice-property="description"></textarea>
+                            </label>
                         </td>
                         <td>
                             &lt;textarea data-duice-bind="myObject" data-duice-property="description"&gt; &lt;/textarea&gt;
                         </td>
                     </tr>
                     </tbody>
-                    <!-- image -->
+                    <!-- ====================================== -->
+                    <!-- end: description                       -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: image                           -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">description</td>
-                        <td rowspan="2" data-duice-bind="myObject" data-duice-property="description"
-                            style="white-space: pre-wrap;"></td>
+                        <td rowspan="2" data-duice-bind="myObject" data-duice-property="description" style="white-space: pre-wrap;"></td>
                         <td>
-                            <img data-duice-bind="myObject" data-duice-property="image" src=""/>
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA00lEQVR4nO2VMQrCQBBFnyTYLjYaPIpaBLEQ9QLxEKKFTfASscqRLCxFvYK3kMAUEuJmdiMExV/u7L6BP39Y+HVFwKrivAMkQLcp/AZsK+BH4ASEpdoYmLvAUwvclGox8JAmVvWBC3CogGfAGeiVahOBT1uFD4Crpy0xCi1rBmqU8ECbLh+4kftrDdzVcyPwXN7/4W62IIPxGWimgSPRCj4A3wELTUMfeCrLWiytVT5R3AN3YNgqfNTAlgiFZtLkVaEFvnGB29KVvIli8XvVDvS79QTLokobCL3+PAAAAABJRU5ErkJggg=="
+                                 data-duice-bind="myObject" data-duice-property="image" alt=""/>
                         </td>
                         <td>
-                            &lt;img data-duice-bind="myObject" data-duice-property="image"/&gt;
+                            &lt;img src="..." data-duice-bind="myObject" data-duice-property="image" alt="..."/&gt;
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <img src="" data-duice-bind="myObject" data-duice-property="image" data-duice-editable="true" data-duice-size="32,32"/>
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA00lEQVR4nO2VMQrCQBBFnyTYLjYaPIpaBLEQ9QLxEKKFTfASscqRLCxFvYK3kMAUEuJmdiMExV/u7L6BP39Y+HVFwKrivAMkQLcp/AZsK+BH4ASEpdoYmLvAUwvclGox8JAmVvWBC3CogGfAGeiVahOBT1uFD4Crpy0xCi1rBmqU8ECbLh+4kftrDdzVcyPwXN7/4W62IIPxGWimgSPRCj4A3wELTUMfeCrLWiytVT5R3AN3YNgqfNTAlgiFZtLkVaEFvnGB29KVvIli8XvVDvS79QTLokobCL3+PAAAAABJRU5ErkJggg=="
+                                 data-duice-bind="myObject" data-duice-property="image" data-duice-editable="true" data-duice-size="32,32" alt=""/>
                         </td>
                         <td>
-                            &lt;img data-duice-bind="myObject" data-duice-property="image" data-duice-editable="true" data-duice-size="32,32"/&gt;
+                            &lt;img src="..." data-duice-bind="myObject" data-duice-property="image" data-duice-editable="true" data-duice-size="32,32" alt="..."/&gt;
                         </td>
                     </tr>
                     </tbody>
-                    <!-- address.country -->
+                    <!-- ====================================== -->
+                    <!-- end: image                             -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: address.country                 -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">address.country</td>
@@ -533,14 +718,21 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="text" data-duice-bind="myObject" data-duice-property="address.country"/>
+                            <label>
+                                <input type="text" data-duice-bind="myObject" data-duice-property="address.country"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="text" data-duice-bind="myObject" data-duice-property="address.country"/&gt;
                         </td>
                     </tr>
                     </tbody>
-                    <!-- items -->
+                    <!-- ====================================== -->
+                    <!-- end: address.country                   -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: items[0].name                   -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">items[0].name</td>
@@ -554,14 +746,21 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="text" data-duice-bind="myObject" data-duice-property="items[0].name"/>
+                            <label>
+                                <input type="text" data-duice-bind="myObject" data-duice-property="items[0].name"/>
+                            </label>
                         </td>
                         <td>
                             &lt;input type="text" data-duice-bind="myObject" data-duice-property="items[0].name"/&gt;
                         </td>
                     </tr>
                     </tbody>
-                    <!-- items[] -->
+                    <!-- ====================================== -->
+                    <!-- start: items[0].name                   -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: items[]                         -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td rowspan="2">items</td>
@@ -577,19 +776,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr data-duice-bind="myObject.items" data-duice-loop="item,status">
+                                <tr data-duice-bind="myObject.items" data-duice-foreach="item,status">
                                     <td>
-                                        <input type="text" data-duice-bind="item" data-duice-property="id">
+                                        <label>
+                                            <input type="text" data-duice-bind="item" data-duice-property="id">
+                                        </label>
                                     </td>
                                     <td>
-                                        <input type="text" data-duice-bind="item" data-duice-property="name">
+                                        <label>
+                                            <input type="text" data-duice-bind="item" data-duice-property="name">
+                                        </label>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </td>
                         <td class="fw-light ta-left" style="white-space:pre;">
-                            &lt;tr data-duice-bind="myObject.items" data-duice-loop="item,status"&gt;
+                            &lt;tr data-duice-bind="myObject.items" data-duice-foreach="item,status"&gt;
                             &lt;td&gt;
                             &lt;input type="text" data-duice-bind="item" data-duice-property="id"&gt;
                             &lt;/td&gt;
@@ -600,7 +803,12 @@
                         </td>
                     </tr>
                     </tbody>
-                    <!-- primitives -->
+                    <!-- ====================================== -->
+                    <!-- end: items[]                           -->
+                    <!-- ====================================== -->
+                    <!-- ====================================== -->
+                    <!-- start: primitives                      -->
+                    <!-- ====================================== -->
                     <tbody>
                     <tr>
                         <td>primitives</td>
@@ -613,6 +821,9 @@
                         </td>
                     </tr>
                     </tbody>
+                    <!-- ====================================== -->
+                    <!-- end: primitives                        -->
+                    <!-- ====================================== -->
                 </table>
             </div>
         </section>

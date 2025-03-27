@@ -1,11 +1,18 @@
 import {Dialog} from "./Dialog";
 
+/**
+ * Alert Dialog
+ */
 export class AlertDialog extends Dialog {
 
     messagePre: HTMLPreElement;
 
     confirmButton: HTMLButtonElement;
 
+    /**
+     * Constructor
+     * @param message message
+     */
     constructor(message: string) {
         super(document.createElement('dialog'));
         this.getDialogElement().style.padding = '1rem';
@@ -31,17 +38,26 @@ export class AlertDialog extends Dialog {
         this.getDialogElement().appendChild(this.confirmButton);
     }
 
+    /**
+     * Overrides open
+     */
     override open() {
         let promise = super.open();
         this.confirmButton.focus();
         return promise;
     }
 
+    /**
+     * Confirm
+     */
     confirm() {
         super.close();
         this.getDialogElement().parentNode.removeChild(this.getDialogElement());
     }
 
+    /**
+     * Overrides close
+     */
     override close() {
         super.close();
         this.getDialogElement().parentNode.removeChild(this.getDialogElement());

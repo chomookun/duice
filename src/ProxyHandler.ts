@@ -1,6 +1,8 @@
 import {Observable} from "./Observable";
 import {Observer} from "./Observer";
 import {Event} from "./event/Event";
+import {EventDispatcher} from "./event/EventDispatcher";
+import {EventType} from "./event/EventType";
 
 /**
  * Proxy Handler
@@ -9,22 +11,45 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
 
     target: T;
 
-    readonlyAll: boolean = false;
+    parent: ProxyHandler<any>;
 
-    readonly: Set<string> = new Set<string>();
+    readonlyAll: boolean;
 
-    disableAll: boolean = false;
+    readonlyProperties: Map<string, boolean> = new Map<string, boolean>();
 
-    disable: Set<string> = new Set<string>();
+    disabledAll: boolean;
 
-    listenerEnabled: boolean = true;
+    disabledProperties: Map<string, boolean> = new Map<string, boolean>();
+
+    eventDispatcher: EventDispatcher = new EventDispatcher();
+
+    eventEnabled: boolean = true;
 
     /**
      * Constructor
      * @protected
      */
-    protected constructor() {
+    protected constructor(target: T) {
         super();
+        this.target = target;
+    }
+
+    /**
+     * Sets parent
+     * @param parent parent
+     */
+    setParent(parent: ProxyHandler<any>): void {
+        this.parent = parent;
+        this.addObserver(parent);
+        parent.addObserver(this);
+        this.eventDispatcher.setParent(parent.eventDispatcher);
+    }
+
+    /**
+     * Gets parent
+     */
+    getParent(): ProxyHandler<any> {
+        return this.parent;
     }
 
     /**
@@ -55,17 +80,27 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
      */
     setReadonlyAll(readonly: boolean): void {
         this.readonlyAll = readonly;
-        if(!readonly){
-            this.readonly.clear();
-        }
-        this.notifyObservers(new Event(this));
+        this.readonlyProperties.forEach((value, key) => {
+            this.readonlyProperties.set(key, readonly);
+        });
+        this.notifyObservers();
     }
 
     /**
      * Returns readonly all
      */
     isReadonlyAll(): boolean {
-        return this.readonlyAll;
+        let readonlyAll = false;
+        if (this.parent) {
+            readonlyAll = (this.parent.isReadonlyAll() === true);
+        }
+        if (this.readonlyAll === true) {
+            readonlyAll = true;
+        }
+        if (this.readonlyAll === false) {
+            readonlyAll = false;
+        }
+        return readonlyAll;
     }
 
     /**
@@ -74,12 +109,8 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
      * @param readonly readonly or not
      */
     setReadonly(property: string, readonly: boolean): void {
-        if(readonly){
-            this.readonly.add(property);
-        }else{
-            this.readonly.delete(property);
-        }
-        this.notifyObservers(new Event(this));
+        this.readonlyProperties.set(property, readonly);
+        this.notifyObservers();
     }
 
     /**
@@ -87,77 +118,124 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
      * @param property property
      */
     isReadonly(property: string): boolean {
-        return this.readonlyAll || this.readonly.has(property);
-    }
-
-    /**
-     * Sets disable all
-     * @param disable
-     */
-    setDisableAll(disable: boolean): void {
-        this.disableAll = disable;
-        if(!disable) {
-            this.disable.clear();
+        let readonly = false;
+        readonly = (this.isReadonlyAll() === true);
+        if (this.readonlyProperties.has(property)) {
+            readonly = (this.readonlyProperties.get(property) === true);
         }
-        this.notifyObservers(new Event(this));
+        // returns
+        return readonly;
     }
 
     /**
-     * Returns whether all properties are disabled
+     * Sets disabled all
+     * @param disabledAll
      */
-    isDisableAll(): boolean {
-        return this.disableAll;
+    setDisabledAll(disabledAll: boolean): void {
+        this.disabledAll = disabledAll;
+        this.disabledProperties.forEach((value, key) => {
+            this.disabledProperties.set(key, disabledAll);
+        });
+        this.notifyObservers();
     }
 
     /**
-     * Sets disable
+     * Returns disabled all
+     */
+    isDisabledAll(): boolean {
+        let disabledAll = false;
+        if (this.parent) {
+            disabledAll = (this.parent.isDisabledAll() === true);
+        }
+        if (this.disabledAll === true) {
+            disabledAll = true;
+        }
+        if (this.disabledAll === false) {
+            disabledAll = false;
+        }
+        return disabledAll;
+    }
+
+    /**
+     * Sets disabled
      * @param property property
-     * @param disable disable or not
+     * @param disabled
      */
-    setDisable(property: string, disable: boolean): void {
-        if(disable) {
-            this.disable.add(property);
-        }else{
-            this.disable.delete(property);
-        }
-        this.notifyObservers(new Event(this));
+    setDisabled(property: string, disabled: boolean): void {
+        this.disabledProperties.set(property, disabled);
+        this.notifyObservers();
     }
 
     /**
      * Returns whether property is disabled
-     * @param property property
+     * @param property
      */
-    isDisable(property: string): boolean {
-        return this.disableAll || this.disable.has(property);
-    }
-
-    /**
-     * Subscribes to property changing
-     */
-    suspendListener(): void {
-        this.listenerEnabled = false;
-    }
-
-    /**
-     * Resumes to property changing
-     */
-    resumeListener(): void {
-        this.listenerEnabled = true;
-    }
-
-    /**
-     * Checks listener
-     * @param listener listener
-     * @param event event
-     */
-    checkListener(listener: Function, event: Event): boolean {
-        if(this.listenerEnabled && listener){
-            let result = listener.call(this.getTarget(), event);
-            if(result == false){
-                return false;
-            }
+    isDisabled(property: string): boolean {
+        let disabled = false;
+        disabled = (this.isDisabledAll() === true);
+        // check property is disabled
+        if (this.disabledProperties.has(property)) {
+            disabled = (this.disabledProperties.get(property) === true);
         }
-        return true;
+        // returns
+        return disabled;
+    }
+
+    /**
+     * Adds event listener
+     * @param eventType event type
+     * @param eventListener event listener
+     */
+    addEventListener(eventType: EventType, eventListener: Function): void {
+        this.eventDispatcher.addEventListener(eventType, eventListener);
+    }
+
+    /**
+     * Removes event listener
+     * @param eventType event type
+     * @param eventListener event listener
+     */
+    removeEventListener(eventType: EventType, eventListener: Function): void {
+        this.eventDispatcher.removeEventListener(eventType, eventListener);
+    }
+
+    /**
+     * Clears event listeners
+     * @param eventType event type
+     */
+    clearEventListeners(eventType: EventType): void {
+        this.eventDispatcher.clearEventListeners(eventType);
+    }
+
+    /**
+     * Suspends event
+     */
+    suspendEvent(): void {
+        this.eventEnabled = false;
+    }
+
+    /**
+     * Resumes event listener
+     */
+    resumeEvent(): void {
+        this.eventEnabled = true;
+    }
+
+    /**
+     * Calls event listeners
+     * @param event
+     */
+    async dispatchEventListeners(event: Event): Promise<boolean> {
+        if (!this.eventEnabled) {
+            return null;
+        }
+        return this.eventDispatcher.dispatchEventListeners(event).then(results => {
+            if (results != null && results.length > 0) {
+                return !results.some(result => result === false);
+            } else {
+                return null;
+            }
+        });
     }
 
 }
