@@ -132,6 +132,13 @@ small {
   font-size: smaller;
 }
 
+/* img */
+@media screen and (max-width: 1023px) {
+  img {
+    max-width: 100%;
+  }
+}
+
 /* input */
 input {
   box-sizing: border-box;
