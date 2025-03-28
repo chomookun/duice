@@ -2,6 +2,6 @@ remote_theme: chomookun/jekyll-plain
 plugins:
   - jekyll-remote-theme
 
-# theme configuration
+# theme config
 brand-icon: /docs/assets/image/duice-icon.svg
 brand-title: <img src="/docs/assets/image/duice-title.svg"/>
