@@ -17,7 +17,6 @@ export class TextareaElement extends ObjectElement<HTMLTextAreaElement> {
         super(htmlElement, bindData, context);
         // adds change event listener
         this.getHtmlElement().addEventListener('change', e => {
-            e.stopPropagation();
             let element = this.getHtmlElement();
             let data = getProxyTarget(this.getBindData());
             let propertyChangingEvent = new PropertyChangingEvent(element, data, this.getProperty(), this.getValue(), this.getIndex());

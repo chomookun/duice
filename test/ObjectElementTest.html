@@ -527,8 +527,12 @@
                     <tr>
                         <td>
                             <label>
-                                <select data-duice-bind="myObject" data-duice-property="type"
-                                        data-duice-option="myTypes" data-duice-option-value-property="type" data-duice-option-text-property="name">
+                                <select data-duice-bind="myObject"
+                                        data-duice-property="type"
+                                        data-duice-option="myTypes"
+                                        data-duice-option-value-property="type"
+                                        data-duice-option-text-property="name"
+                                        onchange="console.log(`select.value:${this.value}`);">
                                     <option value>- Select Type -</option>
                                 </select>
                             </label>
@@ -540,7 +544,9 @@
                     <tr>
                         <td>
                             <label>
-                                <select data-duice-bind="myObject" data-duice-property="type">
+                                <select data-duice-bind="myObject"
+                                        data-duice-property="type"
+                                        onchange="console.log(`select.value:${this.value}`);">
                                     <option value>- Select Type -</option>
                                     <option value="human">Human</option>
                                     <option value="fruit">Fruit</option>

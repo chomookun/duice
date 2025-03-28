@@ -33,7 +33,6 @@ export class SelectElement extends ObjectElement<HTMLSelectElement> {
         this.optionTextProperty = getElementAttribute(this.getHtmlElement(), 'option-text-property');
         // adds event listener
         this.getHtmlElement().addEventListener('change', e => {
-            e.stopPropagation();
             let element = this.getHtmlElement();
             let data = getProxyTarget(this.getBindData());
             let propertyChangingEvent = new PropertyChangingEvent(element, data, this.getProperty(), this.getValue(), this.getIndex());
