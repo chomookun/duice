@@ -18,7 +18,7 @@
   children:
     - title: Pagination
       icon: <i class="fa-solid fa-list-ol"></i>
-      url: https://duice-plugin.chomookun.org/duice-pagenation/test/duice-pagination-test.html
+      url: https://duice-plugin.chomookun.org/duice-pagination/test/duice-pagination-test.html
       target: _blank
     - title: Codemirror
       icon: <i class="fa-solid fa-code"></i>
