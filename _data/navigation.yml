@@ -1,0 +1,73 @@
+- title: Object Element
+  icon: <i class="fa-solid fa-vector-square"></i>
+  url: /test/object-element-test.html
+  target: _blank
+
+- title: Array Element
+  icon: <i class="fa-solid fa-list"></i>
+  url: /test/array-element-test.html
+  target: _blank
+
+- title: Dialog
+  icon: <i class="fa-regular fa-window-restore"></i>
+  url: /test/dialog/dialog-test.html
+  target: _blank
+
+- title: Plain Example
+  icon: <i class="fa-brands fa-html5"></i>
+  children:
+    - title: Hub and Detail
+      url: https://duice-example.chomookun.org/plain-example/hub-and-spoke.html
+      target: _blank
+    - title: Master Detail
+      url: https://duice-example.chomookun.org/plain-example/master-detail.html
+      target: _blank
+    - title: Modal Overlay
+      url: https://duice-example.chomookun.org/plain-example/modal-overlay.html
+      target: _blank
+
+- title: React Example
+  icon: <i class="fa-brands fa-react"></i>
+  children:
+    - title: Hub and Detail
+      url: https://duice-example.chomookun.org/react-example/hub-and-spoke
+      target: _blank
+    - title: Master Detail
+      url: https://duice-example.chomookun.org/react-example/master-detail
+      target: _blank
+    - title: Modal Overlay
+      url: https://duice-example.chomookun.org/react-example/modal-overlay
+      target: _blank
+
+- title: Vue Example
+  icon: <i class="fa-brands fa-vuejs"></i>
+  children:
+    - title: Hub and Detail
+      url: https://duice-example.chomookun.org/vue-example/hub-and-spoke
+      target: _blank
+    - title: Master Detail
+      url: https://duice-example.chomookun.org/vue-example/master-detail
+      target: _blank
+    - title: Modal Overlay
+      url: https://duice-example.chomookun.org/vue-example/modal-overlay
+      target: _blank
+
+- title: Plugins
+  icon: <i class="fa-solid fa-plug"></i>
+  children:
+    - title: Pagination
+      icon: <i class="fa-solid fa-list-ol"></i>
+      url: https://duice-plugin.chomookun.org/duice-pagenation/test/duice-pagination-test.html
+      target: _blank
+    - title: Codemirror
+      icon: <i class="fa-solid fa-code"></i>
+      url: https://duice-plugin.chomookun.org/duice-codemirror/test/duice-codemirror-test.html
+      target: _blank
+    - title: Marked
+      icon: <i class="fa-brands fa-dochub"></i>
+      url: https://duice-plugin.chomookun.org/duice-marked/test/duice-marked-test.html
+      target: _blank
+    - title: Jsplumb
+      icon: <i class="fa-solid fa-diagram-project"></i>
+      url: https://duice-plugin.chomookun.org/duice-jsplumb/test/duice-jsplumb-test.html
+      target: _blank
