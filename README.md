@@ -11,23 +11,26 @@
 
 ## 🗒️ Conception
 
-### 1. MVC Auto-Binding (between Data Structure and HTML DOM Element)
+### 1. MVC Auto-Binding (Between Data and DOM)
 
-By using the Object and Array, bidirectional binding processing is performed with HTML DOM Element in charge of presentation of the screen.
-(It's implemented by Internally it is Proxy and Observer Pattern)
-When changing the data of Object and Array, the value of the UI DOM element binding was also automatically changed.
-Conversely, if the user changes the value of the UI DOM Element, the binding Object and Array is automatically changed.
+Automatically synchronizes data and UI by binding JavaScript Object and Array to HTML DOM elements.
+<br/>
+Changes to data are immediately reflected in the UI, and user input in the UI automatically updates the underlying data.
+<br/>
+This bidirectional binding is powered internally by JavaScript Proxy and the Observer pattern.
 
-### 2. Reducing Learning Curve (Only simple HTML and javascript)
+### 2. Low Learning Curve (Just HTML + JavaScript)
 
-If you know only basic HTML format and Javascript,
-configure it to be able to operate.
+If you know basic HTML and JavaScript, you’re ready to go.
+<br/>
+No need to learn complex syntax or frameworks — just write standard HTML and bind data intuitively.
 
-### 3. Pure Javascript Prototype (No Dependency, No Conflict)
+### 3. Pure JavaScript, No Dependencies
 
-This library is developted by just pure javascript.
-It is oriented towards minimal code, no-dependency and no-conflict.
-Therefore you can use it with another javascript library together.
+This library is built with pure vanilla JavaScript — no dependencies, no conflicts.
+<br/>
+It’s lightweight, framework-agnostic, and can be seamlessly used alongside any other JavaScript libraries or frameworks.
+
 
 
 ---
