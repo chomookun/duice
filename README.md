@@ -6,6 +6,9 @@
 [![Preview](https://img.youtube.com/vi/Dke_mQblaMk/0.jpg)](https://www.youtube.com/watch?v=Dke_mQblaMk)
 
 
+---
+
+
 ## 🗒️ Conception
 
 ### 1. MVC Auto-Binding (between Data Structure and HTML DOM Element)
@@ -35,36 +38,27 @@ Therefore you can use it with another javascript library together.
 ### Website
 [![](https://img.shields.io/badge/Website-https://duice.chomookun.org-green?logo=html5)](https://duice.chomookun.org)
 
-
----
-
-
-## 🔗 References
-
-### Git Repository
-[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice-orange?logo=github)](https://github.com/chomookun/duice)
-
-### NPM Package
-[![](https://img.shields.io/badge/NPM-https://www.npmjs.com/package/duice-steelblue?logo=npm)](https://www.npmjs.com/package/duice)
-
-### Plugin project
-[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice--plugin-orange?logo=github)](https://github.com/chomookun/duice-plugin)
-
-### Example project (Plain HTML + Integrated with Vue/React)
-[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice--example-blue?logo=github)](https://github.com/chomookun/duice-example)
+### Example project 
+[![](https://img.shields.io/badge/Duice%20example-https://gcp.duice--example.chomookun.org-blue?logo=html5)](https://gcp.duice-example.chomookun.org)
+<br/>
+Plain HTML + Integrated with Vue/React examples
 
 ### Live Examples
-[![](https://img.shields.io/badge/Arch4j-https://github.com/chomookun/arch4j-blue?logo=github)](https://github.com/chomookun/arch4j)
+[![](https://img.shields.io/badge/Arch4j-https://gcp.arch4j--web.chomookun.org/admin-blue?logo=html5)](https://gcp.arch4j-web.chomookun.org/admin)
+[![](https://img.shields.io/badge/Fintics-https://gcp.fintics--web.chomookun.org-green?logo=html5)](https://gcp.fintics-web.chomookun.org)
 <br/>
-[![](https://img.shields.io/badge/Fintics-https://github.com/chomookun/fintics-green?logo=github)](https://github.com/chomookun/fintics)
-
+Credentials: **developer/developer<br/>**
+Because of cold start, Waits about 30 seconds to start the server.
 
 ---
+
 
 
 ## 📁 Object Element 
 
-[![](https://img.shields.io/badge/Test-/test/object--element--test.html-red?logo=html5)](test/object-element-test.html)
+[![](https://img.shields.io/badge/Test-object--element--test.html-red?logo=html5)](https://duice.chomookun.org/test/object-element-test.html)
+<br/>
+Data binding example between **Object Proxy - HTML Element**.
 
 ### Javascript
 
@@ -110,7 +104,10 @@ duice.ObjectProxy.onPropertyChanged(user, event => {
 
 ## 📁 Array Element 
 
-[![](https://img.shields.io/badge/Test-test/array--element--test.html-blue?logo=html5)](test/array-element-test.html)
+[![](https://img.shields.io/badge/Test-array--element--test.html-blue?logo=html5)](https://duice.chomookun.org/test/array-element-test.html)
+<br/>
+Data binding example between **Array Proxy - HTML Element**.
+
 
 ### Javascript
 
@@ -184,7 +181,10 @@ duice.ArrayProxy.onItemMoved(users, event => {
 
 ## 📁 Dialog(alert,confirm,prompt,custom dialog)
 
-[![](https://img.shields.io/badge/Test-/dialog/dialog--test.html-green?logo=html5)](test/dialog/dialog-test.html)
+[![](https://img.shields.io/badge/Test-dialog/dialog--test.html-green?logo=html5)](https://duice.chomookun.org/test/dialog/dialog-test.html)
+<br/>
+Custom alert, confirm, prompt dialog example.
+
 
 ### Javascript
 ```javascript
@@ -225,5 +225,21 @@ async function openDialog() {
     </pre>
 </dialog>
 ```
+
+---
+
+
+## 🔗 References
+
+### Git Repository
+[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice-orange?logo=github)](https://github.com/chomookun/duice)
+
+### NPM Package
+[![](https://img.shields.io/badge/NPM-https://www.npmjs.com/package/duice-steelblue?logo=npm)](https://www.npmjs.com/package/duice)
+
+### Plugin project
+[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice--plugin-orange?logo=github)](https://github.com/chomookun/duice-plugin)
+<br/>
+Plugin project integrated with pagination, codemirror, marked, jsplumb ...
 
 
