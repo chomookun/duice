@@ -1,12 +1,12 @@
 # DUICE (Data-binding UI Component Element)
 
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-red?logo=github)](https://github.com/sponsors/chomookun)
+[![Donate](https://img.shields.io/badge/Donate-Ko--fi-orange?logo=kofi)](https://ko-fi.com/chomookun)
+
 [![Preview](https://img.youtube.com/vi/Dke_mQblaMk/0.jpg)](https://www.youtube.com/watch?v=Dke_mQblaMk)
 
 
------------------------------------------------------------
-
-
-## Conception
+## 🗒️ Conception
 
 ### 1. MVC Auto-Binding (between Data Structure and HTML DOM Element)
 
@@ -27,36 +27,44 @@ It is oriented towards minimal code, no-dependency and no-conflict.
 Therefore you can use it with another javascript library together.
 
 
------------------------------------------------------------
+---
 
 
-## References
-
-### Git Repository
-
-[https://github.com/chomookun/duice](https://github.com/chomookun/duice)
-
-### NPM Package
-
-[https://www.npmjs.com/package/duice](https://www.npmjs.com/package/duice)
+## 🖥️ Demo site
 
 ### Website
-
-[https://duice.chomookun.org](https://duice.chomookun.org)
-
-### Plugins
-
-[https://duice-plugin.chomookun.org](https://duice-plugin.chomookun.org)
-
-### Example (Plain HTML + Integrated with Vue/React)
-
-[https://duice-example.chomookun.org](https://duice-example.chomookun.org)
+[![](https://img.shields.io/badge/Website-https://duice.chomookun.org-green?logo=html5)](https://duice.chomookun.org)
 
 
------------------------------------------------------------
+---
 
 
-## Object Element 
+## 🔗 References
+
+### Git Repository
+[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice-orange?logo=github)](https://github.com/chomookun/duice)
+
+### NPM Package
+[![](https://img.shields.io/badge/NPM-https://www.npmjs.com/package/duice-steelblue?logo=npm)](https://www.npmjs.com/package/duice)
+
+### Plugin project
+[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice--plugin-orange?logo=github)](https://github.com/chomookun/duice-plugin)
+
+### Example project (Plain HTML + Integrated with Vue/React)
+[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice--example-blue?logo=github)](https://github.com/chomookun/duice-example)
+
+### Live Examples
+[![](https://img.shields.io/badge/Arch4j-https://github.com/chomookun/arch4j-blue?logo=github)](https://github.com/chomookun/arch4j)
+<br/>
+[![](https://img.shields.io/badge/Fintics-https://github.com/chomookun/fintics-green?logo=github)](https://github.com/chomookun/fintics)
+
+
+---
+
+
+## 📁 Object Element 
+
+[![](https://img.shields.io/badge/Test-/test/object--element--test.html-red?logo=html5)](test/object-element-test.html)
 
 ### Javascript
 
@@ -97,14 +105,12 @@ duice.ObjectProxy.onPropertyChanged(user, event => {
 });
 ```
 
-### Test Case
-[Object Element Test](test/ObjectElementTest.html)
+---
 
 
------------------------------------------------------------
+## 📁 Array Element 
 
-
-## Array Element 
+[![](https://img.shields.io/badge/Test-test/array--element--test.html-blue?logo=html5)](test/array-element-test.html)
 
 ### Javascript
 
@@ -172,15 +178,13 @@ duice.ArrayProxy.onItemMoved(users, event => {
 });
 ```
 
-### Test Case 
 
-[Array Element Test](test/ArrayElementTest.html)
-
-
-------------------------------------------------------
+---
 
 
-## Dialog(alert,confirm,prompt,custom dialog)
+## 📁 Dialog(alert,confirm,prompt,custom dialog)
+
+[![](https://img.shields.io/badge/Test-/dialog/dialog--test.html-green?logo=html5)](test/dialog/dialog-test.html)
 
 ### Javascript
 ```javascript
@@ -222,19 +226,4 @@ async function openDialog() {
 </dialog>
 ```
 
-### Test Case
-
-[Dialog/Alert/Confirm/Prompt Test](test/dialog/DialogTest.html)
-
-
------------------------------------------------------------
-
-## License
-
-[LICENSE](LICENSE)
-
-
-## Contact
-* email: [chomookun@gmail.com](mailto:chomookun@gmail.com)
-* linkedin: [https://www.linkedin.com/in/chomookun](https://www.linkedin.com/in/chomookun)
 

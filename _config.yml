@@ -5,3 +5,12 @@ plugins:
 # theme config
 brand-icon: /docs/assets/image/duice-icon.svg
 brand-title: <img src="/docs/assets/image/duice-title.svg"/>
+
+# exclude
+exclude:
+  - node_modules
+  - src
+  - vendor
+  - Gemfile
+  - Gemfile.lock
+

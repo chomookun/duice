@@ -19,5 +19,7 @@ vendor/bundle/
 # ignores bundle
 .bundle/
 
-# ignores _site
-_site/
+# jekyll
+vendor
+.bundle
+_site
