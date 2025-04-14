@@ -31,10 +31,7 @@ This library is built with pure vanilla JavaScript — no dependencies, no confl
 <br/>
 It’s lightweight, framework-agnostic, and can be seamlessly used alongside any other JavaScript libraries or frameworks.
 
-
-
 ---
-
 
 ## 🖥️ Demo site
 
@@ -53,6 +50,21 @@ Plain HTML + Integrated with Vue/React examples
 <br/>
 Credentials: **developer/developer<br/>**
 Because of cold start, Waits about 30 seconds to start the server.
+
+---
+
+## 🔗 References
+
+### Git Repository
+[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice-orange?logo=github)](https://github.com/chomookun/duice)
+
+### NPM Package
+[![](https://img.shields.io/badge/NPM-https://www.npmjs.com/package/duice-steelblue?logo=npm)](https://www.npmjs.com/package/duice)
+
+### Plugin project
+[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice--plugin-orange?logo=github)](https://github.com/chomookun/duice-plugin)
+<br/>
+Plugin project integrated with pagination, codemirror, marked, jsplumb ...
 
 ---
 
@@ -78,21 +90,6 @@ Because of cold start, Waits about 30 seconds to start the server.
 ```shell
 npm install duice
 ```
-
----
-
-## 🔗 References
-
-### Git Repository
-[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice-orange?logo=github)](https://github.com/chomookun/duice)
-
-### NPM Package
-[![](https://img.shields.io/badge/NPM-https://www.npmjs.com/package/duice-steelblue?logo=npm)](https://www.npmjs.com/package/duice)
-
-### Plugin project
-[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice--plugin-orange?logo=github)](https://github.com/chomookun/duice-plugin)
-<br/>
-Plugin project integrated with pagination, codemirror, marked, jsplumb ...
 
 ---
 
