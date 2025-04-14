@@ -52,7 +52,45 @@ Because of cold start, Waits about 30 seconds to start the server.
 
 ---
 
+## 🏁 Getting Started
 
+### CDN (jsdelivr.net)
+```html
+<script src="https://cdn.jsdelivr.net/npm/duice/dist/duice.min.js"></script>
+<!-- (optional) symple style -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/duice/dist/duice.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/duice/dist/duice-theme.css">
+```
+
+### CDN (unpkg.com)
+```html
+<script src="https://unpkg.com/duice/dist/duice.min.js"></script>
+<!-- (optional) symple style -->
+<link rel="stylesheet" href="https://unpkg.com/duice/dist/duice.css">
+<link rel="stylesheet" href="https://unpkg.com/duice/dist/duice-theme.css">
+```
+
+### NPM package
+```shell
+npm install duice
+```
+
+---
+
+## 🔗 References
+
+### Git Repository
+[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice-orange?logo=github)](https://github.com/chomookun/duice)
+
+### NPM Package
+[![](https://img.shields.io/badge/NPM-https://www.npmjs.com/package/duice-steelblue?logo=npm)](https://www.npmjs.com/package/duice)
+
+### Plugin project
+[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice--plugin-orange?logo=github)](https://github.com/chomookun/duice-plugin)
+<br/>
+Plugin project integrated with pagination, codemirror, marked, jsplumb ...
+
+---
 
 ## 📁 Object Element 
 
@@ -225,21 +263,4 @@ async function openDialog() {
     </pre>
 </dialog>
 ```
-
----
-
-
-## 🔗 References
-
-### Git Repository
-[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice-orange?logo=github)](https://github.com/chomookun/duice)
-
-### NPM Package
-[![](https://img.shields.io/badge/NPM-https://www.npmjs.com/package/duice-steelblue?logo=npm)](https://www.npmjs.com/package/duice)
-
-### Plugin project
-[![](https://img.shields.io/badge/Github-https://github.com/chomookun/duice--plugin-orange?logo=github)](https://github.com/chomookun/duice-plugin)
-<br/>
-Plugin project integrated with pagination, codemirror, marked, jsplumb ...
-
 
