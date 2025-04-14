@@ -1,5 +1,5 @@
 /*!
- * duice - v0.3.9
+ * duice - v0.3.11
  * git: https://gitbub.com/chomookun/duice
  * website: https://duice.chomookun.com
  * Released under the LGPL(GNU Lesser General Public License version 3) License
