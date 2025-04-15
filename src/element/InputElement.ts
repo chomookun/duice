@@ -27,7 +27,7 @@ export class InputElement extends ObjectElement<HTMLInputElement> {
     }
 
     /**
-     * Gets element value
+     * Sets element value
      * @param value element value
      */
     override setValue(value: any): void {
