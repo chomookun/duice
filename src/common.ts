@@ -116,6 +116,23 @@ export function findVariable(context: object, name: string): any {
 }
 
 /**
+ * Calls function
+ * @param fn function
+ * @param context context
+ * @param args arguments
+ */
+export function callFunction (fn: Function, context: any, ...args: any[]) {
+    try {
+        const result = fn.call(context, ...args);
+        return (result && typeof result.then === 'function')
+            ? result
+            : Promise.resolve(result);
+    } catch (e) {
+        return Promise.reject(e);
+    }
+}
+
+/**
  * Runs code
  * @param code
  * @param htmlElement
