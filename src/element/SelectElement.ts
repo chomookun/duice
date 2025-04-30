@@ -1,5 +1,5 @@
 import {ObjectElement} from "../ObjectElement";
-import {findVariable, getElementAttribute, getProxyTarget} from "../common";
+import {findVariable, getElementAttribute, getProxyHandler, getProxyTarget} from "../common";
 import {PropertyChangingEvent} from "../event/PropertyChangingEvent";
 
 /**
@@ -38,6 +38,12 @@ export class SelectElement extends ObjectElement<HTMLSelectElement> {
             let propertyChangingEvent = new PropertyChangingEvent(element, data, this.getProperty(), this.getValue(), this.getIndex());
             this.notifyObservers(propertyChangingEvent);
         }, true);
+
+        // register as option observer
+        if (this.option) {
+            let optionArray = findVariable(this.getContext(), this.option);
+            getProxyHandler(optionArray).addObserver(this);
+        }
     }
 
     /**
