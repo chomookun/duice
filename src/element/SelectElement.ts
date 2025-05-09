@@ -1,6 +1,7 @@
 import {ObjectElement} from "../ObjectElement";
 import {findVariable, getElementAttribute, getProxyHandler, getProxyTarget} from "../common";
 import {PropertyChangingEvent} from "../event/PropertyChangingEvent";
+import {ArrayProxy} from "../ArrayProxy";
 
 /**
  * Select Element
@@ -42,7 +43,9 @@ export class SelectElement extends ObjectElement<HTMLSelectElement> {
         // register as option observer
         if (this.option) {
             let optionArray = findVariable(this.getContext(), this.option);
-            getProxyHandler(optionArray).addObserver(this);
+            if (optionArray) {
+                getProxyHandler(optionArray).addObserver(this);
+            }
         }
     }
 
