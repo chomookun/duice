@@ -309,7 +309,6 @@ textarea:disabled {
 
 /* table */
 table {
-  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
   border: var(--duice-table-border);
