@@ -309,6 +309,7 @@ textarea:disabled {
 
 /* table */
 table {
+  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
   border: var(--duice-table-border);
@@ -319,6 +320,9 @@ table {
     display: inline-block;
     overflow-x: auto;
     max-width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
   }
 }
 table > thead {
