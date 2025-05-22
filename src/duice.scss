@@ -1,7 +1,20 @@
-// convert unit value
-@function unit-value($i, $unit) {
-  @return #{$i}#{if($i == 0, '', $unit)};
-}
+$unit-values: (
+        1px: 1px,
+        2px: 2px,
+        3px: 3px,
+        d25rem: 0.25rem,
+        d5rem: 0.5rem,
+        d75rem: 0.75rem,
+        1rem: 1rem,
+        2rem: 2rem,
+        3rem: 3rem,
+        d25em: 0.25em,
+        d5em: 0.5em,
+        d75em: 0.75em,
+        1em: 1em,
+        2em: 2em,
+        3em: 3em,
+);
 
 /* hidden attribute */
 [hidden] {
@@ -60,32 +73,15 @@
   }
 
   /* gap, row-gap, column-gap */
-  @for $i from 1 through 3 {
-    @each $unit in px rem em {
-      $value: unit-value($i, $unit);
-      .#{$prefix}gap--#{$value} {
-        gap: #{$value};
-      }
+  @each $name, $value in $unit-values {
+    .#{$prefix}gap--#{$name} {
+      gap: #{$value};
     }
-  }
-
-  /* row-gap */
-  @for $i from 1 through 3 {
-    @each $unit in px rem em{
-      $value: unit-value($i, $unit);
-      .#{$prefix}row-gap--#{$value} {
-        row-gap: #{$value};
-      }
+    .#{$prefix}row-gap--#{$name} {
+      row-gap: #{$value};
     }
-  }
-
-  /* column-gap */
-  @for $i from 0 through 3 {
-    @each $unit in px rem em{
-      $value: unit-value($i, $unit);
-      .#{$prefix}column-gap--#{$value} {
-        column-gap: #{$value};
-      }
+    .#{$prefix}column-gap--#{$name} {
+      column-gap: #{$value};
     }
   }
 
@@ -125,33 +121,27 @@
   }
 
   /* margin */
-  @for $i from 0 through 3 {
-    @each $unit in px rem em {
-      $value: unit-value($i, $unit);
-      .#{$prefix}margin--#{$value} {
-        margin: #{$value};
-      }
-      // with direction
-      @each $direction in top right bottom left {
-        .#{$prefix}margin-#{$direction}--#{$value} {
-          margin-#{$direction}: #{$value};
-        }
+  @each $name, $value in $unit-values {
+    .#{$prefix}margin--#{$name} {
+      margin: #{$value};
+    }
+    // with direction
+    @each $direction in top right bottom left {
+      .#{$prefix}margin-#{$direction}--#{$name} {
+        margin-#{$direction}: #{$value};
       }
     }
   }
 
   /* padding */
-  @for $i from 0 through 3 {
-    @each $unit in px rem em {
-      $value: unit-value($i, $unit);
-      .#{$prefix}padding--#{$value} {
-        padding: #{$value};
-      }
-      // with direction
-      @each $direction in top right bottom left {
-        .#{$prefix}padding-#{$direction}--#{$value} {
-          padding-#{$direction}: #{$value};
-        }
+  @each $name, $value in $unit-values {
+    .#{$prefix}padding--#{$name} {
+      padding: #{$value};
+    }
+    // with direction
+    @each $direction in top right bottom left {
+      .#{$prefix}padding-#{$direction}--#{$name} {
+        padding-#{$direction}: #{$value};
       }
     }
   }
@@ -189,26 +179,22 @@
   }
 
   /* border-width */
-  @for $i from 0 through 3 {
-    @each $unit in px rem em {
-      $value: unit-value($i, $unit);
-      .#{$prefix}border-width--#{$value} {
-        border-width: #{$value};
-      }
-      // with direction
-      @each $direction in top right bottom left {
-        .#{$prefix}border-#{$direction}-width--#{$value} {
-          border-#{$direction}-width: #{$value};
-        }
+  @each $name, $value in $unit-values {
+    .#{$prefix}border-width--#{$name} {
+      border-width: #{$value};
+    }
+    // with direction
+    @each $direction in top right bottom left {
+      .#{$prefix}border-#{$direction}-width--#{$name} {
+        border-#{$direction}-width: #{$value};
       }
     }
   }
 
   /* border-radius */
   @for $i from 1 through 3 {
-    @each $unit in px rem em {
-      $value: unit-value($i, $unit);
-      .#{$prefix}border-radius--#{$value} {
+    @each $name, $value in $unit-values {
+      .#{$prefix}border-radius--#{$name} {
           border-radius: #{$value} !important;
       }
     }
@@ -221,14 +207,12 @@
   }
 
   /* font-size */
-  @for $i from 1 through 3 {
-    @each $unit in rem em {
-      $value: #{$i}#{$unit};
-      .#{$prefix}font-size--#{$value} {
-        font-size: #{$value};
-      }
+  @each $name, $value in $unit-values {
+    .#{$prefix}font-size--#{$name} {
+      font-size: #{$value};
     }
   }
+
   // with keyword
   @each $value in small large smaller larger xx-small x-small small medium x-large xx-large {
     .#{$prefix}font-size--#{$value} {

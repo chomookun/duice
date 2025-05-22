@@ -5,7 +5,9 @@ import {Dialog} from "./Dialog";
  */
 export class AlertDialog extends Dialog {
 
-    messagePre: HTMLPreElement;
+    messageArea: HTMLPreElement;
+
+    buttonArea: HTMLDivElement;
 
     confirmButton: HTMLButtonElement;
 
@@ -19,13 +21,20 @@ export class AlertDialog extends Dialog {
         this.getDialogElement().style.minWidth = '20rem';
         this.getDialogElement().style.textAlign = 'center';
 
-        // message pre
-        this.messagePre = document.createElement('pre');
-        this.messagePre.style.whiteSpace = 'pre-wrap';
-        this.messagePre.style.marginTop = '1rem';
-        this.messagePre.style.marginBottom = '1rem';
-        this.messagePre.innerHTML = message;
-        this.getDialogElement().appendChild(this.messagePre);
+        // message area
+        this.messageArea = document.createElement('pre');
+        this.messageArea.style.whiteSpace = 'pre-wrap';
+        this.messageArea.style.marginTop = '1rem';
+        this.messageArea.style.marginBottom = '1rem';
+        this.messageArea.innerHTML = message;
+        this.getDialogElement().appendChild(this.messageArea);
+
+        // button area
+        this.buttonArea = document.createElement('div');
+        this.buttonArea.style.display = 'inline-flex';
+        this.buttonArea.style.justifyContent = 'center';
+        this.buttonArea.style.gap = '1px';
+        this.getDialogElement().appendChild(this.buttonArea);
 
         // confirm button
         this.confirmButton = document.createElement('button');
@@ -35,7 +44,7 @@ export class AlertDialog extends Dialog {
         this.confirmButton.addEventListener('click', event => {
             this.confirm();
         });
-        this.getDialogElement().appendChild(this.confirmButton);
+        this.buttonArea.appendChild(this.confirmButton);
     }
 
     /**

@@ -279,16 +279,6 @@ table {
   border-spacing: 0;
   border: var(--duice-table-border);
 }
-@media screen and (max-width: 1023px) {
-  table {
-    display: inline-block;
-    overflow-x: auto;
-    max-width: 100%;
-    table-layout: fixed;
-    border-collapse: separate;
-    border-spacing: 0;
-  }
-}
 table > thead {
   position: sticky;
   top: 0;
@@ -299,6 +289,7 @@ table > thead > tr > td {
   border: none;
   border-right: var(--duice-table-thead-border);
   border-bottom: var(--duice-table-thead-border);
+  white-space: nowrap;
 }
 table > thead > tr > :last-child {
   border-right: none;
@@ -346,9 +337,6 @@ table tr th,
 table tr td {
   padding-left: 0.5em;
   padding-right: 0.5em;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
 }
 table tr th:has(button,input,select,textarea,table),
 table tr td:has(button,input,select,textarea,table) {

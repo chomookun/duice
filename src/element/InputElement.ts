@@ -7,6 +7,10 @@ import {getProxyHandler, getProxyTarget} from "../common";
  */
 export class InputElement extends ObjectElement<HTMLInputElement> {
 
+    readonly: boolean = false;
+
+    disabled: boolean = false;
+
     /**
      * Constructor
      * @param htmlElement html element
@@ -57,7 +61,16 @@ export class InputElement extends ObjectElement<HTMLInputElement> {
      * @param readonly readonly or not
      */
     override setReadonly(readonly: boolean): void {
+        this.readonly = readonly;
         this.getHtmlElement().readOnly = readonly;
+
+        // exceptional type (mobile browser does not support readonly)
+        let type: string = this.getHtmlElement().getAttribute('type');
+        if (['datetime-local', 'date', 'time'].includes(type)) {
+            if (this.readonly || this.disabled) {
+                this.getHtmlElement().setAttribute('disabled', 'disabled');
+            }
+        }
     }
 
     /**
@@ -65,10 +78,19 @@ export class InputElement extends ObjectElement<HTMLInputElement> {
      * @param disabled disabled or not
      */
     override setDisabled(disabled: boolean): void {
+        this.disabled = disabled;
         if(disabled) {
             this.getHtmlElement().setAttribute('disabled', 'disabled');
         }else{
             this.getHtmlElement().removeAttribute('disabled');
+        }
+
+        // exceptional type (mobile browser does not support readonly)
+        let type: string = this.getHtmlElement().getAttribute('type');
+        if (['datetime-local', 'date', 'time'].includes(type)) {
+            if (this.disabled || this.readonly) {
+                this.getHtmlElement().setAttribute('disabled', 'disabled');
+            }
         }
     }
 
