@@ -1,5 +1,5 @@
 /*!
- * duice - v0.3.22
+ * duice - v0.3.25
  * git: https://gitbub.com/chomookun/duice
  * website: https://duice.chomookun.com
  * Released under the LGPL(GNU Lesser General Public License version 3) License
@@ -3346,7 +3346,7 @@ var duice = (function (exports) {
             this.dialogElement.style.right = '0';
             this.dialogElement.style.overflowX = 'hidden';
             this.dialogElement.style.boxSizing = 'border-box';
-            this.dialogElement.style.maxWidth = '100%';
+            this.dialogElement.style.maxWidth = '100vw';
             // header
             this.header = document.createElement('div');
             this.dialogElement.appendChild(this.header);
@@ -3379,6 +3379,7 @@ var duice = (function (exports) {
             // creates close button
             this.closeButton = document.createElement('span');
             this.closeButton.innerHTML = '&#10005;';
+            this.closeButton.style.display = 'block';
             this.closeButton.style.fontFamily = 'monospace';
             this.closeButton.style.fontSize = 'large';
             this.closeButton.style.marginLeft = '0.5rem';
@@ -3545,6 +3546,7 @@ var duice = (function (exports) {
             this.buttonArea.style.display = 'inline-flex';
             this.buttonArea.style.justifyContent = 'center';
             this.buttonArea.style.gap = '1px';
+            this.buttonArea.style.paddingBottom = '0.5rem';
             this.getDialogElement().appendChild(this.buttonArea);
             // confirm button
             this.confirmButton = document.createElement('button');
@@ -3605,6 +3607,7 @@ var duice = (function (exports) {
             this.buttonArea.style.display = 'inline-flex';
             this.buttonArea.style.justifyContent = 'center';
             this.buttonArea.style.gap = '1px';
+            this.buttonArea.style.paddingBottom = '0.5rem';
             this.getDialogElement().appendChild(this.buttonArea);
             // cancel button
             this.cancelButton = document.createElement('button');
@@ -3692,6 +3695,7 @@ var duice = (function (exports) {
             this.buttonArea.style.display = 'inline-flex';
             this.buttonArea.style.justifyContent = 'center';
             this.buttonArea.style.gap = '1px';
+            this.buttonArea.style.paddingBottom = '0.5rem';
             this.getDialogElement().appendChild(this.buttonArea);
             // cancel button
             this.cancelButton = document.createElement('button');

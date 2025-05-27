@@ -49,6 +49,7 @@ export class PromptDialog extends Dialog {
         this.buttonArea.style.display = 'inline-flex';
         this.buttonArea.style.justifyContent = 'center';
         this.buttonArea.style.gap = '1px';
+        this.buttonArea.style.paddingBottom = '0.5rem';
         this.getDialogElement().appendChild(this.buttonArea);
 
         // cancel button

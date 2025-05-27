@@ -36,7 +36,7 @@ export class Dialog {
         this.dialogElement.style.right = '0';
         this.dialogElement.style.overflowX = 'hidden';
         this.dialogElement.style.boxSizing = 'border-box';
-        this.dialogElement.style.maxWidth = '100%';
+        this.dialogElement.style.maxWidth = '100vw';
         // header
         this.header = document.createElement('div');
         this.dialogElement.appendChild(this.header);
@@ -70,6 +70,7 @@ export class Dialog {
         // creates close button
         this.closeButton = document.createElement('span');
         this.closeButton.innerHTML = '&#10005;';
+        this.closeButton.style.display = 'block';
         this.closeButton.style.fontFamily = 'monospace';
         this.closeButton.style.fontSize = 'large';
         this.closeButton.style.marginLeft = '0.5rem';
