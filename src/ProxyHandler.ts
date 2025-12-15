@@ -35,6 +35,13 @@ export abstract class ProxyHandler<T> extends Observable implements Observer {
     }
 
     /**
+     * Checks available state
+     */
+    isAvailable(): boolean {
+        return true;
+    }
+
+    /**
      * Sets parent
      * @param parent parent
      */

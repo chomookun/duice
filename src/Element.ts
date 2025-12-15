@@ -35,6 +35,11 @@ export abstract class Element<T extends HTMLElement, V extends object> extends O
     }
 
     /**
+     * Checks available state
+     */
+    abstract isAvailable(): boolean;
+
+    /**
      * Generate id
      * @private
      */

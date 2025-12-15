@@ -56,6 +56,13 @@ export class ArrayElement<T extends HTMLElement> extends Element<T, object[]> {
     }
 
     /**
+     * Checks available state
+     */
+    isAvailable(): boolean {
+        return true;
+    }
+
+    /**
      * Renders
      */
     override render(): void {

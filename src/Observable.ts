@@ -50,10 +50,16 @@ export class Observable {
      * @param event event (optional)
      */
     notifyObservers(event?: Event): void {
-        if(this.notifyEnabled){
-            this.observers.forEach(observer => {
-                observer.update(this, event);
-            });
+        if (this.notifyEnabled) {
+            console.debug('Observer.notifyObserver - observers.length', this.observers.length);
+            for (let i = this.observers.length - 1; i >= 0; i--) {
+                const observer = this.observers[i];
+                if (observer.isAvailable()) {
+                    observer.update(this, event);
+                } else {
+                    this.observers.splice(i, 1);
+                }
+            }
         }
     }
 

@@ -22,6 +22,13 @@ export abstract class CustomElement<V extends object> extends Element<HTMLElemen
     }
 
     /**
+     * Checks available state
+     */
+    isAvailable(): boolean {
+        return document.contains(this.htmlElement);
+    }
+
+    /**
      * Renders element
      */
     override render(): void {

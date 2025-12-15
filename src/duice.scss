@@ -234,6 +234,13 @@ $unit-values: (
     }
   }
 
+  /* text-decoration */
+  @each $value in none underline line-through {
+    .#{$prefix}text-decoration--#{$value} {
+      text-decoration: #{$value} !important;
+    }
+  }
+
   /* width */
   @for $i from 1 through 20 {
     $value: $i*5;

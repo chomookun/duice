@@ -13,4 +13,9 @@ export interface Observer {
      */
     update(observable: Observable, event: Event): void;
 
+    /**
+     * Checks available state
+     */
+    isAvailable(): boolean;
+
 }

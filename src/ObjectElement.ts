@@ -33,6 +33,13 @@ export class ObjectElement<T extends HTMLElement> extends Element<T, object> {
     }
 
     /**
+     * Checks available state
+     */
+    isAvailable(): boolean {
+        return document.contains(this.htmlElement);
+    }
+
+    /**
      * Gets property
      */
     getProperty(): string {
